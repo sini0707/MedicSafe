@@ -17,7 +17,9 @@ const login = asyncHandler(async (req, res) => {
   const doctor = await Doctor.findOne({ email });
 
   if (user && !user.isBlocked && (await user.matchPassword(password))) {
-    generateToken(res, user._id);
+    console.log('generateeeeeeeeee');
+    const token= generateToken(res, user._id);
+    console.log(token,'userrrrrtokkkk');
     res.status(201).json({
       success: true,
       message: "User successfully logged in",
@@ -25,8 +27,9 @@ const login = asyncHandler(async (req, res) => {
         _id: user._id,
         name: user.name,
         email: user.email,
-        role: "user",
+        role: "patient",
       },
+token,
     });
   } else if (
     doctor &&
@@ -126,10 +129,14 @@ const register = asyncHandler(async (req, res) => {
 // @route   GET /api/users/profile
 // @access  Private
 const getUserProfile = asyncHandler(async (req, res) => {
+  console.log('getuserprofile');
   const userId = req.userId;
+  console.log(userId,'userod');
   try {
     const user = await User.findById(userId);
+    console.log(user,'userrr');
     if (!user) {
+      console.log('user not found');
       return res.status(404).json({ success: false, message: 'User not found' });
     }
     const { password, ...rest } = user._doc;

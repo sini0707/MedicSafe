@@ -16,9 +16,9 @@ import { protect } from '../middleware/authMiddleware.js';
 const router = express.Router();
 
 router.post('/register', register);
-router.post('/login', login);
+router.post('/login',login);
 // router.post('/logout', logoutUser);
-router.get('/profile/me',getUserProfile);
+router.get('/profile/me',protect,getUserProfile);
 // router.route("/").get(getAllReviews).post(authenticate,createReview);
 router.get("appointments/my-appointments",getMyAppointments)
 router.get("/:id",getSingleUser);

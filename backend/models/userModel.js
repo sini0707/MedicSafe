@@ -39,6 +39,10 @@ const userSchema = mongoose.Schema(
       type:Number,
       default:null
     },
+    role:{
+      type:String,
+      default:null
+    },
     blocked:{
       type:Boolean,
       default:false

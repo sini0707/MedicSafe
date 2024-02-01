@@ -8,7 +8,9 @@ import connectDB from './config/db.js';
 const port = process.env.PORT || 5000;
 connectDB();
 import userRoutes from './routes/userRoutes.js';
-import doctorRoute from "./routes/doctor.js"
+import doctorRoute from "./routes/doctor.js";
+// import adminRoutes from './routes/adminRoutes.js'
+
 
 
 
@@ -16,7 +18,8 @@ import doctorRoute from "./routes/doctor.js"
 const app = express();
 
 const corsOptions={
-    origin:true
+    origin:true,
+    credentials:true
 
 }
 
@@ -34,6 +37,7 @@ app.use('/api/v1/doctors', doctorRoute);
 
 
 
+// app.use("/api/admin", adminRoutes);
 app.get('/', (req, res) => res.send('API running'));
 app.use(notFound);
 app.use(errorHandler);

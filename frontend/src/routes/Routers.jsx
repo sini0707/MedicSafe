@@ -10,6 +10,7 @@ import MyAccount from '../Dashboard/user-account/MyAccount';
 import {Routes,Route} from 'react-router-dom';
 import Dashboard from '../Dashboard/user-account/doctor-account/Dashboard';
 import ProtectedRoute  from './ProtectedRoute';
+// import AdminLogin from '../pages/Admin/AdminLogin'
 
 function Routers() {
   return <Routes>
@@ -23,6 +24,9 @@ function Routers() {
 <Route path="/services" element={<Services/>}/>
 <Route path="/users/profile/me" element={<ProtectedRoute allowedRoles={['patient']}><MyAccount/></ProtectedRoute>} />
 <Route path="/doctors/profile/me" element={<ProtectedRoute allowedRoles={['doctor']}><Dashboard/></ProtectedRoute>} />
+
+
+{/* <Route path='/admin' element={<AdminLogin/>}/> */}
 
   </Routes>
 }

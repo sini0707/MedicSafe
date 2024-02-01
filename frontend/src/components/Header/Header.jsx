@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import logo from '../../assets/images/logo.png';
 // import userImg from '../../assets/images/profile.png';
 import { NavLink } from 'react-router-dom';
@@ -84,7 +84,7 @@ const Header = () => {
         <figure className='w-[35px] h-[35px] rounded-full cursor-pointer'>
           <img src={user?.photo} className="w-full rounded-full" alt=""/>
         </figure>
-        <h2>{user?.name}</h2>
+        <h2>Welcome  {user?.name}</h2>
       </NavLink>
     </div>
   ) : (
@@ -96,13 +96,13 @@ const Header = () => {
   )}
 
   {/* This line renders the user's name regardless of the authentication state */}
-  <h1>{user?.name}</h1>
+  {/* <h1>{user?.name}</h1> */}
 
-  <NavLink to="/login">
+  {/* <NavLink to="/login">
     <button className='bg-primaryColor py-2 px-6 text-white font [600] h-[44px] flex items-center rounded-[50px]'>
       Login
     </button>
-  </NavLink>
+  </NavLink> */}
 
   <span className='md:hidden' onClick={toggleMenu}>
     <BiMenu className='w-6 h-6 cursor-pointer'/>

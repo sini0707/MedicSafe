@@ -24,46 +24,50 @@ const Login = () => {
   const submitHandler = async (event) => {
     event.preventDefault();
     setLoading(true);
+  
     try {
       const res = await fetch(`${baseURL}/users/login`, {
         method: 'post',
         headers: {
-          'Content-Type': 'application/json', // Fix here
+          'Content-Type': 'application/json',
         },
-        
-        
-        body:JSON.stringify(formData)
-           // Convert the data to JSON
+        credentials: 'include',
+        body: JSON.stringify(formData),
       });
-                             
-       const result=await  res.json();
-     
-  
+  console.log(res,'ressssss');
+      const result = await res.json();
+  console.log(result,'result');
       if (!res.ok) {
         throw new Error(result.message);
       }
-
+  
+      const { data, token } = result;
+  console.log(data,token,'resultttttttttttttttttttttttttt');
+      if (!data) {
+        throw new Error("User data not found in the server response.");
+      }
+  
       dispatch({
-        type:"LOGIN_SUCCESS",
-        payload:{
-          user:result.data,
-          token:result.token,
-          role:result.role
+        type: "LOGIN_SUCCESS",
+        payload: {
+          user: data,
+          token: token || null, // Ensure that token is not undefined
+          role: data.role || null,   // Ensure that role is not undefined
         },
       });
-      console.log(result,"login data")
   
-       setLoading(false);
+      console.log(result, "login data");
+  
+      setLoading(false);
       toast.success(result.message);
-       navigate('/home');
+      navigate('/home');
     } catch (err) {
-      console.log(err)
+      console.error(err);
       toast.error(err.message);
       setLoading(false);
     }
   };
   
-    
 
 
 
@@ -82,6 +86,7 @@ const Login = () => {
             placeholder:text-textColor  cursor-pointer required"/>
           </div>
           <div className="mb-5">
+            
             <input type="password" name="password" placeholder="password" value={formData.password} onChange={(e)=>handleInputChange(e)}
             className="w-full py-3 border-b border-solid border-[#0066ff61] focus:border-b-primaryColor text-[16px] leading-7 text-headingColor
             placeholder:text-textColor  cursor-pointer required"/>
