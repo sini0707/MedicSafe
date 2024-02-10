@@ -1,25 +1,53 @@
 import User from "../models/userModel.js";
 import Doctor from "../models/DoctorSchema.js";
 import bcrypt from "bcryptjs";
-
+import nodemailer from 'nodemailer'
 import asyncHandler from "express-async-handler";
 import generateToken from "../utils/generateToken.js";
 import BookingSchema from "../models/BookingSchema.js";
+import generateDoctorToken from "../utils/DoctorgenToken.js";
+
+
+const sendOtpLink=(email,otp)=>{
+  try {
+      const transporter=nodemailer.createTransport({
+          host:'smtp.gmail.com',
+          port:587,
+          secure:false,
+          requireTLS:true,
+          auth:{
+              user:process.env.APP_EMAIL,
+              pass:process.env.APP_PASSWORD
+          }
+      })
+      const mailOptions={
+          from:'MedicSafe',
+          to:email,
+          subject:'Email Verification',
+          html:'<p>Hi,<b>'+otp+'</b> is your OTP for email verification</p>'
+      }
+      transporter.sendMail(mailOptions,(error,info)=>{
+          if(error){
+              console.log(error)
+          }else{
+              console.log('email has been sent to:-',info.response)
+          }
+      })
+  } catch (error) {
+      console.log(error.message)
+  }
+}
 
 // @desc    Auth user & get token
 // @route   POST /api/users/login
 // @access  Public
 const login = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
-  console.log(req.body,"gbfhgfhfjhgj")
   const user = await User.findOne({ email });
-  console.log(user,"hiiiiii")
   const doctor = await Doctor.findOne({ email });
 
   if (user && !user.isBlocked && (await user.matchPassword(password))) {
-    console.log('generateeeeeeeeee');
     const token= generateToken(res, user._id);
-    console.log(token,'userrrrrtokkkk');
     res.status(201).json({
       success: true,
       message: "User successfully logged in",
@@ -28,8 +56,10 @@ const login = asyncHandler(async (req, res) => {
         name: user.name,
         email: user.email,
         role: "patient",
+      
       },
-token,
+      token
+      
     });
   } else if (
     doctor &&
@@ -37,7 +67,7 @@ token,
     (await doctor.matchPassword(password))
   ) {
     // Handle doctor login
-    genToken(res, doctor._id);
+    generateDoctorToken(res, doctor._id);
     res.status(201).json({
       success: true,
       message: "Doctor successfully logged in",
@@ -60,58 +90,135 @@ token,
   }
 });
 
+const forgotEmailCheck = asyncHandler(async(req,res)=>{
+  const { email } = req.body;
+  console.log('Email received:', email); 
+  
+  const userExists = await User.findOne({ email: email });
+  console.log('User found:', userExists); 
+  
+  if(userExists && !userExists.blocked) {
+    let newotp = Math.floor(1000 + Math.random() * 9000);
+    userExists.otp = newotp;
+    await userExists.save();
+    console.log('New OTP generated:', newotp); 
+    sendOtpLink(userExists.email, newotp);
+    res.status(200).json({
+      _id: userExists._id,
+      name: userExists.name,
+      email: userExists.email
+    });
+  } else {
+    console.log('User not found or blocked by admin');
+    res.status(400).json({ error: "User not found or blocked by admin" });
+  }
+});
+
+const forgotOtpVerify = asyncHandler(async(req,res)=>{
+  const { email, otp } = req.body;
+  const userExists = await User.findOne({ email: email });
+
+ 
+  console.log("User exists:", userExists);
+
+  if (userExists && userExists.otp === Number(otp)) {
+    res.status(200).json({
+        _id: userExists._id,
+        name: userExists.name,
+        email: userExists.email,
+        otp: userExists.otp
+    });
+  } else {
+    res.status(400).json({ error: "OTP Incorrect" });
+  }
+});
+
+const resetPassword = asyncHandler(async(req,res)=>{
+  const { email, password } = req.body;
+  console.log('Request body:', req.body); 
+  const salt = await bcrypt.genSalt(10);
+  const hashPassword = await bcrypt.hash(password, salt);
+  
+  const userExists = await User.findOne({ email: email });
+  if(userExists){
+      userExists.password = hashPassword
+      let changePassword = await userExists.save();
+      if(changePassword){
+          console.log('Password changed successfully:', changePassword); 
+          res.status(200).json({ message: "Password Changed Successfully" });
+      } else {
+          console.log('Failed to change the password'); 
+          res.status(400).json({ error: "Failed to change the password" });
+      }
+  } else {
+      console.log('User not found'); 
+      res.status(400).json({ error: "User not found" });
+  }
+});
+
+
+
+
+
+
 const register = asyncHandler(async (req, res) => {
-  console.log("herrrrrr",);
+
   const { email, password, name, role, photo, gender } = req.body;
+
   try {
-    let existingUser = null;
+    let userExists = await (role === "patient" ? User.findOne({ email }) : Doctor.findOne({ email }));
 
-    if (role === "patient") {
-      existingUser = await User.findOne({ email });
-    } else if (role === "doctor") {
-      existingUser = await Doctor.findOne({ email });
+    if (userExists && userExists.verified) {
+      console.log('User already exists and is verified');
+      return res.status(400).json({ message: 'User already exists' });
     }
 
-    if (existingUser) {
-      res.status(400).json({ success: false, message: "User already exists" });
-      return; // Add this line to exit the function if a user already exists
-    }
-
-    // hash password
+    let newotp = userExists ? userExists.otp : Math.floor(1000 + Math.random() * 9000);
     const salt = await bcrypt.genSalt(10);
     const hashPassword = await bcrypt.hash(password, salt);
 
-    let user = null;
-
-    if (role === "patient") {
-      user = new User({
-        name,
-        email,
-        password: hashPassword,
-        photo,
-        gender,
-        role,
-      });
-    } else if (role === "doctor") {
-      user = new Doctor({
-        name,
-        email,
-        password: hashPassword,
-        photo,
-        gender,
-        role,
-      });
+    if (userExists) {
+      userExists.name = name;
+      userExists.password = hashPassword;
+      await userExists.save();
+    } else {
+      const newUser = role === "patient" ? new User({ name, email, password: hashPassword, photo, gender }) :
+                                           new Doctor({ name, email, password: hashPassword, photo, gender });
+      newUser.otp = newotp;
+      await newUser.save();
     }
 
-    await user.save();
-    res
-      .status(200)
-      .json({ success: true, message: "User successfully created" });
+    // Send OTP email
+    await sendOtpLink(email, newotp);
+
+    res.status(201).json({ message: "User successfully created" });
   } catch (err) {
     console.error(err);
-    res
-      .status(500)
-      .json({ success: false, message: "Internal server error, try again" });
+    res.status(500).json({ success: false, message: "Internal server error, try again" });
+  }
+});
+
+export const otpVerify = asyncHandler(async (req, res) => {
+
+  console.log("lksldkmlsdmlsd");
+  const { email, otp } = req.body;
+console.log(email,otp,'koohh');
+  let userExists = await User.findOne({ email });
+
+  if (userExists) {
+    if (userExists.otp == Number(otp)) {
+      generateToken(res, userExists._id);
+      userExists.verified = true;
+      userExists = await userExists.save();
+      res.status(201).json({
+        _id: userExists._id,
+        name: userExists.name,
+        email: userExists.email,
+        blocked: userExists.blocked
+      });
+    } else {
+      res.status(201).json({ error: "Invalid OTP" });
+    }
   }
 });
 
@@ -129,14 +236,10 @@ const register = asyncHandler(async (req, res) => {
 // @route   GET /api/users/profile
 // @access  Private
 const getUserProfile = asyncHandler(async (req, res) => {
-  console.log('getuserprofile');
   const userId = req.userId;
-  console.log(userId,'userod');
   try {
     const user = await User.findById(userId);
-    console.log(user,'userrr');
     if (!user) {
-      console.log('user not found');
       return res.status(404).json({ success: false, message: 'User not found' });
     }
     const { password, ...rest } = user._doc;
@@ -265,4 +368,4 @@ export const getAllUser=async(req,res)=>{
 };
   
 
-export { login, register, getUserProfile,getMyAppointments};
+export { login, register, getUserProfile,getMyAppointments,forgotEmailCheck,forgotOtpVerify,resetPassword  };

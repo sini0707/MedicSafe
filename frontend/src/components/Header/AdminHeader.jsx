@@ -1,59 +1,54 @@
-import { useEffect } from 'react';
-import logo from '../../assets/images/logo.png';
-// import userImg from '../../assets/images/profile.png';
+
+import { useRef, useEffect, useContext } from 'react';
 import { NavLink } from 'react-router-dom';
 import { BiMenu } from 'react-icons/bi';
-import { useRef,useContext } from 'react';
-import { authContext } from '../../context/AuthContext';
+import { authContext } from '../../context/AuthContext'; 
+import logo from '../../assets/images/logo.png'; // Import the correct path for your logo
 
 
-
-const navLinks = [
+const navlinks = [
   {
-    path: '/home',
-    display: 'Home'
+    path: '/admin/home',
+    display: 'Home',
   },
   {
-    path: '/doctors',
-    display: 'Find a Doctor'
+    path: '/admin/userlist',
+    display: 'Users',
   },
   {
-    path: '/services',
-    display: 'Services'
+    path: '/admin/doctorslist',
+    display: 'Doctors',
   },
   {
-    path: '/contact',
-    display: 'Contact'
+    path: '/admin/bookings',
+    display: 'Bookings',
   },
 ];
 
-const Header = () => {
+const AdminHeader = () => {
+  const headerRef = useRef(null);
+  const menuRef = useRef(null);
+  const { user, role, token } = useContext(authContext);
 
-  const headerRef=useRef(null)
-  const menuRef=useRef(null)
-  const {user,role,token}=useContext(authContext)
- 
-
-  const handleStickyHeader=()=>{
-    window.addEventListener('scroll',()=>{
-      if(document.body.scrollTop>80|| document.documentElement.scrollTop>80){
-        headerRef.current.classList.add('sticky_header')
-      }else{
-        headerRef.current.classList.remove('sticky_header')
-
-      }  
-    })
-  }
-  useEffect(()=>{
-    handleStickyHeader()
-    return ()=>window.removeEventListener('scroll',handleStickyHeader)
-  });
-  const toggleMenu = () => {
-    if (menuRef.current) {
-      menuRef.current.classList.toggle('show_menu');
-    }
+  const handleStickyHeader = () => {
+    window.addEventListener('scroll', () => {
+      if (document.body.scrollTop > 80 || document.documentElement.scrollTop > 80) {
+        headerRef.current.classList.add('sticky_header');
+      } else {
+        headerRef.current.classList.remove('sticky_header');
+      }
+    });
   };
+
+  useEffect(() => {
+    handleStickyHeader();
+    return () => window.removeEventListener('scroll', handleStickyHeader);
+  }, []);
+
+  const toggleMenu = () => menuRef.current.classList.toggle('show_menu');
+
   
+
   return (
     <header className='header flex items-center' ref={headerRef}>
       <div className='container'>
@@ -61,10 +56,9 @@ const Header = () => {
           <div>
             <img src={logo} alt='' style={{ width: '200px', height: 'auto' }} />
           </div>
-          {/*............menu..........*/}
           <div className='navigation' ref={menuRef} onClick={toggleMenu}>
             <ul className='menu flex items-center gap-[2.7rem]'>
-              {navLinks.map((link, index) => (
+              {navlinks.map((link, index) => (
                 <li key={index}>
                   <NavLink
                     to={link.path}
@@ -81,7 +75,6 @@ const Header = () => {
             </ul>
           </div>
 
-          {/*..............nav right..........*/}
           <div className='flex items-center gap-4'>
   {token && user ? (
     <div>
@@ -89,13 +82,13 @@ const Header = () => {
         <figure className='w-[35px] h-[35px] rounded-full cursor-pointer'>
           <img src={user?.photo} className="w-full rounded-full" alt=""/>
         </figure>
-        <h2>Welcome  {user?.name}</h2>
+        <h2>Welcome  Admin </h2>
       </NavLink>
     </div>
   ) : (
-    <NavLink to="/login">
+    <NavLink to="/admin">
       <button className='bg-primaryColor py-2 px-6 text-white font [600] h-[44px] flex items-center rounded-[50px]'>
-        Login
+        Logout
       </button>
     </NavLink>
 
@@ -104,17 +97,19 @@ const Header = () => {
 
   {/* This line renders the user's name regardless of the authentication state */}
   {/* <h1>{user?.name}</h1> */}
-
+{/* 
   <NavLink to="/login">
     <button className='bg-primaryColor py-2 px-6 text-white font [600] h-[44px] flex items-center rounded-[50px]'>
       Login
     </button>
-  </NavLink>
+  </NavLink> */}
 
   <span className='md:hidden' onClick={toggleMenu}>
     <BiMenu className='w-6 h-6 cursor-pointer'/>
   </span>
 </div>
+
+
 
         </div>
       </div>
@@ -122,4 +117,7 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default AdminHeader;
+
+
+    

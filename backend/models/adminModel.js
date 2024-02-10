@@ -26,7 +26,20 @@ adminSchema.pre("save", async function (next) {
 });
 
 adminSchema.methods.matchPassword = async function (enteredPassword) {
-  return await bcrypt.compare(enteredPassword, this.password);
+  try {
+    console.log(enteredPassword, 'enteredpassword');
+    console.log(this.password, 'thispassw');
+
+    if(enteredPassword===this.password);{
+          console.log('passwordmatchedddddd');
+return this.password
+    }
+
+  } catch (error) {
+    console.error('Error in matchPassword:', error);
+    return false;
+  }
 };
+
 const Admin = mongoose.model("Admin", adminSchema);
 export default Admin;

@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import bcrypt from 'bcryptjs';
 
 const DoctorSchema= new mongoose.Schema({
     email:{type:String,required:true,unique:true},
@@ -45,4 +46,15 @@ const DoctorSchema= new mongoose.Schema({
        
     
 });
+
+DoctorSchema.methods.matchPassword = async function (enteredPassword) {
+    return await bcrypt.compare(enteredPassword, this.password);
+  };
+  DoctorSchema.pre('save', function (next) {
+    this.id = this._id; // Set id field to the document's _id
+    next();
+});
+
+  
 export default mongoose.model("Doctor",DoctorSchema);
+

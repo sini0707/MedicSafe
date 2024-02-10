@@ -1,9 +1,10 @@
 import jwt from 'jsonwebtoken';
 import asyncHandler from 'express-async-handler';
 import User from '../models/userModel.js';
+import Admin from '../models/adminModel.js';
 
 const protect = asyncHandler(async (req, res, next) => {
-  console.log(req.cookies)
+  console.log(req.cookies,'cookkkies')
   let token;
   token = req.cookies.jwt;
 

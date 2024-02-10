@@ -1,11 +1,9 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom';
 import signupImg from '../../assets/images/signup.gif'
-// import avatar from '../../assets/images/doctor-img01.png'
 import {Link} from "react-router-dom"
 import uploadImageCloudinary from '../../../../backend/utils/uploadCloudinary';
-
 import {toast} from 'react-toastify'
-// import {HashLoader} from 'react-spinners/HashLoader'
 import { baseURL } from '../../../../backend/config/db'
 const Signup = () => {
 
@@ -18,12 +16,11 @@ const Signup = () => {
     password:"",
     photo:"selectedFile",
     gender:"",
-    role:"patient"    
+    role:"patient",
+    blood:"",   
   });
-console.log(baseURL,'baseurl');
-  console.log(formData,"formData");
 
-//  const navigate=useNavigate()
+  const navigate=useNavigate()
 
   const handleInputChange=(e)=>{
     setFormData({...formData,[e.target.name]:e.target.value})
@@ -52,16 +49,17 @@ console.log(baseURL,'baseurl');
            // Convert the data to JSON
       });
 
-      console.log(res,"resssss");
   
       if (!res.ok) {
         const { message } = await res.json();
         throw new Error(message);
       }
+      const { email } = formData;
   
       setLoading(false);
       toast.success('Registration successful');
-      // navigate('/login');
+       navigate('/otpVerify', { state: { email } });
+      
     } catch (err) {
       console.log(err)
       toast.error(err.message);

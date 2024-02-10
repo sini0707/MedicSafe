@@ -1,8 +1,13 @@
 import express from 'express';
+
 import {
   login,
+  forgotEmailCheck,
+  forgotOtpVerify,
   register,
-  // logoutUser,
+  otpVerify,
+   resetPassword,
+
   getUserProfile,
   getMyAppointments,
   updatedUser,
@@ -12,14 +17,18 @@ import {
   // updateUserProfile,
 } from '../Controllers/userController.js';
 import { protect } from '../middleware/authMiddleware.js';
-// import { getAllReviews,createReview } from '../Controllers/reviewController.js';
 const router = express.Router();
 
 router.post('/register', register);
+router.post('/otpverify',otpVerify);
 router.post('/login',login);
-// router.post('/logout', logoutUser);
+router.post('/forgot-email-check',forgotEmailCheck);
+router.post('/forget-otp-verify',forgotOtpVerify);
+ router.post('/reset-password',resetPassword)
+
+
+
 router.get('/profile/me',protect,getUserProfile);
-// router.route("/").get(getAllReviews).post(authenticate,createReview);
 router.get("appointments/my-appointments",getMyAppointments)
 router.get("/:id",getSingleUser);
 router.get("/",getAllUser);
