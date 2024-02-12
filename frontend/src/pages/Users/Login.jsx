@@ -62,7 +62,7 @@ const Login = () => {
         },
       });
 
-       dispatch(setCredentials(data))
+      //  dispatch(setCredentials(data))
   
       console.log(result, "login data");
   

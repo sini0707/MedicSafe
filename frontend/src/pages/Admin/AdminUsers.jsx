@@ -1,10 +1,14 @@
 import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { baseURL } from '../../../../backend/config/db';
+import { useNavigate } from 'react-router-dom';
 
+import { useDispatch } from 'react-redux';
+import { authContext } from '../../context/AuthContext';
 const AdminUsers = () => {
   const [users, setUsers] = useState([]);
   console.log(users,"userState")
+  const navigate=useNavigate(authContext)
 
   const fetchUserData = async () => {
     try {
@@ -12,7 +16,7 @@ const AdminUsers = () => {
         method: "GET"
       });
       const result = await res.json();
-      console.log(result);
+
       setUsers(result.userData);
     } catch (error) {
       console.error('Error fetching user data:', error);
@@ -20,16 +24,47 @@ const AdminUsers = () => {
     }
   };
 
-  const handleBlock = async(userId)=>{
-    let res = await fetch(`${baseURL}/block-user/${userId}`,{
-      method:"PUT"
-    })
-    if(res){
-      toast.success("Updated Successfully")
-    }else{
-      toast.error("Failed to Update")
+  // const handleBlock = async(userId)=>{
+  //   let res = await fetch(`${baseURL}/block-user/${userId}`,{
+  //     method:"PUT"
+  //   })
+  //   if(res){
+  //     toast.success("Updated Successfully")
+  //   }else{
+  //     toast.error("Failed to Update")
+  //   }
+  // }
+  const dispatch=useDispatch();
+
+
+  const handleBlock = async (userId) => {
+    try {
+      const res = await fetch(`${baseURL}/admin/block-user/${userId}`, {
+        method: "PUT"
+      });
+      console.log("Response received:", res); 
+      if (res.ok) {
+        const updatedUser = await res.json();
+        console.log("Updated user:", updatedUser); 
+        toast.success("User blocked successfully");
+        
+        if (updatedUser.blocked) {
+         localStorage.removeItem("user")
+         localStorage.removeItem("token")
+         localStorage.removeItem("role")
+
+          toast.info("You have been blocked. Please login again.");
+        }
+      } else {
+        toast.error("Failed to update");
+      }
+    } catch (error) {
+      console.error("Error blocking user:", error);
+      toast.error("Failed to block user");
     }
-  }
+  };
+  
+
 
 
   useEffect(() => {

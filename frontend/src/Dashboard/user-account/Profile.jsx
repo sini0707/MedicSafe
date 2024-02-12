@@ -17,9 +17,15 @@ const Profile = (user) => {
     name:'',
     email:'',
     password:"",
-    photo:"null",
-    gender:"",
+    confirmpassword:"",
+    mobile:"",
+    age:"",
     bloodType:"",  
+    photo:"null",
+    emerPerson:"",
+    emerNumber:"",
+    gender:"",
+    
   });
 console.log(baseURL,'baseurl');
   console.log(formData,"formData");
@@ -92,7 +98,32 @@ console.log(baseURL,'baseurl');
             placeholder:text-textColor  cursor-pointer required"/>
           </div>
           <div className="mb-5">
+            <input type="confirmpassword" placeholder="confirmpassword" name="confirmpassword" value={formData.confirmpassword} onChange={(e)=>handleInputChange(e)} 
+            className="w-full pr-4 py-3 border-b border-solid border-[#0066ff61] focus:outline-none focus:border-b-primaryColor text-[16px] leading-7 text-headingColor
+            placeholder:text-textColor  cursor-pointer required"/>
+          </div>
+          <div className="mb-5">
+            <input type="number" placeholder="your mobile" name="contact" value={formData.mobile} onChange={(e)=>handleInputChange(e)} 
+            className="w-full pr-4 py-3 border-b border-solid border-[#0066ff61] focus:outline-none focus:border-b-primaryColor text-[16px] leading-7 text-headingColor
+            placeholder:text-textColor  cursor-pointer required"/>
+          </div>
+          <div className="mb-5">
+            <input type="numberd" placeholder="age" name="age" value={formData.age} onChange={(e)=>handleInputChange(e)} 
+            className="w-full pr-4 py-3 border-b border-solid border-[#0066ff61] focus:outline-none focus:border-b-primaryColor text-[16px] leading-7 text-headingColor
+            placeholder:text-textColor  cursor-pointer required"/>
+          </div>
+          <div className="mb-5">
             <input type="text" placeholder="Blood Type" name="bloodType" value={formData.bloodType} onChange={(e)=>handleInputChange(e)} 
+            className="w-full pr-4 py-3 border-b border-solid border-[#0066ff61] focus:outline-none focus:border-b-primaryColor text-[16px] leading-7 text-headingColor
+            placeholder:text-textColor  cursor-pointer required"/>
+          </div>
+          <div className="mb-5">
+            <input type="text" placeholder="emergency person" name="emergency" value={formData.emerPerson} onChange={(e)=>handleInputChange(e)} 
+            className="w-full pr-4 py-3 border-b border-solid border-[#0066ff61] focus:outline-none focus:border-b-primaryColor text-[16px] leading-7 text-headingColor
+            placeholder:text-textColor  cursor-pointer required"/>
+          </div>
+          <div className="mb-5">
+            <input type="number" placeholder="emergency contact" name="mobile" value={formData.emerNumber} onChange={(e)=>handleInputChange(e)} 
             className="w-full pr-4 py-3 border-b border-solid border-[#0066ff61] focus:outline-none focus:border-b-primaryColor text-[16px] leading-7 text-headingColor
             placeholder:text-textColor  cursor-pointer required"/>
           </div>

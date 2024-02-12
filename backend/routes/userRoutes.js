@@ -7,13 +7,13 @@ import {
   register,
   otpVerify,
    resetPassword,
-
   getUserProfile,
   getMyAppointments,
   updatedUser,
   deleteUser,
   getAllUser,
   getSingleUser,
+  logoutUser
   // updateUserProfile,
 } from '../Controllers/userController.js';
 import { protect } from '../middleware/authMiddleware.js';
@@ -25,6 +25,7 @@ router.post('/login',login);
 router.post('/forgot-email-check',forgotEmailCheck);
 router.post('/forget-otp-verify',forgotOtpVerify);
  router.post('/reset-password',resetPassword)
+ router.post('/logout',logoutUser)
 
 
 

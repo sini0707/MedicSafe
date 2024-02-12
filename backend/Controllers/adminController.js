@@ -14,7 +14,7 @@ const adminLogin = asyncHandler(async (req, res) => {
 
   try {
     console.log("Received email:", email);
-// const admin = await Admin.findOne({ email: { $eq: email } });
+
 const admin = await Admin.findOne({ email: email.trim() });
 
 console.log("Found admin:", admin);
@@ -41,7 +41,7 @@ console.log(password,'password');
       throw new Error("Invalid email or password");
     }
   } catch (error) {
-    // Handle any other errors here
+  
     res.status(500).json({
       success: false,
       message: "Internal Server Error",
@@ -61,6 +61,35 @@ console.log(password,'password');
       res.status(400).json("Error in fetching")
   }
 });
+
+const blockUsers = asyncHandler(async(req, res) => {
+  try {
+    let userId = req.params.id;
+    console.log("User ID:", userId); 
+
+    let user = await User.findById(userId);
+    console.log("User found:", user); 
+
+    user.blocked = !user.blocked;
+    await user.save();
+    console.log("User updated:", user); 
+
+    if (user) {
+      res.status(201).json({
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        blocked: user.blocked
+      });
+    } else {
+      res.status(400).json({ error: "Id invalid" });
+    }
+  } catch (error) {
+    console.error("Error blocking user:", error); 
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
  
 const getDoctors = asyncHandler(async(req,res)=>{
   let doctors = await Doctor.find({},{password:0})
@@ -73,4 +102,4 @@ const getDoctors = asyncHandler(async(req,res)=>{
   }
 })
 
-export { adminLogin,getUsers,getDoctors };
+export { adminLogin,getUsers,blockUsers,getDoctors };

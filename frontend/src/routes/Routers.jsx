@@ -18,6 +18,8 @@ import ProtectedRoute  from './ProtectedRoute';
 import EmailVerify from '../pages/Users/EmailVerify.jsx';
  import ForgotVerify from '../pages/Users/ForgotVerify.jsx';
 import {ResetPassword} from '../pages/Users/ResetPassword.jsx';
+// import DoctorProfile from '../pages/Doctors/DoctorProfile.jsx';
+
 
 
   // import DoctorLogin from '../pages/Doctors/DoctorLogin.jsx';
@@ -34,6 +36,7 @@ function Routers() {
 <Route path="/otpVerify" element={<EmailVerify />}/>
  <Route path='/forgot' element={<ForgotVerify/>}/> 
  <Route path='/resetPassword' element={<ResetPassword/>}/>
+ <Route path="/logout" element={<Headers />}/>
 
 <Route path="/contact" element={<Contact/>}/>
 <Route path="/services" element={<Services/>}/>

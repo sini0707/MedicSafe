@@ -5,6 +5,9 @@ import { NavLink } from 'react-router-dom';
 import { BiMenu } from 'react-icons/bi';
 import { useRef,useContext } from 'react';
 import { authContext } from '../../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { baseURL } from '../../../../backend/config/db';
 
 
 
@@ -31,7 +34,7 @@ const Header = () => {
 
   const headerRef=useRef(null)
   const menuRef=useRef(null)
-  const {user,role,token}=useContext(authContext)
+  const {user,role,token,dispatch}=useContext(authContext)
  
 
   const handleStickyHeader=()=>{
@@ -53,6 +56,40 @@ const Header = () => {
       menuRef.current.classList.toggle('show_menu');
     }
   };
+  const navigate = useNavigate();
+  // const{ dispatch} = useDispatch(authContext);
+
+
+  const logoutHandler = async () => {
+    try {
+      const response = await fetch(`${baseURL}/users/logout`, {
+        method: 'POST', 
+        headers: {
+          'Content-Type': 'application/json',
+        },
+       
+      });
+  
+      if (!response.ok) {
+        throw new Error('Logout failed');
+      }
+  
+      await response.json(); 
+  
+      
+      dispatch({type:"LOGOUT" });
+
+    // Clearing local storage here directly for debugging
+    localStorage.removeItem('user');
+    localStorage.removeItem('token');
+    localStorage.removeItem('role');
+
+      navigate('/');
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  
   
   return (
     <header className='header flex items-center' ref={headerRef}>
@@ -106,8 +143,8 @@ const Header = () => {
   {/* <h1>{user?.name}</h1> */}
 
   <NavLink to="/login">
-    <button className='bg-primaryColor py-2 px-6 text-white font [600] h-[44px] flex items-center rounded-[50px]'>
-      Login
+    <button  onClick={logoutHandler} className='bg-primaryColor py-2 px-6 text-white font [600] h-[44px] flex items-center rounded-[50px]'>
+      Logout
     </button>
   </NavLink>
 
