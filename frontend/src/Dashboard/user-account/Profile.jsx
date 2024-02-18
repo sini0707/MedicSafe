@@ -8,7 +8,10 @@ import {toast} from 'react-toastify'
  import {HashLoader} from 'react-spinners/HashLoader'
 import { baseURL } from "../../../../backend/config/db"
 
+
 const Profile = (user) => {
+  console.log(user.user._id ,"userrrrr");
+ const  userId=user.user._id;
 
   const [selectedFile,setSelectedFile]=useState(null)
   
@@ -16,6 +19,7 @@ const Profile = (user) => {
   const [formData,setFormData]=useState({
     name:'',
     email:'',
+    
     password:"",
     confirmpassword:"",
     mobile:"",
@@ -53,25 +57,31 @@ console.log(baseURL,'baseurl');
     event.preventDefault();
     setLoading(true);
     try {
-      const res = await fetch(`${baseURL}/users/${user._id}`, {
+      const res = await fetch(`${baseURL}/users/updateUser/${userId}`, {
         method: 'post',
         headers: {
-          'Content-Type': 'application/json', // Fix here
+          'Content-Type': 'application/json',
+         
         },
         body:JSON.stringify(formData)
            // Convert the data to JSON
       });
 
       console.log(res,"resssss");
+      const responseData = await res.json(); 
   
       if (!res.ok) {
-        const { message } = await res.json();
-        throw new Error(message);
+        throw new Error(responseData.message || 'Failed to update profile');
       }
-  
-      setLoading(false);
-      toast.success('Registration successful');
-      // navigate('/login');
+      
+        const { message } = responseData;
+        toast.success(message || 'Profile successfully updated'); 
+   
+  setLoading(false);
+  toast.success(message)
+  navigate("/users/profile/me")
+     
+    
     } catch (err) {
       console.log(err)
       toast.error(err.message);
@@ -80,52 +90,52 @@ console.log(baseURL,'baseurl');
   };
   
   return (
-    <div>
+    <div className='mt-10'>
      <form onSubmit={submitHandler}>
           <div className="mb-5">
             <input type="text" placeholder="Full Name" name="name" value={formData.name} onChange={(e)=>handleInputChange(e)}
             className="w-full pr-4 py-3 border-b border-solid border-[#0066ff61] focus:outline-none focus:border-b-primaryColor text-[16px] leading-7 text-headingColor
-            placeholder:text-textColor  cursor-pointer required"/>
+            placeholder:text-textColor  cursor-pointer aria-readonly readOnly"/>
           </div>
           <div className="mb-5">
             <input type="email" placeholder="Enter your email" name="email" value={formData.email} onChange={(e)=>handleInputChange(e)}
             className="w-full pr-4 py-3 border-b border-solid border-[#0066ff61] focus:outline-none focus:border-b-primaryColor text-[16px] leading-7 text-headingColor
-            placeholder:text-textColor  cursor-pointer required"/>
+            placeholder:text-textColor  cursor-pointer"/>
           </div>
           <div className="mb-5">
             <input type="password" placeholder="password" name="password" value={formData.password} onChange={(e)=>handleInputChange(e)} 
             className="w-full pr-4 py-3 border-b border-solid border-[#0066ff61] focus:outline-none focus:border-b-primaryColor text-[16px] leading-7 text-headingColor
-            placeholder:text-textColor  cursor-pointer required"/>
+            placeholder:text-textColor  cursor-pointer "/>
           </div>
           <div className="mb-5">
-            <input type="confirmpassword" placeholder="confirmpassword" name="confirmpassword" value={formData.confirmpassword} onChange={(e)=>handleInputChange(e)} 
+            <input type="password" placeholder="confirmpassword" name="confirmpassword" value={formData.confirmpassword} onChange={(e)=>handleInputChange(e)} 
             className="w-full pr-4 py-3 border-b border-solid border-[#0066ff61] focus:outline-none focus:border-b-primaryColor text-[16px] leading-7 text-headingColor
-            placeholder:text-textColor  cursor-pointer required"/>
+            placeholder:text-textColor  cursor-pointer "/>
           </div>
           <div className="mb-5">
-            <input type="number" placeholder="your mobile" name="contact" value={formData.mobile} onChange={(e)=>handleInputChange(e)} 
+            <input type="number" placeholder="your mobile" name="mobile" value={formData.mobile} onChange={(e)=>handleInputChange(e)} 
             className="w-full pr-4 py-3 border-b border-solid border-[#0066ff61] focus:outline-none focus:border-b-primaryColor text-[16px] leading-7 text-headingColor
-            placeholder:text-textColor  cursor-pointer required"/>
+            placeholder:text-textColor  cursor-pointer "/>
           </div>
           <div className="mb-5">
-            <input type="numberd" placeholder="age" name="age" value={formData.age} onChange={(e)=>handleInputChange(e)} 
+            <input type="number" placeholder="age" name="age" value={formData.age} onChange={(e)=>handleInputChange(e)} 
             className="w-full pr-4 py-3 border-b border-solid border-[#0066ff61] focus:outline-none focus:border-b-primaryColor text-[16px] leading-7 text-headingColor
-            placeholder:text-textColor  cursor-pointer required"/>
+            placeholder:text-textColor  cursor-pointer "/>
           </div>
           <div className="mb-5">
             <input type="text" placeholder="Blood Type" name="bloodType" value={formData.bloodType} onChange={(e)=>handleInputChange(e)} 
             className="w-full pr-4 py-3 border-b border-solid border-[#0066ff61] focus:outline-none focus:border-b-primaryColor text-[16px] leading-7 text-headingColor
-            placeholder:text-textColor  cursor-pointer required"/>
+            placeholder:text-textColor  cursor-pointer "/>
           </div>
           <div className="mb-5">
             <input type="text" placeholder="emergency person" name="emergency" value={formData.emerPerson} onChange={(e)=>handleInputChange(e)} 
             className="w-full pr-4 py-3 border-b border-solid border-[#0066ff61] focus:outline-none focus:border-b-primaryColor text-[16px] leading-7 text-headingColor
-            placeholder:text-textColor  cursor-pointer required"/>
+            placeholder:text-textColor  cursor-pointer "/>
           </div>
           <div className="mb-5">
             <input type="number" placeholder="emergency contact" name="mobile" value={formData.emerNumber} onChange={(e)=>handleInputChange(e)} 
             className="w-full pr-4 py-3 border-b border-solid border-[#0066ff61] focus:outline-none focus:border-b-primaryColor text-[16px] leading-7 text-headingColor
-            placeholder:text-textColor  cursor-pointer required"/>
+            placeholder:text-textColor  cursor-pointer "/>
           </div>
           <div className='mb-5 flex items-center justify-between'>
           
@@ -142,7 +152,7 @@ console.log(baseURL,'baseurl');
                </label>
           </div>
           <div className='mb-5 flex items-center gap-3'>
-            {formData.photo&& (
+            {formData.photo && (
             <figure className='w-[60px] h-[60px] rounded-full border-2 border-solid border-primaryColor flex items-center justify-center'>
               <img
               src={formData.photo} alt="" className='w-full rounded-full'/>
@@ -153,7 +163,8 @@ console.log(baseURL,'baseurl');
               className='absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer'/>
               <label htmlFor='customFile'
               className='absolute top-0 left-0 w-full h-full flex items-center px-[0.75rem] py-[0.375rem] text-[15px] leading-6 overflow-hidden bg-[#0066ff46] text-headingColor font semibold rounded-lg truncate cursor-pointer'
-              >Upload Photo
+              >
+                {selectedFile ? selectedFile.name :"Upload Photo"}
                 </label>
                 </div>
 

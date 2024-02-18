@@ -35,9 +35,6 @@ app.use(cors({
   }));
 app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/doctors', doctorRoute);
-
-
-
 app.use("/api/v1/admin",adminRoutes);
 
 

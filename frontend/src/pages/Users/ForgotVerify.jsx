@@ -1,26 +1,21 @@
- import { useState } from 'react';
+ import { useState,useEffect } from 'react';
  import { useNavigate } from 'react-router-dom';
-
  import { baseURL } from '../../../../backend/config/db';
  import { useDispatch } from 'react-redux';
-// import { useNavigate, useLocation } from 'react-router-dom';
-// import { setCredentials } from '../../../src/slices/authSlice';
+
 
 const ForgotVerify = () => {
     const [email, setEmail] = useState('');
-    console.log(email,"email")
+    
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    // const location = useLocation();
+    
     const locationEmail = location.state?.email || '';
     useState(() => {
         setEmail(locationEmail);
     }, [locationEmail]);
    
-
-    
-
-    const handleInputChange = (e) => {
+const handleInputChange = (e) => {
         const enteredEmail = e.target.value; 
         console.log(enteredEmail); 
         setEmail(enteredEmail); 
@@ -42,16 +37,49 @@ const ForgotVerify = () => {
             if (response.status !== 200) {
                 throw new Error('Failed to verify email');
             }
-            // Handle success response
+           
             console.log('Email verification successful');
-            // dispatch(setCredentials(response.data));
+            
             console.log("Credentials set:", response.data);
              navigate(`/otpVerify?email=${email}&forgot-password=${true}`, { state: { email } });
         } catch (err) {
             console.error('Error:', err.message);
-            // Handle error
+          
         }
     };
+    // const resendOTP = async () => {
+    //     try {
+    //         const response = await fetch(`${baseURL}/resend-otp`, {
+    //             method: "post",
+    //             headers: {
+    //                 'Content-Type': 'application/json'
+    //             },
+    //             body: JSON.stringify({ email }),
+    //         });
+    
+    //         if (response.status !== 200) {
+    //             throw new Error('Failed to resend OTP');
+    //         }
+    
+    //         const responseData = await response.json();
+    //         console.log('Response Data:', responseData); // Log the response data
+    //         console.log('OTP resent successfully');
+    //         setResendCooldown(60); // Reset cooldown timer
+    //         setResendCount(prevCount => prevCount + 1);
+    //     } catch (err) {
+    //         console.error('Error:', err.message);
+    //     }
+    // };
+    
+    // useEffect(() => {
+    //     let intervalId;
+    //     if (resendCooldown > 0) {
+    //         intervalId = setInterval(() => {
+    //             setResendCooldown(prevTime => prevTime - 1);
+    //         }, 1000);
+    //     }
+    //     return () => clearInterval(intervalId);
+    // }, [resendCooldown]);
 
 
     return (
@@ -95,6 +123,26 @@ const ForgotVerify = () => {
                                 >
                                     Reset password
                                 </button>
+{/* 
+                                {resendCooldown === 0 && resendCount < 3 && (
+                                    <button
+                                        type="button"
+                                        className="py-3 px-4 inline-flex justify-center items-center gap-2 rounded-md border border-transparent font-semibold bg-blue-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all text-sm dark:focus:ring-offset-gray-800"
+                                        onClick={resendOTP}
+                                    >
+                                        Resend OTP
+                                    </button>
+                                )}
+                                {resendCooldown > 0 && (
+                                    <span className="text-sm text-gray-500">
+                                        Resend cooldown: {resendCooldown} seconds
+                                    </span>
+                                )}
+                                {resendCount >= 3 && (
+                                    <span className="text-sm text-red-600">
+                                        Maximum resend attempts reached
+                                    </span>
+                                )} */}
                             </div>
                         </form>
                     </div>

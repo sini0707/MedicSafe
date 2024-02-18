@@ -15,14 +15,11 @@ const adminLogin = () => {
      const [loading,setLoading]=useState(false)
     const navigate=useNavigate()
     const{dispatch}=useContext(authContext)
-  
-  
-    const handleInputChange=e=>{
-        console.log('hhhhh');
-      setFormData({...formData,[e.target.name]:e.target.value})
+     const handleInputChange=e=>{
+     setFormData({...formData,[e.target.name]:e.target.value})
     }
   
-    const submitHandler = async (event) => {
+  const submitHandler = async (event) => {
       event.preventDefault();
       setLoading(true);
     

@@ -1,12 +1,8 @@
 import {useEffect,useState} from 'react'
- import { baseURL} from '../../../backend/config/db'
 
-
+import {token} from "../../config.js"
 
 const useFetchData = (url) => {
-
-    const token=localStorage.getItem('token')
-    console.log(token,"tokemmmmmmmmmmmm")
     const [data,setData]=useState([])
     const [loading,setLoading]=useState(false)
     const [error,setError]=useState(null)

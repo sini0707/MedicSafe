@@ -17,13 +17,15 @@ const Signup = () => {
     photo:"selectedFile",
     gender:"",
     role:"patient",
-    blood:"",   
+    confirmpass:""   
   });
+ 
 
   const navigate=useNavigate()
 
   const handleInputChange=(e)=>{
     setFormData({...formData,[e.target.name]:e.target.value})
+    console.log(formData);
   };
   const handleFileInputChange=async (event)=>{
     const file=event.target.files[0];
@@ -32,6 +34,7 @@ const Signup = () => {
     setPreviewURL(data.url);
     setSelectedFile(data.url);
     setFormData({...formData,photo:data.url});
+    console.log(formData);
 
     // later we will use cloudinary to upload images
     
@@ -39,35 +42,44 @@ const Signup = () => {
   const submitHandler = async (event) => {
     event.preventDefault();
     setLoading(true);
-    try {
-      const res = await fetch(`${baseURL}/users/register`, {
-        method: 'post',
-        headers: {
-          'Content-Type': 'application/json', // Fix here
-        },
-        body:JSON.stringify(formData)
-           // Convert the data to JSON
-      });
-
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{5,}$/;
+    const password = formData.password; // Assuming formData contains the password
+    const confirmpass = formData.confirmpass; // Assuming formData contains the confirmation password
   
-      if (!res.ok) {
-        const { message } = await res.json();
-        throw new Error(message);
+    if (passwordRegex.test(password)) {
+      if (password !== confirmpass) {
+        toast.error('Passwords do not match!!');
+      } else {
+        try {
+          const res = await fetch(`${baseURL}/users/register`, {
+            method: 'post',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData)
+          });
+  
+          if (!res.ok) {
+            const { message } = await res.json();
+            throw new Error(message);
+          }
+          const { email } = formData;
+  
+          setLoading(false);
+          toast.success('Registration successful');
+          navigate('/otpVerify', { state: { email } });
+  
+        } catch (err) {
+          console.log(err);
+          toast.error(err.message);
+          setLoading(false);
+        }
       }
-      const { email } = formData;
-  
-      setLoading(false);
-      toast.success('Registration successful');
-       navigate('/otpVerify', { state: { email } });
-      
-    } catch (err) {
-      console.log(err)
-      toast.error(err.message);
-      setLoading(false);
+    } else {
+      toast.error('Password must contain 5 characters with at least one letter, one number, and one special character.');
     }
   };
   
-    
 
   
   return (
@@ -101,6 +113,11 @@ const Signup = () => {
           </div>
           <div className="mb-5">
             <input type="password" placeholder="password" name="password" value={formData.password} onChange={(e)=>handleInputChange(e)} 
+            className="w-full pr-4 py-3 border-b border-solid border-[#0066ff61] focus:outline-none focus:border-b-primaryColor text-[16px] leading-7 text-headingColor
+            placeholder:text-textColor  cursor-pointer required"/>
+          </div>
+          <div className="mb-5">
+            <input type="password" placeholder="confirmpass" name="confirmpass" value={formData.confirmpass} onChange={(e)=>handleInputChange(e)} 
             className="w-full pr-4 py-3 border-b border-solid border-[#0066ff61] focus:outline-none focus:border-b-primaryColor text-[16px] leading-7 text-headingColor
             placeholder:text-textColor  cursor-pointer required"/>
           </div>

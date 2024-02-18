@@ -11,6 +11,14 @@
                     body:data
                 })
             }),
+            resendOTP: builder.mutation({
+                query: ({ email }) => ({
+                  url: `${baseURL}/users/resend-email-check`,
+                  method: 'POST',
+                  body: { email }
+                })
+              }),
+
 
         })
     })
@@ -18,4 +26,5 @@
 
     export const { 
     useVerifyMutation,
+    useResendOTPMutation,
     }= usersApiSlice;

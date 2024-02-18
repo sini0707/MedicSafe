@@ -4,7 +4,7 @@ import Services from '../pages/Users/Services';
 import Login from '../pages/Users/Login';
 import Signup from '../pages/Users/Signup';
 import Contact from '../pages/Users/Contact';
-import Doctors from '../pages/Doctors/Doctors';
+import Doctors from '../pages/Doctors/DoctorsHome.jsx';
 import DoctorDetails from '../pages/Doctors/DoctorDetails';
 import MyAccount from '../Dashboard/user-account/MyAccount';
 import {Routes,Route} from 'react-router-dom';
@@ -16,14 +16,18 @@ import ProtectedRoute  from './ProtectedRoute';
  import AdminDoctors from '../pages/Admin/AdminDoctors.jsx';
  import AdminBookings from '../pages/Admin/AdminBookings.jsx';
 import EmailVerify from '../pages/Users/EmailVerify.jsx';
- import ForgotVerify from '../pages/Users/ForgotVerify.jsx';
+import ForgotVerify from '../pages/Users/ForgotVerify.jsx';
 import {ResetPassword} from '../pages/Users/ResetPassword.jsx';
-// import DoctorProfile from '../pages/Doctors/DoctorProfile.jsx';
 
 
 
-  // import DoctorLogin from '../pages/Doctors/DoctorLogin.jsx';
-// import Doctors from '../pages/Doctors/Doctors';
+import DoctorRegister from '../pages/Doctors/DoctorRegister.jsx';
+import DoctorOtpVerify from '../pages/Doctors/DoctorOtpVerify.jsx';
+import DoctorLogin from '../pages/Doctors/DoctorLogin.jsx';
+import DoctorsHome from '../pages/Doctors/DoctorsHome.jsx';
+import DoctorProfile from '../pages/Doctors/DoctorProfile.jsx';
+
+
 
 function Routers() {
   return <Routes>
@@ -36,17 +40,22 @@ function Routers() {
 <Route path="/otpVerify" element={<EmailVerify />}/>
  <Route path='/forgot' element={<ForgotVerify/>}/> 
  <Route path='/resetPassword' element={<ResetPassword/>}/>
- <Route path="/logout" element={<Headers />}/>
+ {/* <Route path="/logout" element={<Headers />}/> */}
 
 <Route path="/contact" element={<Contact/>}/>
 <Route path="/services" element={<Services/>}/>
 <Route path="/users/profile/me" element={<ProtectedRoute allowedRoles={['patient']}><MyAccount/></ProtectedRoute>} />
+
+
+
 <Route path="/doctors/profile/me" element={<ProtectedRoute allowedRoles={['doctor']}><Dashboard/></ProtectedRoute>} />
 
 
-{/* <Route path='/doctors' element={<DoctorLogin/>}/> */}
-{/* <Route path='/doctors/home' element={<Doctors/>}/> */}
-
+<Route path='/doctors/signup' element={<DoctorRegister/>}/>
+<Route path='/doctors/otp' element={<DoctorOtpVerify/>}/>
+<Route path='/doctors/login' element={<DoctorLogin/>}/>
+<Route path='/doctors/profile' element={<DoctorProfile/>}/> 
+<Route path='/doctors/home' element={<DoctorsHome/>}/>
 
 
 

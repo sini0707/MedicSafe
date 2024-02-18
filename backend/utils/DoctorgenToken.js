@@ -1,18 +1,25 @@
-import jwt from 'jsonwebtoken';
+import jwt from "jsonwebtoken";
 
-const generateDoctorToken = (res, userId) => {
-  const token = jwt.sign({ userId }, process.env.JWT_SECRET, {
-    expiresIn: '30d',
+const DoctorgenToken = (res, doctorId) => {
+  const token = jwt.sign({ doctorId }, process.env.DOCTOR_JWT_SECRET, {
+    expiresIn: "30d",
   });
-console.log(token,'generatetoenpage');
-console.log(userId,'userid');
-  res.cookie('Doctorjwt', token, {
+
+  console.log("Generated Token:", token); // Log the generated token
+
+  // Log the process.env.NODE_ENV to check its value
+  console.log("NODE_ENV value:", process.env.NODE_ENV);
+
+  res.cookie("docjwt", token, {
     httpOnly: true,
-    secure: process.env.NODE_ENV !== 'development', // Use secure cookies in production
-    sameSite: 'strict', // Prevent CSRF attacks
-    maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+    secure: process.env.NODE_ENV !== "development", 
+    sameSite: "strict", 
+    maxAge: 30 * 24 * 60 * 60 * 1000, 
   });
+
+  console.log("Cookie Set:", res.getHeaders()['set-cookie']); // Log the set-cookie header
+
   return token;
 };
 
-export default generateDoctorToken;
+export default DoctorgenToken;

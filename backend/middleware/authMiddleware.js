@@ -4,7 +4,7 @@ import User from '../models/userModel.js';
 import Admin from '../models/adminModel.js';
 
 const protect = asyncHandler(async (req, res, next) => {
-  console.log(req.cookies,'cookkkies')
+ 
   let token;
   token = req.cookies.jwt;
 
@@ -12,8 +12,9 @@ const protect = asyncHandler(async (req, res, next) => {
   if (token) {
     try {
        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+       console.log(decoded,"token+jwt")
       
-      console.log('Decoded Token Payload:', decoded);
+      
       req.userId = decoded.userId; // Assuming userId is stored in the token
       
       req.user = await User.findById(decoded.userId).select('-password');

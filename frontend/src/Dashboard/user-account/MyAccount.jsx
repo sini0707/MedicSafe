@@ -1,31 +1,32 @@
-import { useContext, useState } from "react";
-// import userImg from "../../assets/images/doctor-img01.png";
-import { authContext } from "../../context/AuthContext";
+import {  useState } from "react";
 import MyBookings from "./MyBookings";
 import Profile from "./Profile";
-
+import { useDispatch } from "react-redux";
 import useGetProfile from "../../hooks/useFetchData";
-
 import { baseURL } from "../../../../backend/config/db";
 import Loading from "../../components/Loader/Loading";
 import Error from "../../components/Error/Error";
+import {logout} from "../../slices/authSlice";
 
 const MyAccount = () => {
-  const { dispatch } = useContext(authContext);
+
+
+const dispatch = useDispatch();
   const [tab, setTab] = useState("bookings");
+  
 
   const {
     data: userData,
     loading,
     error,
   } = useGetProfile(`${baseURL}/users/profile/me`);
-
+  
   console.log("Loading:", loading);
   console.log("Error:", error);
   console.log("UserData:", userData);
 
   const handleLogout = () => {
-    dispatch({ type: "LOGOUT" });
+    dispatch(logout());
   };
   return (
     <section>
@@ -66,9 +67,9 @@ const MyAccount = () => {
                 >
                   Logout
                 </button>
-                <button className="w-full bg-red-600 mt-4 p-3 text-[16px] leading-7 rounded-md text-white">
-                  Delete Account
-                </button>
+                {/* <button className="w-full bg-red-600 mt-4 p-3 text-[16px] leading-7 rounded-md text-white">
+                  Change Password
+                </button> */}
               </div>
             </div>
             <div className="md:col-span-2 md:px-[30px]">

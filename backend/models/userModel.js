@@ -18,6 +18,10 @@ const userSchema = mongoose.Schema(
     password: {
       type: String,
     },
+    photo: {
+      type: String ,
+    },
+    
     otp:{
       type:Number
     },

@@ -1,10 +1,13 @@
-import { useState,useContext } from "react"
+import { useState} from "react"
 import { Link, useNavigate } from 'react-router-dom';
 import { baseURL } from "../../../../backend/config/db";
 import {toast} from "react-toastify";
-import {authContext} from "../../context/AuthContext.jsx";
+// import {authContext} from "../../context/AuthContext.jsx";
 import  HashLoader from "react-spinners/HashLoader.js";
 import { setCredentials } from "../../slices/authSlice.js";
+import { useDispatch } from 'react-redux'; 
+
+
 
 
 
@@ -17,7 +20,8 @@ const Login = () => {
   const [loading,setLoading]=useState(false)
   const [role, setRole] = useState('patient');
   const navigate=useNavigate()
-  const{dispatch}=useContext(authContext)
+
+ const dispatch = useDispatch();
 
 
   const handleInputChange=e=>{
@@ -42,30 +46,29 @@ const Login = () => {
       });
   console.log(res,'ressssss');
       const result = await res.json();
-  console.log(result,'result');
       if (!res.ok) {
         throw new Error(result.message);
       }
+
+
+      const { data } = result;
+
   
-      const { data ,token} = result;
+
+
+
+      console.log(data ,"responseeeee");
 
       if (!res.ok) {
         throw new Error("User data not found in the server response.");
       }
   
-      dispatch({
-        type: "LOGIN_SUCCESS",
-        payload: {
-          user: data,
-          token: token || null, // Ensure that token is not undefined
-          role: data.role || null,   // Ensure that role is not undefined
-        },
-      });
+      
 
-      //  dispatch(setCredentials(data))
+       dispatch(setCredentials(data))
   
       console.log(result, "login data");
-  
+     
       setLoading(false);
       toast.success(result.message);
       if (role === 'patient') {
@@ -105,15 +108,15 @@ const Login = () => {
           </div>
 
           <div className="mb-5">
-            <label>
-              <input type="radio" value="patient" checked={role === 'patient'} onChange={handleRoleChange} />
+            {/* <label>
+              <input type="" value="patient" checked={role === 'patient'} onChange={handleRoleChange} />
               Patient
             </label>
-            <span style={{ marginRight: '20px' }}></span> 
-            <label>
+            <span style={{ marginRight: '20px' }}></span>  */}
+            {/* <label>
               <input type="radio" value="doctor" checked={role === 'doctor'} onChange={handleRoleChange} />
               Doctor
-            </label>
+            </label> */}
           </div>
           <div className="mt-7">
             <button type="submit"className="w-full bg-primaryColor  text-white text-[18px] leading-[30px] rounded-lg px-4 py-3">
