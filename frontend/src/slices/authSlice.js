@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import Cookies from "js-cookie";
 
 const initialState = {
   userInfo: localStorage.getItem("userInfo")
@@ -22,6 +23,7 @@ const authSlice = createSlice({
       localStorage.setItem("doctorInfo", JSON.stringify(action.payload));
     },
     logout: (state, action) => {
+    
       state.userInfo = null;
       localStorage.removeItem("userInfo");
     },

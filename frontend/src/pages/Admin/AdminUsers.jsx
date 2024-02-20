@@ -8,7 +8,7 @@ import { authContext } from '../../context/AuthContext';
 const AdminUsers = () => {
   const [users, setUsers] = useState([]);
   console.log(users,"userState")
-  const navigate=useNavigate(authContext)
+  const navigate=useNavigate();
 
   const fetchUserData = async () => {
     try {
@@ -47,29 +47,60 @@ const AdminUsers = () => {
         const updatedUser = await res.json();
         console.log("Updated user:", updatedUser); 
         toast.success("User blocked successfully");
+        setUsers(users.map(user => {
+          if (user._id === userId) {
+            return { ...user, blocked: true };
+          }
+          return user;
+        }));
         
         if (updatedUser.blocked) {
          localStorage.removeItem("user")
          localStorage.removeItem("token")
          localStorage.removeItem("role")
 
-          toast.info("You have been blocked. Please login again.");
+        
         }
       } else {
-        toast.error("Failed to update");
+        toast.error("Failed to block user");
       }
     } catch (error) {
       console.error("Error blocking user:", error);
       toast.error("Failed to block user");
     }
   };
+  const handleUnblock = async (userId) => {
+    try {
+      const res = await fetch(`${baseURL}/admin/unblock-user/${userId}`, {
+        method: "PUT"
+      });
+      if (res.ok) {
+        toast.success("User unblocked successfully");
+        // Update user status in the UI or refetch user data
+        
+        setUsers(users.map(user => {
+          if (user._id === userId) {
+            return { ...user, blocked: false };
+          }
+          return user;
+        }));
+      
+      } else {
+        toast.error("Failed to unblock user");
+      }
+    } catch (error) {
+      console.error("Error unblocking user:", error);
+      toast.error("Failed to unblock user");
+    }
+  };
+  
   
 
 
 
   useEffect(() => {
     fetchUserData();
-  }, []);
+  },[]);
 
   return (
     <section className='container'>
@@ -112,7 +143,7 @@ const AdminUsers = () => {
                 {
                         (user.blocked)?(
                           <td className="px-6 py-4">
-                            <button onClick={()=>{handleBlock(user._id)}} className="bg-yellow-100 hover:bg-yellow-500 text-yellow-700 font-semibold hover:text-white py-2 px-4 border border-yellow-500 hover:border-transparent rounded">
+                            <button onClick={()=>{handleUnblock (user._id)}} className="bg-yellow-100 hover:bg-yellow-500 text-yellow-700 font-semibold hover:text-white py-2 px-4 border border-yellow-500 hover:border-transparent rounded">
                               Unblock
                             </button>
                           </td>

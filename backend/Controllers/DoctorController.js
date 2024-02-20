@@ -108,8 +108,7 @@ export const register = async (req, res) => {
 export const DoctorLogin = async (req, res) => {
   try {
     const { email, password } = req.body;
-    console.log("Received email:", email);
-    console.log("Received password:", password);
+    
 if (!email || !password) {
       console.log("Email or password missing");
       return res
@@ -120,12 +119,11 @@ if (!email || !password) {
       "Email and password are present. Proceeding to find the doctor"
     );
     const doctor = await Doctor.findOne({ email });
-    console.log(doctor, "doctor found");
-if (doctor && (await doctor.matchPassword(password))) {
-      console.log("Doctor found and password matched. Generating token...");
-      console.log(doctor._id, "doctorid");
+   
+if (doctor &&  doctor.approved &&  (await doctor.matchPassword(password))) {
+     
       let token = generateDoctorToken(res, doctor._id);
-      console.log(token)
+    
       return res.status(200).json({
         _id: doctor._id,
         name: doctor.name,
@@ -134,7 +132,7 @@ if (doctor && (await doctor.matchPassword(password))) {
       });
     } else {
       console.log("Doctor not found or password not matched");
-      return res.status(401).json({ message: "Invalid email or password" });
+      return res.status(401).json({ message: "Doctor Not approved By Admin" });
     }
   } catch (error) {
     console.error(error);

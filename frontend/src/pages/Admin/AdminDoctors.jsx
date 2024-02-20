@@ -7,13 +7,15 @@ const AdminDoctors = () => {
   const [doctors, setDoctors] = useState([]);
   console.log(doctors, "userState");
 
-  const fetchUserData = async () => {
+  const fetchDoctorsData = async () => {
     try {
+      console.log("Fetching doctor data...");
       const res = await fetch(`${baseURL}/admin/doctordata`, {
         method: "GET",
       });
+      console.log("Response received:", res);
       const result = await res.json();
-      console.log(result);
+      console.log("Parsed result:", result);
       setDoctors(result.doctorsData);
     } catch (error) {
       console.error("Error fetching doctor data:", error);
@@ -23,39 +25,59 @@ const AdminDoctors = () => {
 
   const handleApprove = async (docId) => {
     try {
-      const res = await fetch(`${baseURL}/approve-doctor/${docId}`, {
+      console.log("Approving doctor with ID:", docId);
+      const res = await fetch(`${baseURL}/admin/approve/${docId}`, {
         method: "PUT",
       });
       if (res.ok) {
+        fetchDoctorsData();
         toast.success("Updated Successfully");
       } else {
-        toast.error("Failed to Update");
+        toast.error("Failed to Approve");
       }
     } catch (error) {
-      console.error("Error updating doctor:", error);
-      toast.error("Failed to update doctor");
+      console.error("Error approving doctor:", error);
+      toast.error("Failed to approve doctor");
     }
   };
-
-  const handleBlock = async (docId) => {
-    try {
-      const res = await fetch(`${baseURL}/block-doctor/${docId}`, {
-        method: "PUT",
-      });
-      if (res.ok) {
-        toast.success("Updated Successfully");
-      } else {
-        toast.error("Failed to Update");
-      }
-    } catch (error) {
-      console.error("Error updating doctor:", error);
-      toast.error("Failed to update doctor");
-    }
-  };
-
   useEffect(() => {
-    fetchUserData();
+    fetchDoctorsData();
   }, []);
+
+
+  const handleReject = async (docId) => {
+    try {
+      const res = await fetch(`${baseURL}/admin/reject/${docId}`, {
+        method: "PUT",
+      });
+      if (res.ok) {
+        fetchDoctorsData(); // Refresh doctor data after rejection
+        toast.success("Doctor Rejected Successfully");
+      } else {
+        toast.error("Failed to Reject Doctor");
+      }
+    } catch (error) {
+      console.error("Error rejecting doctor:", error);
+      toast.error("Failed to reject doctor");
+    }
+  };
+  // const handleBlock = async (docId) => {
+  //   try {
+  //     const res = await fetch(`${baseURL}/block-doctor/${docId}`, {
+  //       method: "PUT",
+  //     });
+  //     if (res.ok) {
+  //       toast.success("Updated Successfully");
+  //     } else {
+  //       toast.error("Failed to Update");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error updating doctor:", error);
+  //     toast.error("Failed to update doctor");
+  //   }
+  // };
+  // console.log(handleBlock);
+  
 
   return (
     <section className="container">
@@ -129,20 +151,13 @@ const AdminDoctors = () => {
                             </button>
                           </td>
                         ):(
-                          (doctor.blocked)?(
-                            <td className="px-6 py-4">
-                              <button onClick={()=>{handleBlock(doctor._id)}} className="bg-yellow-100 hover:bg-yellow-500 text-yellow-700 font-semibold hover:text-white py-2 px-4 border border-yellow-500 hover:border-transparent rounded">
-                                Unblock
-                              </button>
-                            </td>
-                          ):(
-                            <td className="px-6 py-4">
-                              <button onClick={()=>{handleBlock(doctor._id)}} className="bg-red-100 hover:bg-red-500 text-red-700 font-semibold hover:text-white py-2 px-4 border border-red-500 hover:border-transparent rounded">
-                                Block
-                              </button>
-                            </td>
-                          )
-                        )
+                          <td className="px-6 text-center py-4">
+                          <button onClick={() => { handleReject(doctor._id) }} className="bg-red-100 hover:bg-red-500 text-red-700 font-semibold hover:text-white py-2 px-4 border border-red-500 hover:border-transparent rounded">
+                         Reject
+                       </button>
+                         </td>)
+                        
+                        
                       }
                 </tr>
               ))

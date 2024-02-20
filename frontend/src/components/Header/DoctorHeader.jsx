@@ -88,7 +88,7 @@ const DoctorHeader = () => {
    
     
 
-      navigate('/');
+      navigate('/doctors/login');
     } catch (err) {
       console.log(err);
     }

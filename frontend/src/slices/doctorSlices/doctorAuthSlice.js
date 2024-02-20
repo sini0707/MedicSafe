@@ -8,7 +8,7 @@ const docaAuthSlice = createSlice({
     name:'docAuth',
     initialState,
     reducers:{
-        setCredentials:(state,action)=>{
+        setDoctorCredentials:(state,action)=>{
             state.doctorInfo = action.payload;
             localStorage.setItem('doctorInfo',JSON.stringify(action.payload))
         },
@@ -19,6 +19,6 @@ const docaAuthSlice = createSlice({
     }
 })
 
-export const { setCredentials,logout } = docaAuthSlice.actions;
+export const { setDoctorCredentials,logout } = docaAuthSlice.actions;
 
 export default docaAuthSlice.reducer;

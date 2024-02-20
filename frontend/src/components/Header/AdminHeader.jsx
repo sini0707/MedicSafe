@@ -4,8 +4,8 @@ import { NavLink } from 'react-router-dom';
 import { BiMenu } from 'react-icons/bi';
 import { authContext } from '../../context/AuthContext'; 
 import logo from '../../assets/images/logo.png'; // Import the correct path for your logo
-
-
+import { baseURL } from '../../../../backend/config/db';
+import { logout } from '../../slices/adminSlices/adminAuthSlice';
 const navlinks = [
   {
     path: '/admin/home',
@@ -83,14 +83,17 @@ const AdminHeader = () => {
           <img src={user?.photo} className="w-full rounded-full" alt=""/>
         </figure>
         <h2>Welcome  Admin </h2>
+        <button onClick={logoutHandler} className='bg-primaryColor py-2 px-6 text-white font [600] h-[44px] flex items-center rounded-[50px]'>
+                 Logout
+          </button>
       </NavLink>
     </div>
   ) : (
-    <NavLink to="/admin">
-      <button className='bg-primaryColor py-2 px-6 text-white font [600] h-[44px] flex items-center rounded-[50px]'>
-        Logout
-      </button>
-    </NavLink>
+    <NavLink to="/a">
+              <button className='bg-primaryColor py-2 px-6 text-white font [600] h-[44px] flex items-center rounded-[50px]'>
+                Login
+              </button>
+            </NavLink>
 
     
   )}

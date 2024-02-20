@@ -44,7 +44,7 @@ const login = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
 
-  if (user && !user.isBlocked && (await user.matchPassword(password))) {
+  if (user && !user.blocked && (await user.matchPassword(password))) {
     const token = generateToken(res, user._id);
 
     const { password, ...rest } = user._doc;
@@ -57,7 +57,7 @@ const login = asyncHandler(async (req, res) => {
         token: token,
       },
     });
-  } else if (user && user.isBlocked) {
+  } else if (user && user.blocked) {
     res.status(400);
     throw new Error("You have been blocked");
   } else {
@@ -65,6 +65,45 @@ const login = asyncHandler(async (req, res) => {
     throw new Error("Invalid email or password");
   }
 });
+export const Google= async (req,res,next)=>{
+  try{
+
+    const user=await User.findOne({email:req.body.email})
+    console.log(req.body.email,"userrr");
+    if(user){
+      const token = generateToken(res,user._id)
+      const {password:hashedPassword,...rest}=user._doc;
+      const expiryDate =new Date(Date.now()+3600000);
+      // res.cookie('access_token',token,{httpOnly:true,expires:expiryDate})
+      res.status(200).json({
+        success:true,
+        data:{
+          ...rest,
+          token:token
+        }
+       } )
+    
+    }else{
+      const generatedPassword=Math.random().toString(36). slice(-8)+ Math.random().toString(36).slice(-8)
+      const hashedPassword=bcrypt.hashSync(generatedPassword,10);
+      const newUser=new User({
+        username:req.body.name.split(" ").join("").toLowerCase() +Math.floor(Math.random () *10000).toString() ,
+      email:req.body.email, password:hashedPassword,
+      photo:req.body.photo});
+      await newUser.save();
+      const token=jwt.sign({id:newUser._id},process.env.JWT_SECRET);
+      const {password:hashedPassword2,...rest}=newUser._doc;
+      const expiryDate=new Date(Date.now()+3600000);
+      res.cookie('access_token',token,{
+        httpOnly:true,
+        expires:expiryDate,
+      }).status(200).json(rest);
+     
+    }
+  }catch(error){
+    next(error)
+  }
+}
 
 const forgotEmailCheck = asyncHandler(async (req, res) => {
   const { email } = req.body;
@@ -313,6 +352,14 @@ const updateUser = async (req, res) => {
     res.status(500).json({ success: false, message: "Failed to update" });
   }
 };
+export const getDoctors = asyncHandler(async(req,res)=>{
+  const doctors = await Doctor.find({},{password:0})
+  if(doctors){
+      res.status(200).json({doctorsData:doctors})
+  }else{
+      res.status(400).json({error:"Error in Fetching Doctors Data"})
+  }
+});
 export const deleteUser = async (req, res) => {
   const id = req.params.id;
   try {
@@ -363,4 +410,5 @@ export {
   resetPassword,
   logoutUser,
   updateUser,
+  
 };

@@ -9,19 +9,10 @@ import Doctor from "../models/DoctorSchema.js";
 
 const adminLogin = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
-  console.log('hhhhffesssssssssss');
-  console.log(req.body,"Adminside")
-
   try {
-    console.log("Received email:", email);
-
-const admin = await Admin.findOne({ email: email.trim() });
-
-console.log("Found admin:", admin);
-console.log(password,'password');
-    if (admin && (await admin.matchPassword(password))) {
-        console.log('hgfffffff');
-      const token = adminGenToken(res, admin._id);
+   const admin = await Admin.findOne({ email: email.trim() });
+if (admin && (await admin.matchPassword(password))) {
+       const token = adminGenToken(res, admin._id);
       console.log("token",token)
 
       res.status(201).json({
@@ -32,8 +23,9 @@ console.log(password,'password');
           name: admin.name,
           email: admin.email,
           role: "admin",
+          token:token,
         },
-        token,
+      
       });
       console.log("Success: Admin successfully logged in");
     }  else {
@@ -70,7 +62,7 @@ const blockUsers = asyncHandler(async(req, res) => {
     let user = await User.findById(userId);
     console.log("User found:", user); 
 
-    user.blocked = !user.blocked;
+    user.blocked = true
     await user.save();
     console.log("User updated:", user); 
 
@@ -89,6 +81,66 @@ const blockUsers = asyncHandler(async(req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
+const unblockUser = asyncHandler(async (req, res) => {
+  try {
+    let userId = req.params.id;
+    let user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(400).json({ error: "Id invalid" });
+    }
+
+    user.blocked = false;
+    await user.save();
+
+    res.status(200).json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      blocked: user.blocked
+    });
+  } catch (error) {
+    console.error("Error unblocking user:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+
+
+const approveDoctors = asyncHandler(async(req,res)=>{
+  try {
+    let docId = req.params.id;
+    let doctor = await Doctor.findById(docId);
+
+    if (!doctor) {
+      return res.status(400).json({ error: "Doctor not found" });
+    }
+
+    doctor.approved = true;
+    await doctor.save();
+
+    res.status(200).json({ message: "Doctor approved successfully", doctor });
+  } catch (error) {
+    console.error("Error approving doctor:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+
+
+const rejectDoctors = asyncHandler(async(req,res)=>{
+  let docId = req.params.id;
+  let doctor = await Doctor.findById(docId);
+
+  if (!doctor) {
+    return res.status(400).json({ error: "Invalid doctor ID" });
+  }
+
+  doctor.approved = false; 
+  await doctor.save();
+
+  res.status(200).json(doctor);
+});
 
  
 const getDoctors = asyncHandler(async(req,res)=>{
@@ -102,4 +154,4 @@ const getDoctors = asyncHandler(async(req,res)=>{
   }
 })
 
-export { adminLogin,getUsers,blockUsers,getDoctors };
+export { adminLogin,getUsers,blockUsers,getDoctors,approveDoctors,unblockUser,rejectDoctors };

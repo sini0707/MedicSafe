@@ -1,17 +1,22 @@
-import { useState} from "react"
+import { useEffect, useState} from "react"
 import { Link, useNavigate } from 'react-router-dom';
 import { baseURL } from "../../../../backend/config/db";
 import {toast} from "react-toastify";
 // import {authContext} from "../../context/AuthContext.jsx";
 import  HashLoader from "react-spinners/HashLoader.js";
 import { setCredentials } from "../../slices/authSlice.js";
-import { useDispatch } from 'react-redux'; 
-
-
-
-
+import { useDispatch, useSelector } from 'react-redux'; 
+import OAuth from "../../components/OAuth.jsx";
 
 const Login = () => {
+const navigate=useNavigate()
+// const user=useSelector((state)=>state.auth.userInfo)
+
+// useEffect(()=>{
+//   if(user){
+//     navigate("/home")
+//   }
+// },[user])
 
   const [formData,setFormData]=useState({
       email:'',
@@ -19,23 +24,24 @@ const Login = () => {
   })
   const [loading,setLoading]=useState(false)
   const [role, setRole] = useState('patient');
-  const navigate=useNavigate()
-
+ 
  const dispatch = useDispatch();
 
 
   const handleInputChange=e=>{
     setFormData({...formData,[e.target.name]:e.target.value})
   }
-  const handleRoleChange = e => {
-    setRole(e.target.value);
-  };
+  // const handleRoleChange = e => {
+  //   setRole(e.target.value);
+  // };
 
+  
   const submitHandler = async (event) => {
     event.preventDefault();
     setLoading(true);
   
     try {
+      dispatch(setCredentials());
       const res = await fetch(`${baseURL}/users/login`, {
         method: 'post',
         headers: {
@@ -44,50 +50,28 @@ const Login = () => {
         credentials: 'include',
         body: JSON.stringify(formData),
       });
-  console.log(res,'ressssss');
+      console.log(res,'ressssss');
       const result = await res.json();
       if (!res.ok) {
         throw new Error(result.message);
       }
-
-
-      const { data } = result;
-
-  
-
-
-
-      console.log(data ,"responseeeee");
-
-      if (!res.ok) {
-        throw new Error("User data not found in the server response.");
-      }
-  
-      
-
-       dispatch(setCredentials(data))
-  
-      console.log(result, "login data");
-     
-      setLoading(false);
-      toast.success(result.message);
-      if (role === 'patient') {
-        navigate('/home');
-      } else {
-        navigate('/home');
-      }
-    } catch (err) {
-      console.error(err);
-      toast.error(err.message);
-      setLoading(false);
+const { data } = result;
+if(data.sucess===false){
+  dispatch(setCredentials(data));
+  return;
+}
+dispatch(setCredentials(data));
+navigate('/home');
+toast.success(result.message);
+}catch(error){    
+      // dispatch(setCredentials(error));
+      toast.error("you are blocked")
     }
+   
   };
-  
-
-  
 
 
-  return (
+ return (
     <section className="px-5 lg:px-0">
       <div className="w-full max-w-[570px] mx-auto rounded-lg shadow-md md:p-10">
         <h3 className="text-headingColor text-[22px] leading-9 font-bold mb-10">
@@ -125,12 +109,14 @@ const Login = () => {
             </button>
 
           </div>
+          <OAuth/>
           <p className="mt-5 text-textColor text-center">
   Dont have an account? 
   <Link to='/register' className="text-primaryColor font-medium ml-1">Register</Link>
   <span className="ml-3">|</span>
   <Link to='/forgot' className="text-primaryColor ml-3">Forgot Password</Link>
 </p>
+
 
         </form>
 

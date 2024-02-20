@@ -1,20 +1,32 @@
- import { useState,useContext } from "react"
+import { useState,useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { baseURL } from "../../../../backend/config/db";
 import {toast} from "react-toastify";
- import {authContext} from "../../context/AuthContext.jsx";
+//  import {authContext} from "../../context/AuthContext.jsx";
+ import { useDispatch,useSelector } from 'react-redux';
+ 
  import  HashLoader from "react-spinners/HashLoader.js";
-// import { useState } from "react";
+ import { setadminCredentials } from '../../slices/adminSlices/adminAuthSlice.js';
+
 
 const adminLogin = () => {
+const navigate=useNavigate();
+const user=useSelector((state)=>state.adminAuth.adminInfo);
+const dispatch = useDispatch();
+
+useEffect(()=>{
+  if(user){
+    navigate("/admin/home")
+  }
+},[user, navigate])
     const [formData,setFormData]=useState({
         email:'',
         password:''
     })
     
      const [loading,setLoading]=useState(false)
-    const navigate=useNavigate()
-    const{dispatch}=useContext(authContext)
+    
+  
      const handleInputChange=e=>{
      setFormData({...formData,[e.target.name]:e.target.value})
     }
@@ -41,32 +53,49 @@ const adminLogin = () => {
           throw new Error(result.message);
         }
     
-        const { data, token } = result;
-    console.log(data,token,'resultttttttttttttttttttttttttt');
-        if (!data) {
-          throw new Error("Admin data not found in the server response.");
+        const { data } = result;
+        if (data.success === false) {
+          dispatch(setadminCredentials(data)); // Dispatch an action with data payload
+          return;
         }
-    
-        dispatch({
-          type: "LOGIN_SUCCESS",
-          payload: {
-            user: data,
-            token: token || null, // Ensure that token is not undefined
-            role: data.role || null,   // Ensure that role is not undefined
-          },
-        });
-    
-        console.log(result, "login data");
-    
-         setLoading(false);
-        toast.success(result.message);
+        dispatch(setadminCredentials(data)); // Dispatch an action with data payload
         navigate('/admin/home');
+        toast.success(result.message);
       } catch (err) {
-        console.log(err);
-        toast.error(err.message);
-         setLoading(false);
-      }
+            console.log(err);
+            toast.error(err.message);
+             setLoading(false);
+          }
     }
+          
+        
+          
+        
+    // console.log(data,token,'resultttttttttttttttttttttttttt');
+    //     if (!data) {
+    //       throw new Error("Admin data not found in the server response.");
+    //     }
+    
+        // dispatch({
+        //   type: "LOGIN_SUCCESS",
+        //   payload: {
+        //     user: data,
+        //     token: token || null, // Ensure that token is not undefined
+        //     role: data.role || null,   // Ensure that role is not undefined
+        //   },
+        // });
+    
+        // console.log(result, "login data");
+    
+        //  setLoading(false);
+        // toast.success(result.message);
+    //     // navigate('/admin/home');
+    //   } catch (err) {
+    //     console.log(err);
+    //     toast.error(err.message);
+    //      setLoading(false);
+    //   }
+    // }
       return (
         <section className="px-5 lg:px-0">
           <div className="w-full max-w-[570px] mx-auto rounded-lg shadow-md md:p-10">

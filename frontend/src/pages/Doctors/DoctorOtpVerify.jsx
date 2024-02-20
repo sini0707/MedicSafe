@@ -134,7 +134,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import {toast} from 'react-toastify';
 import { useVerifyMutation } from '../../slices/doctorSlices/doctorsApiSlice'
-import { setCredentials } from '../../slices/doctorSlices/doctorAuthSlice';
+import {setDoctorCredentials} from '../../slices/doctorSlices/doctorAuthSlice';
 import { baseURL } from '../../../../backend/config/db';
 
 
@@ -231,7 +231,7 @@ const DoctorOtpVerify = () => {
           toast.error(res.error)
           return
         }
-        dispatch(setCredentials({...res}));
+        dispatch(setDoctorCredentials({...res}));
         const queryParams = new URLSearchParams(location.search);
         const isForgotPassword = queryParams.get("forgot-password") === "true";
 

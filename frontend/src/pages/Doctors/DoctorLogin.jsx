@@ -1,12 +1,10 @@
-
-
 import { useState } from "react";
  import { Link, useNavigate } from 'react-router-dom';
   import { baseURL } from "../../../../backend/config/db";
  import { toast } from "react-toastify";
  import apiInstance from "../../axiosApi/axiosInstance";
  import HashLoader from "react-spinners/HashLoader";
-import { setDoctorCredentials } from "../../slices/authSlice";
+import { setDoctorCredentials } from "../../slices/doctorSlices/doctorAuthSlice";
 import { useDispatch } from "react-redux";
 
 
@@ -19,7 +17,7 @@ const DoctorLogin = () => {
        });
        const [loading, setLoading] = useState(false);
           const navigate = useNavigate();
- const dispatch = useDispatch();
+          const dispatch = useDispatch();
      
 
           const handleInputChange = (e) => {
@@ -33,23 +31,39 @@ const DoctorLogin = () => {
             setLoading(true);
             
             try {
+              dispatch(setDoctorCredentials());
               const res = await apiInstance.post(`${baseURL}/doctors/login`, formData);
               console.log(res)
+              // const result = await res.json();
+              // console.log(result,"resultt")
               if (!res.data) {
                 throw new Error(res.data.message);
               }
-       dispatch(setDoctorCredentials(res.data))
+              console.log(res,"responese")
+             dispatch(setDoctorCredentials(res.data))
               
               setLoading(false);
               toast.success(res.data.message);
               navigate('/doctors/home');
               console.log(formData);
             } catch (err) {
-              console.log(err);
-              toast.error(err.message,"VFdvd");
+              console.log(err.response.data.message,"er");
+              toast.error(err.response.data.message,"VFdvd");
               setLoading(false);
             }
           };
+      
+// if(data.sucess===false){
+//   dispatch(setDoctorCredentials(data));
+//   return;
+// }
+// dispatch(setDoctorCredentials(data));
+// navigate('/doctors/home');
+// toast.success(data.message);
+//     }catch(error){
+//       dispatch(setDoctorCredentials(error));
+//     }
+//   };
     
   return (
 

@@ -55,7 +55,7 @@ const dispatch = useDispatch();
                 <p className="text-textColor text-[15px] leading-6 font-medium">
                   Blood Type:
                   <span className="ml-2 text-headingColor text-[22px] leading-8">
-                    {userData.bloodType}
+                    {userData.blood}
                   </span>
                 </p>
               </div>

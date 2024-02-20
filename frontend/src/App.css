@@ -115,7 +115,10 @@ input:focus{
     cursor:pointer;
 }
 
-
+.OAuth{
+    display: flex;
+  justify-content: center;
+}
 
 
 

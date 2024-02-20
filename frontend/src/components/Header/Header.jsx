@@ -9,17 +9,13 @@ import { useDispatch } from 'react-redux';
 import { baseURL } from '../../../../backend/config/db';
 import {logout} from "../../slices/authSlice";
  
-
-
-
-
 const navLinks = [
   {
     path: '/home',
     display: 'Home'
   },
   {
-    path: '/doctors',
+    path: '/get-doctors',
     display: 'Find a Doctor'
   },
   {
@@ -123,23 +119,27 @@ const Header = () => {
         <div className='flex items-center gap-4'>
           {user && user.token ? ( // Check if user and token exist
             <div>
-              <NavLink to={`${user.role === "doctor" ? "/doctors/profile/me" : "/users/profile/me"}`}>
+              <NavLink to= "/users/profile/me">
                 <figure className='w-[35px] h-[35px] rounded-full cursor-pointer'>
-                  <img src={user?.photo} className="w-full rounded-full" alt="" />
+                  <img src={user?.photo} className="w-full rounded-full object-cover" alt="" />
                 </figure>
                 <h2>Welcome {user.name}</h2>
+                <button onClick={logoutHandler} className='bg-primaryColor py-2 px-6 text-white font [600] h-[44px] flex items-center rounded-[50px]'>
+                 Logout
+          </button>
               </NavLink>
+             
             </div>
           ) : (
-            <NavLink to="">
-              {/* <button className='bg-primaryColor py-2 px-6 text-white font [600] h-[44px] flex items-center rounded-[50px]'>
+            <NavLink to="/login">
+              <button className='bg-primaryColor py-2 px-6 text-white font [600] h-[44px] flex items-center rounded-[50px]'>
                 Login
-              </button> */}
+              </button>
             </NavLink>
           )}
-          <button onClick={logoutHandler} className='bg-primaryColor py-2 px-6 text-white font [600] h-[44px] flex items-center rounded-[50px]'>
+          {/* <button onClick={logoutHandler} className='bg-primaryColor py-2 px-6 text-white font [600] h-[44px] flex items-center rounded-[50px]'>
             Logout
-          </button>
+          </button> */}
           <span className='md:hidden' onClick={toggleMenu}>
             <BiMenu className='w-6 h-6 cursor-pointer' />
           </span>

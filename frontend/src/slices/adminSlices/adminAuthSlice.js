@@ -8,7 +8,7 @@ const adminAuthSlice = createSlice({
     name:'adminAuth',
     initialState,
     reducers:{
-        setCredentials:(state,action)=>{
+        setadminCredentials:(state,action)=>{
             state.adminInfo = action.payload;
             localStorage.setItem('adminInfo',JSON.stringify(action.payload))
         },
@@ -19,6 +19,6 @@ const adminAuthSlice = createSlice({
     }
 })
 
-export const { setCredentials,logout } = adminAuthSlice.actions;
+export const { setadminCredentials,logout } = adminAuthSlice.actions;
 
 export default adminAuthSlice.reducer;

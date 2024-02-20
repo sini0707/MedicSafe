@@ -33,7 +33,7 @@ function Routers() {
   return <Routes>
 <Route path="/" element={<Home/>}/>
 <Route path="/home" element={<Home/>}/>
-<Route path="/doctors" element={<Doctors/>}/>
+{/* <Route path="/doctors" element={<Doctors/>}/> */}
 <Route path="/doctors/:id" element={<DoctorDetails/>}/>
 <Route path="/login" element={<Login/>}/>
 <Route path="/register" element={<Signup/>}/>
@@ -54,7 +54,7 @@ function Routers() {
 <Route path='/doctors/signup' element={<DoctorRegister/>}/>
 <Route path='/doctors/otp' element={<DoctorOtpVerify/>}/>
 <Route path='/doctors/login' element={<DoctorLogin/>}/>
-<Route path='/doctors/profile' element={<DoctorProfile/>}/> 
+{/* <Route path='/doctors/profile' element={<DoctorProfile/>}/>  */}
 <Route path='/doctors/home' element={<DoctorsHome/>}/>
 
 

@@ -8,13 +8,15 @@ import {
   otpVerify,
   resendEmailCheck ,
   resetPassword,
+  Google,
   getUserProfile,
   getMyAppointments,
   deleteUser,
   getAllUser,
   getSingleUser,
   logoutUser,
-  updateUser
+  updateUser,
+  getDoctors
 } from '../Controllers/userController.js';
 import { protect } from '../middleware/authMiddleware.js';
 const router = express.Router();
@@ -30,8 +32,10 @@ router.post('/resend-email-check',resendEmailCheck  );
 
 
 
- router.post('/reset-password',resetPassword)
- router.post('/logout',logoutUser)
+ router.post('/reset-password',resetPassword);
+ router.post('/google',Google);
+ router.post('/logout',logoutUser);
+ router.get('/get-doctors',getDoctors);
 
 
 

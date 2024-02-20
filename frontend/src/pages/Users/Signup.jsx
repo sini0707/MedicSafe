@@ -5,6 +5,7 @@ import {Link} from "react-router-dom"
 import uploadImageCloudinary from '../../../../backend/utils/uploadCloudinary';
 import {toast} from 'react-toastify'
 import { baseURL } from '../../../../backend/config/db'
+// import OAuth from '../../components/OAuth';
 const Signup = () => {
 
   const [selectedFile,setSelectedFile]=useState(null)
@@ -17,7 +18,8 @@ const Signup = () => {
     photo:"selectedFile",
     gender:"",
     role:"patient",
-    confirmpass:""   
+    confirmpass:"" ,
+    bloodType:"",  
   });
  
 
@@ -121,6 +123,11 @@ const Signup = () => {
             className="w-full pr-4 py-3 border-b border-solid border-[#0066ff61] focus:outline-none focus:border-b-primaryColor text-[16px] leading-7 text-headingColor
             placeholder:text-textColor  cursor-pointer required"/>
           </div>
+          <div className="mb-5">
+            <input type="blood" placeholder="blood" name="bloodType" value={formData.bloodType} onChange={(e)=>handleInputChange(e)} 
+            className="w-full pr-4 py-3 border-b border-solid border-[#0066ff61] focus:outline-none focus:border-b-primaryColor text-[16px] leading-7 text-headingColor
+            placeholder:text-textColor  cursor-pointer required"/>
+          </div>
           <div className='mb-5 flex items-center justify-between'>
             <label htmlFor='' className='text-headingColor font-bold text-[16px] leading-7'>
               Are you a :
@@ -166,11 +173,14 @@ const Signup = () => {
             </button>
 
           </div>
+          {/* <OAuth/> */}
           <p className="mt-5 text-textColor text-center">
             Already have an account? <Link to ='/login' className="text-primaryColor font-medium ml-1">
             Login
             </Link>
           </p>
+
+       
           </form>
 
         </div>

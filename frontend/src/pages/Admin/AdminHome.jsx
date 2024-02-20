@@ -41,7 +41,7 @@
 const AdminHome = () => {
   return (
     <div className="min-h-screen bg-gray-50/50">
-    <aside className="bg-gradient-to-br from-gray-800 to-gray-900 -translate-x-80 fixed inset-0 z-50 my-4 ml-4 h-[calc(100vh-32px)] w-72 rounded-xl transition-transform duration-300 xl:translate-x-0">
+    {/* <aside className="bg-gradient-to-br from-gray-800 to-gray-900 -translate-x-80 fixed inset-0 z-50 my-4 ml-4 h-[calc(100vh-32px)] w-72 rounded-xl transition-transform duration-300 xl:translate-x-0">
       <div className="relative border-b border-white/20">
         <a className="flex items-center gap-4 py-6 px-8" href="#/">
           <h6 className="block antialiased tracking-normal font-sans text-base font-semibold leading-relaxed text-white">
@@ -171,7 +171,7 @@ const AdminHome = () => {
             </a>
           </li>
         </ul>
-        {/* <ul className="mb-4 flex flex-col gap-1">
+        <ul className="mb-4 flex flex-col gap-1">
           <li className="mx-3.5 mt-4 mb-2">
             <p className="block antialiased font-sans text-sm leading-normal text-white font-black uppercase opacity-75">
               auth pages
@@ -223,9 +223,9 @@ const AdminHome = () => {
               </button>
             </a>
           </li>
-        </ul> */}
+        </ul>
       </div>
-    </aside>
+    </aside> */}
     <div className="p-4 xl:ml-80">
       <nav className="block w-full max-w-full bg-transparent text-white shadow-none rounded-xl transition-all px-0 py-1">
         <div className="flex flex-col-reverse justify-between gap-6 md:flex-row md:items-center">
