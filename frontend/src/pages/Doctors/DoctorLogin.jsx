@@ -1,7 +1,7 @@
 import { useState } from "react";
  import { Link, useNavigate } from 'react-router-dom';
-  import { baseURL } from "../../../../backend/config/db";
  import { toast } from "react-toastify";
+ import { baseURL } from "../../../../backend/config/db";
  import apiInstance from "../../axiosApi/axiosInstance";
  import HashLoader from "react-spinners/HashLoader";
 import { setDoctorCredentials } from "../../slices/doctorSlices/doctorAuthSlice";
@@ -31,7 +31,7 @@ const DoctorLogin = () => {
             setLoading(true);
             
             try {
-              dispatch(setDoctorCredentials());
+            
               const res = await apiInstance.post(`${baseURL}/doctors/login`, formData);
               console.log(res)
               // const result = await res.json();
@@ -39,7 +39,6 @@ const DoctorLogin = () => {
               if (!res.data) {
                 throw new Error(res.data.message);
               }
-              console.log(res,"responese")
              dispatch(setDoctorCredentials(res.data))
               
               setLoading(false);
@@ -48,7 +47,7 @@ const DoctorLogin = () => {
               console.log(formData);
             } catch (err) {
               console.log(err.response.data.message,"er");
-              toast.error(err.response.data.message,"VFdvd");
+              toast.error(err.message,"VFdvd");
               setLoading(false);
             }
           };
@@ -99,8 +98,8 @@ const DoctorLogin = () => {
           <p className="mt-5 text-textColor text-center">
   Dont have an account? 
   <Link to='/doctors/signup' className="text-primaryColor font-medium ml-1">Register</Link>
-  <span className="ml-3">|</span>
-  <Link to='/forgot' className="text-primaryColor ml-3">Forgot Password</Link>
+  {/* <span className="ml-3">|</span>
+  <Link to='/forgot' className="text-primaryColor ml-3">Forgot Password</Link> */}
 </p>
 
         </form>

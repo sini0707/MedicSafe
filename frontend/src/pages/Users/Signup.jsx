@@ -15,11 +15,11 @@ const Signup = () => {
     name:'',
     email:'',
     password:"",
-    photo:"selectedFile",
+    photo:"",
     gender:"",
     role:"patient",
     confirmpass:"" ,
-    bloodType:"",  
+    blood:"",  
   });
  
 
@@ -27,7 +27,7 @@ const Signup = () => {
 
   const handleInputChange=(e)=>{
     setFormData({...formData,[e.target.name]:e.target.value})
-    console.log(formData);
+    console.log(formData,"bloooddd");
   };
   const handleFileInputChange=async (event)=>{
     const file=event.target.files[0];
@@ -68,8 +68,9 @@ const Signup = () => {
           const { email } = formData;
   
           setLoading(false);
-          toast.success('Registration successful');
+          
           navigate('/otpVerify', { state: { email } });
+          toast.success('Registration successful');
   
         } catch (err) {
           console.log(err);
@@ -124,7 +125,7 @@ const Signup = () => {
             placeholder:text-textColor  cursor-pointer required"/>
           </div>
           <div className="mb-5">
-            <input type="blood" placeholder="blood" name="bloodType" value={formData.bloodType} onChange={(e)=>handleInputChange(e)} 
+            <input type="blood" placeholder="blood" name="blood" value={formData.blood} onChange={(e)=>handleInputChange(e)} 
             className="w-full pr-4 py-3 border-b border-solid border-[#0066ff61] focus:outline-none focus:border-b-primaryColor text-[16px] leading-7 text-headingColor
             placeholder:text-textColor  cursor-pointer required"/>
           </div>

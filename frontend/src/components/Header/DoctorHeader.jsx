@@ -34,7 +34,7 @@ const navLinks = [
 
 const DoctorHeader = () => {
   
-  const user=useSelector((state)=>state.docAuth.doctorInfo)
+  const doctor=useSelector((state)=>state.docAuth.doctorInfo)
  
 
   const headerRef=useRef(null)
@@ -68,7 +68,7 @@ const DoctorHeader = () => {
 
   const logoutHandler = async () => {
     try {
-      const response = await fetch(`${baseURL}/users/logout`, {
+      const response = await fetch(`${baseURL}/doctors/logout`, {
         method: 'POST', 
         headers: {
           'Content-Type': 'application/json',
@@ -122,13 +122,13 @@ const DoctorHeader = () => {
           </ul>
         </div>
         <div className='flex items-center gap-4'>
-          {user && user.token ? ( // Check if user and token exist
+          {doctor && doctor.token ? ( // Check if user and token exist
             <div>
-              <NavLink to={`${user.role === "doctor" ? "/doctors/profile/me" : "/users/profile/me"}`}>
+              <NavLink to= "/doctors/profile/me" >
                 <figure className='w-[35px] h-[35px] rounded-full cursor-pointer'>
-                  <img src={user?.photo} className="w-full rounded-full" alt="" />
+                  <img src={doctor?.photo} className="w-full rounded-full" alt="" />
                 </figure>
-                <h2>Welcome {user.name}</h2>
+                <h2>Welcome {doctor.name}</h2>
               </NavLink>
             </div>
           ) : (

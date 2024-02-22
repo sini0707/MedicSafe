@@ -27,11 +27,10 @@ adminSchema.pre("save", async function (next) {
 
 adminSchema.methods.matchPassword = async function (enteredPassword) {
   try {
-    console.log(enteredPassword, 'enteredpassword');
-    console.log(this.password, 'thispassw');
+  
 
     if(enteredPassword===this.password);{
-          console.log('passwordmatchedddddd');
+         
 return this.password
     }
 

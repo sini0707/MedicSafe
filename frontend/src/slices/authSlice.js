@@ -5,9 +5,9 @@ const initialState = {
   userInfo: localStorage.getItem("userInfo")
     ? JSON.parse(localStorage.getItem("userInfo"))
     : null,
-  doctorInfo: localStorage.getItem("doctorInfo")
-    ? JSON.parse(localStorage.getItem("doctorInfo"))
-    : null,
+  // doctorInfo: localStorage.getItem("doctorInfo")
+  //   ? JSON.parse(localStorage.getItem("doctorInfo"))
+  //   : null,
 };
 
 const authSlice = createSlice({
@@ -18,10 +18,7 @@ const authSlice = createSlice({
       state.userInfo = action.payload;
       localStorage.setItem("userInfo", JSON.stringify(action.payload));
     },
-    setDoctorCredentials: (state, action) => {
-      state.doctorInfo = action.payload;
-      localStorage.setItem("doctorInfo", JSON.stringify(action.payload));
-    },
+   
     logout: (state, action) => {
     
       state.userInfo = null;
@@ -30,7 +27,7 @@ const authSlice = createSlice({
   },
 });
 
-export const { setCredentials, setDoctorCredentials, logout } =
+export const { setCredentials, logout } =
   authSlice.actions;
 
 export default authSlice.reducer;

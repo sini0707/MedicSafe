@@ -35,10 +35,7 @@ const DoctorSchema= new mongoose.Schema({
         type: String,
         default: '',
       },
-      // resume: {
-      //   type: String,
-      //   default: '',
-      // },
+      
       fees: {
         type: Number,
         default: 0,
@@ -51,7 +48,10 @@ const DoctorSchema= new mongoose.Schema({
         type: String,
         required: true,
       },
-      
+     role: {
+        type: String,
+        required: true,
+      },
      
     },
     {
@@ -67,7 +67,7 @@ console.log(res,'resss');
 return res
   };
   DoctorSchema.pre('save', function (next) {
-    this.id = this._id; // Set id field to the document's _id
+    this.id = this._id; 
     next();
 });
 

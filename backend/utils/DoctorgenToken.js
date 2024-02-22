@@ -5,9 +5,9 @@ const DoctorgenToken = (res, doctorId) => {
     expiresIn: "30d",
   });
 
-  console.log("Generated Token:", token); // Log the generated token
+  console.log("Generated Token:", token); 
 
-  // Log the process.env.NODE_ENV to check its value
+ 
   console.log("NODE_ENV value:", process.env.NODE_ENV);
 
   res.cookie("docjwt", token, {

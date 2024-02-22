@@ -24,19 +24,18 @@ const Profile = (user) => {
     confirmpassword:"",
     mobile:"",
     age:"",
-    bloodType:"",  
+    blood:"",  
     photo:"null",
     emerPerson:"",
     emerNumber:"",
     gender:"",
     
   });
-console.log(baseURL,'baseurl');
-  console.log(formData,"formData");
+
 
   const navigate=useNavigate();
   useEffect(()=>{
-    setFormData({name:user.name,email:user.email,photo:user.photo,gender:user.gender,bloodType:user.bloodType});
+    setFormData({name:user.name,email:user.email,password:user.password,photo:user.photo,gender:user.gender,blood:user.blood});
 
   },[user]);
 
@@ -45,10 +44,11 @@ console.log(baseURL,'baseurl');
     setFormData({...formData,[e.target.name]:e.target.value})
   };
   const handleFileInputChange=async (event)=>{
+    console.log('fileinput');
     const file=event.target.files[0];
-
+console.log(file,'file');
     const data=await uploadImageCloudinary(file)
-   
+   console.log(data.url,'data');
     setSelectedFile(data.url);
     setFormData({...formData,photo:data.url});
 
@@ -57,6 +57,7 @@ console.log(baseURL,'baseurl');
     event.preventDefault();
     setLoading(true);
     try {
+     
       const res = await fetch(`${baseURL}/users/updateUser/${userId}`, {
         method: 'post',
         headers: {
@@ -67,7 +68,6 @@ console.log(baseURL,'baseurl');
            // Convert the data to JSON
       });
 
-      console.log(res,"resssss");
       const responseData = await res.json(); 
   
       if (!res.ok) {
@@ -123,7 +123,7 @@ console.log(baseURL,'baseurl');
             placeholder:text-textColor  cursor-pointer "/>
           </div>
           <div className="mb-5">
-            <input type="text" placeholder="Blood Type" name="bloodType" value={formData.bloodType} onChange={(e)=>handleInputChange(e)} 
+            <input type="text" placeholder="Blood Type" name="blood" value={formData.blood} onChange={(e)=>handleInputChange(e)} 
             className="w-full pr-4 py-3 border-b border-solid border-[#0066ff61] focus:outline-none focus:border-b-primaryColor text-[16px] leading-7 text-headingColor
             placeholder:text-textColor  cursor-pointer "/>
           </div>

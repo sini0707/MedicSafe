@@ -11,13 +11,13 @@ const DoctorRegister = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { doctorInfo } = useSelector((state) => state.docAuth);
+  // const { doctorInfo } = useSelector((state) => state.docAuth);
 
-  useEffect(() => {
-      if (doctorInfo) {
-          navigate("/doctors/home");
-      }
-  }, [navigate, doctorInfo]);
+  // useEffect(() => {
+  //     if (doctorInfo) {
+  //         navigate("/doctors/home");
+  //     }
+  // }, [navigate, doctorInfo]);
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -29,7 +29,9 @@ const DoctorRegister = () => {
   const [password, setPassword] = useState("");
   const [confirmpass, setConfirmpass] = useState("");
   const [image, setImage] = useState(null);
-  //  const [resume, setResume] = useState(null);
+  const [role,setRole]=useState("Doctor")
+
+
 
   const handleFileInputChange = async (event) => {
       const file = event.target.files[0];
@@ -58,9 +60,10 @@ const DoctorRegister = () => {
               fees,
               password,
               // Assuming 'image' is a File object
-              file: image
+             imagePath:image,
+              role
           };
-          console.log('Request Data:', requestData);
+      
   
           const res = await apiInstance.post(`${baseURL}/doctors/register`, requestData);
           console.log('Response Data:', res);
@@ -68,13 +71,14 @@ const DoctorRegister = () => {
           if (!res.data.success) {
               // Handle unsuccessful registration
               toast.error(res.data.message);
-          } else {
-              // Handle successful registration
-              toast.success('Registration successful');
-              navigate('/doctors/otp', { state: { email } });
           }
+              // Handle successful registration
+              
+              navigate('/doctors/otp', { state: { email } });
+        
       } catch (err) {
           // Handle errors
+        console.log(err,"aa")
           toast.error(err?.response?.data?.message || err.message);
       }
   };
@@ -108,8 +112,8 @@ const DoctorRegister = () => {
                 <input
                  className="relative py-1 m-0 block w-full min-w-0 flex-auto cursor-pointer rounded border border-solid border-blue-300 bg-clip-padding px-3 py-[0.32rem] text-xs font-normal text-blue-700 transition duration-300 ease-in-out file:-mx-3 file:-my-[0.32rem] file:cursor-pointer file:overflow-hidden file:rounded-none file:border-0 file:border-solid file:border-inherit file:bg-blue-100 file:px-3 file:py-[0.32rem] file:text-blue-700 file:transition file:duration-150 file:ease-in-out file:[border-inline-end-width:1px] file:[margin-inline-end:0.75rem] hover:file:bg-blue-200 focus:border-primary focus:text-blue-700 focus:shadow-te-primary focus:outline-none dark:border-blue-600 dark:text-blue-200 dark:file:bg-blue-700 dark:file:text-blue-100 dark:focus:border-primary"
                  id="uploadPhoto"
-                accept="image/*"
-                onChange={(e) => setImage(e.target.files[0])} 
+                 onChange={ handleFileInputChange}
+                accept=".jpg,.png"
                  type="file"
                  />
 
@@ -320,6 +324,27 @@ const DoctorRegister = () => {
                   className="block px-2 py-1 w-full text-[15px] border-solid border-b-2 focus:text-[16px] focus:border-blue-500 focus:outline-none"
                 />
               </div>
+              <div className="my-[20px]">
+                <label
+                  className="text-blue-500 text-sm font-medium"
+                  htmlFor="role"
+                >
+                 Role
+                </label>
+                <input
+                  type="role"
+                  name="doctor"
+                  value={role}
+                  onChange={(e) => {setRole(e.target.value);
+                    console.log("role:", e.target.value);
+                  }}
+                  id="role"
+                  placeholder="role"
+                  className="block px-2 py-1 w-full text-[15px] border-solid border-b-2 focus:text-[16px] focus:border-blue-500 focus:outline-none"
+                />
+              </div>
+
+
             </div>
             <div className="flex items-center justify-center">
               <button

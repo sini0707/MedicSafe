@@ -238,7 +238,7 @@ const DoctorOtpVerify = () => {
         if (isForgotPassword) {
             navigate('/resetPassword', { state: { email } });
         } else {
-            navigate('/login');
+            navigate('/doctors/login');
         }
       }
        catch(err) {

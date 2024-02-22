@@ -19,6 +19,7 @@ const dispatch = useDispatch();
     data: userData,
     loading,
     error,
+   
   } = useGetProfile(`${baseURL}/users/profile/me`);
   
   console.log("Loading:", loading);
@@ -97,7 +98,7 @@ const dispatch = useDispatch();
               </div>
 
               {tab === "bookings" && <MyBookings />}
-              {tab === "settings" && <Profile user={userData} />}
+              {tab === "settings" && <Profile user={userData}  />}
             </div>
           </div>
         )}

@@ -1,12 +1,13 @@
 import { apiSlice } from "./apiSlice";
 
-const baseURL = '/api/v1/doctors';
+import { baseURL } from "../../../../backend/config/db.js"
+
 
 export const doctorsApiSlice = apiSlice.injectEndpoints({
     endpoints:(builder)=>({
         register:builder.mutation({
             query:(data)=>({
-                url:`${baseURL}/register`,
+                url:`${baseURL}/doctors/register`,
                 method:'POST',
                 body:data
             })

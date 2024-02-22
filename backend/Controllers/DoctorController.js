@@ -4,45 +4,41 @@ import asyncHandler from "express-async-handler";
 import BookingSchema from "../models/BookingSchema.js";
 import DoctorgenToken from "../utils/DoctorgenToken.js";
 import bcrypt from "bcryptjs";
-import nodemailer from 'nodemailer'
+import nodemailer from "nodemailer";
 import { generateDoctorToken } from "../utils/generateToken.js";
 
-
-
-const sendOtpLink=(email,otp)=>{
+const sendOtpLink = (email, otp) => {
   try {
-      const transporter=nodemailer.createTransport({
-          host:'smtp.gmail.com',
-          port:587,
-          secure:false,
-          requireTLS:true,
-          auth:{
-              user:process.env.APP_EMAIL,
-              pass:process.env.APP_PASSWORD
-          }
-      })
-      const mailOptions={
-          from:'MedicSafe',
-          to:email,
-          subject:'Email Verification',
-          html:'<p>Hi,<b>'+otp+'</b> is your OTP for email verification</p>'
+    const transporter = nodemailer.createTransport({
+      host: "smtp.gmail.com",
+      port: 587,
+      secure: false,
+      requireTLS: true,
+      auth: {
+        user: process.env.APP_EMAIL,
+        pass: process.env.APP_PASSWORD,
+      },
+    });
+    const mailOptions = {
+      from: "MedicSafe",
+      to: email,
+      subject: "Email Verification",
+      html: "<p>Hi,<b>" + otp + "</b> is your OTP for email verification</p>",
+    };
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log("email has been sent to:-", info.response);
       }
-      transporter.sendMail(mailOptions,(error,info)=>{
-          if(error){
-              console.log(error)
-          }else{
-              console.log('email has been sent to:-',info.response)
-          }
-      })
+    });
   } catch (error) {
-      console.log(error.message)
+    console.log(error.message);
   }
-}
+};
 
 export const register = async (req, res) => {
-  console.log("HIIIIIII");
   try {
-    console.log(req.body, "doctor register");
     const {
       name,
       email,
@@ -53,22 +49,19 @@ export const register = async (req, res) => {
       imagePath,
       qualification,
       experience,
+      role,
     } = req.body;
 
-    // Check if user already exists
     const doctorExists = await Doctor.findOne({ email });
     if (doctorExists) {
-      return res.status(400).json({ message: 'User already exists' });
+      return res.status(400).json({ message: "Doctor already exists" });
     }
 
-    // Generate OTP
     const newotp = Math.floor(1000 + Math.random() * 9000);
 
-    // Hash password
     const salt = await bcrypt.genSalt(10);
     const hashPassword = await bcrypt.hash(password, salt);
 
-    // Create new doctor instance
     const doctor = await Doctor.create({
       name,
       email,
@@ -80,58 +73,70 @@ export const register = async (req, res) => {
       qualification,
       experience,
       otp: newotp,
+      role,
     });
 
-    // Send OTP email
     await sendOtpLink(email, newotp);
 
-    // Send response
-    res.status(201).json({ message: 'User successfully created', doctorId: doctor._id });
+    res
+      .status(201)
+      .json({
+        success: true,
+        message: "Doctor successfully registered",
+        doctor,
+      });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ success: false, message: 'Internal server error, try again' });
+    res
+      .status(500)
+      .json({ success: false, message: "Internal server error, try again" });
   }
 };
 
-  //  let result= DoctorgenToken(res, doctor._id);
-  //   console.log(result,'hk')
-  //   res.status(201).json({
-  //     _id: doctor._id,
-  //     name: doctor.name,
-  //     email: doctor.email,
-  //   });
-  // } catch (error) {
-  //   console.error(error);
-  // }
+export const DoctorOtpVerify = asyncHandler(async (req, res) => {
+  const { email, otp } = req.body;
 
+  let doctorExists = await Doctor.findOne({ email });
+
+  if (doctorExists) {
+    if (doctorExists.otp == Number(otp)) {
+      DoctorgenToken(res, doctorExists._id);
+      doctorExists.verified = true;
+      doctorExists = await doctorExists.save();
+      res.status(201).json({
+        _id: doctorExists._id,
+        name: doctorExists.name,
+        email: doctorExists.email,
+        blocked: doctorExists.blocked,
+      });
+    } else {
+      res.status(201).json({ error: "Invalid OTP" });
+    }
+  }
+});
 
 export const DoctorLogin = async (req, res) => {
   try {
     const { email, password } = req.body;
-    
-if (!email || !password) {
-      console.log("Email or password missing");
+
+    if (!email || !password) {
       return res
         .status(400)
         .json({ message: "Email and password are required" });
     }
-    console.log(
-      "Email and password are present. Proceeding to find the doctor"
-    );
+
     const doctor = await Doctor.findOne({ email });
-   
-if (doctor &&  doctor.approved &&  (await doctor.matchPassword(password))) {
-     
+
+    if (doctor && doctor.approved && (await doctor.matchPassword(password))) {
       let token = generateDoctorToken(res, doctor._id);
-    
+
       return res.status(200).json({
         _id: doctor._id,
         name: doctor.name,
         email: doctor.email,
-        token:token
+        token: token,
       });
     } else {
-      console.log("Doctor not found or password not matched");
       return res.status(401).json({ message: "Doctor Not approved By Admin" });
     }
   } catch (error) {
@@ -234,4 +239,12 @@ export const getDoctorProfile = async (req, res) => {
       .status(500)
       .json({ sucess: false, message: "something went wrong,cannot get" });
   }
+};
+
+export const logoutDoctor = (req, res) => {
+  res.cookie("jwt", "", {
+    httpOnly: true,
+    expires: new Date(0),
+  });
+  res.status(200).json({ message: "Logged out successfully" });
 };

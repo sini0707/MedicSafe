@@ -2,12 +2,10 @@ import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { baseURL } from '../../../../backend/config/db';
 import { useNavigate } from 'react-router-dom';
-
 import { useDispatch } from 'react-redux';
-import { authContext } from '../../context/AuthContext';
+
 const AdminUsers = () => {
   const [users, setUsers] = useState([]);
-  console.log(users,"userState")
   const navigate=useNavigate();
 
   const fetchUserData = async () => {
@@ -24,16 +22,7 @@ const AdminUsers = () => {
     }
   };
 
-  // const handleBlock = async(userId)=>{
-  //   let res = await fetch(`${baseURL}/block-user/${userId}`,{
-  //     method:"PUT"
-  //   })
-  //   if(res){
-  //     toast.success("Updated Successfully")
-  //   }else{
-  //     toast.error("Failed to Update")
-  //   }
-  // }
+ 
   const dispatch=useDispatch();
 
 
@@ -42,10 +31,12 @@ const AdminUsers = () => {
       const res = await fetch(`${baseURL}/admin/block-user/${userId}`, {
         method: "PUT"
       });
-      console.log("Response received:", res); 
+      console.log("Block user response:", res);
+    
       if (res.ok) {
         const updatedUser = await res.json();
-        console.log("Updated user:", updatedUser); 
+        console.log("User blocked successfully");
+    
         toast.success("User blocked successfully");
         setUsers(users.map(user => {
           if (user._id === userId) {
@@ -62,6 +53,7 @@ const AdminUsers = () => {
         
         }
       } else {
+        console.error("Failed to block user");
         toast.error("Failed to block user");
       }
     } catch (error) {
@@ -76,8 +68,7 @@ const AdminUsers = () => {
       });
       if (res.ok) {
         toast.success("User unblocked successfully");
-        // Update user status in the UI or refetch user data
-        
+        console.log("User unblocked successfully");
         setUsers(users.map(user => {
           if (user._id === userId) {
             return { ...user, blocked: false };

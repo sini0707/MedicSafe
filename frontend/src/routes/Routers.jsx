@@ -25,7 +25,8 @@ import DoctorRegister from '../pages/Doctors/DoctorRegister.jsx';
 import DoctorOtpVerify from '../pages/Doctors/DoctorOtpVerify.jsx';
 import DoctorLogin from '../pages/Doctors/DoctorLogin.jsx';
 import DoctorsHome from '../pages/Doctors/DoctorsHome.jsx';
-import DoctorProfile from '../pages/Doctors/DoctorProfile.jsx';
+import Doctorss from '../pages/Doctors/Doctors.jsx';
+// import DoctorProfile from '../pages/Doctors/DoctorProfile.jsx';
 
 
 
@@ -33,7 +34,8 @@ function Routers() {
   return <Routes>
 <Route path="/" element={<Home/>}/>
 <Route path="/home" element={<Home/>}/>
-{/* <Route path="/doctors" element={<Doctors/>}/> */}
+<Route path="/finddoctors" element={<Doctorss/>}/>
+
 <Route path="/doctors/:id" element={<DoctorDetails/>}/>
 <Route path="/login" element={<Login/>}/>
 <Route path="/register" element={<Signup/>}/>
@@ -54,8 +56,10 @@ function Routers() {
 <Route path='/doctors/signup' element={<DoctorRegister/>}/>
 <Route path='/doctors/otp' element={<DoctorOtpVerify/>}/>
 <Route path='/doctors/login' element={<DoctorLogin/>}/>
-{/* <Route path='/doctors/profile' element={<DoctorProfile/>}/>  */}
 <Route path='/doctors/home' element={<DoctorsHome/>}/>
+<Route path='/doctors/1' element={<DoctorDetails/>}/>
+
+{/* <Route path='/doctors/profile' element={<DoctorProfile/>}/>   */}
 
 
 

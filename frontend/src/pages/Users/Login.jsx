@@ -10,7 +10,7 @@ import OAuth from "../../components/OAuth.jsx";
 
 const Login = () => {
 const navigate=useNavigate()
-// const user=useSelector((state)=>state.auth.userInfo)
+//  const user=useSelector((state)=>state.auth.userInfo)
 
 // useEffect(()=>{
 //   if(user){
@@ -41,7 +41,6 @@ const navigate=useNavigate()
     setLoading(true);
   
     try {
-      dispatch(setCredentials());
       const res = await fetch(`${baseURL}/users/login`, {
         method: 'post',
         headers: {
@@ -64,7 +63,8 @@ dispatch(setCredentials(data));
 navigate('/home');
 toast.success(result.message);
 }catch(error){    
-      // dispatch(setCredentials(error));
+  console.log(error,"error")
+      setLoading(false)
       toast.error("you are blocked")
     }
    

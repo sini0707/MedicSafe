@@ -37,12 +37,11 @@ const sendOtpLink = (email, otp) => {
   }
 };
 
-// @desc    Auth user & get token
-// @route   POST /api/users/login
-// @access  Public
 const login = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
+  const userpwd=await user.matchPassword(password)
+  console.log(userpwd,"userpassword")
 
   if (user && !user.blocked && (await user.matchPassword(password))) {
     const token = generateToken(res, user._id);
@@ -62,48 +61,55 @@ const login = asyncHandler(async (req, res) => {
     throw new Error("You have been blocked");
   } else {
     res.status(400);
+
     throw new Error("Invalid email or password");
   }
 });
-export const Google= async (req,res,next)=>{
-  try{
+export const Google = async (req, res, next) => {
+  try {
+    const user = await User.findOne({ email: req.body.email });
 
-    const user=await User.findOne({email:req.body.email})
-    console.log(req.body.email,"userrr");
-    if(user){
-      const token = generateToken(res,user._id)
-      const {password:hashedPassword,...rest}=user._doc;
-      const expiryDate =new Date(Date.now()+3600000);
-      // res.cookie('access_token',token,{httpOnly:true,expires:expiryDate})
+    if (user) {
+      const token = generateToken(res, user._id);
+      const { password: hashedPassword, ...rest } = user._doc;
+      const expiryDate = new Date(Date.now() + 3600000);
+
       res.status(200).json({
-        success:true,
-        data:{
+        success: true,
+        data: {
           ...rest,
-          token:token
-        }
-       } )
-    
-    }else{
-      const generatedPassword=Math.random().toString(36). slice(-8)+ Math.random().toString(36).slice(-8)
-      const hashedPassword=bcrypt.hashSync(generatedPassword,10);
-      const newUser=new User({
-        username:req.body.name.split(" ").join("").toLowerCase() +Math.floor(Math.random () *10000).toString() ,
-      email:req.body.email, password:hashedPassword,
-      photo:req.body.photo});
+          token: token,
+        },
+      });
+    } else {
+      const generatedPassword =
+        Math.random().toString(36).slice(-8) +
+        Math.random().toString(36).slice(-8);
+      const hashedPassword = bcrypt.hashSync(generatedPassword, 10);
+      const newUser = new User({
+        username:
+          req.body.name.split(" ").join("").toLowerCase() +
+          Math.floor(Math.random() * 10000).toString(),
+        email: req.body.email,
+        password: hashedPassword,
+        photo: req.body.photo,
+      });
       await newUser.save();
-      const token=jwt.sign({id:newUser._id},process.env.JWT_SECRET);
-      const {password:hashedPassword2,...rest}=newUser._doc;
-      const expiryDate=new Date(Date.now()+3600000);
-      res.cookie('access_token',token,{
-        httpOnly:true,
-        expires:expiryDate,
-      }).status(200).json(rest);
-     
+      const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET);
+      const { password: hashedPassword2, ...rest } = newUser._doc;
+      const expiryDate = new Date(Date.now() + 3600000);
+      res
+        .cookie("access_token", token, {
+          httpOnly: true,
+          expires: expiryDate,
+        })
+        .status(200)
+        .json(rest);
     }
-  }catch(error){
-    next(error)
+  } catch (error) {
+    next(error);
   }
-}
+};
 
 const forgotEmailCheck = asyncHandler(async (req, res) => {
   const { email } = req.body;
@@ -143,9 +149,8 @@ const forgotOtpVerify = asyncHandler(async (req, res) => {
 
 const resendEmailCheck = asyncHandler(async (req, res) => {
   const { email } = req.body;
-  console.log("Resending email check for:", email);
+
   const userExists = await User.findOne({ email: email });
-  console.log("User exists:", userExists);
 
   if (userExists && !userExists.blocked) {
     let newotp = Math.floor(1000 + Math.random() * 9000);
@@ -153,14 +158,13 @@ const resendEmailCheck = asyncHandler(async (req, res) => {
     await userExists.save();
 
     sendOtpLink(userExists.email, newotp);
-    console.log("OTP sent to:", userExists.email);
+
     res.status(200).json({
       _id: userExists._id,
       name: userExists.name,
       email: userExists.email,
     });
   } else {
-    console.log("User not found or blocked by admin");
     res.status(400).json({ error: "User not found or blocked by admin" });
   }
 });
@@ -186,7 +190,7 @@ const resetPassword = asyncHandler(async (req, res) => {
 });
 
 const register = asyncHandler(async (req, res) => {
-  const { email, password, name, role, photo, gender } = req.body;
+  const { email, password, name, role, photo, gender, blood, age } = req.body;
 
   try {
     let userExists = await (role === "patient"
@@ -210,13 +214,29 @@ const register = asyncHandler(async (req, res) => {
     } else {
       const newUser =
         role === "patient"
-          ? new User({ name, email, password: hashPassword, photo, gender })
-          : new Doctor({ name, email, password: hashPassword, photo, gender });
+          ? new User({
+              name,
+              email,
+              password: hashPassword,
+              photo,
+              gender,
+              blood,
+              age,
+              role,
+            })
+          : new Doctor({
+              name,
+              email,
+              password: hashPassword,
+              photo,
+              gender,
+              blood,
+              age,
+            });
       newUser.otp = newotp;
       await newUser.save();
     }
 
-    // Send OTP email
     await sendOtpLink(email, newotp);
 
     res.status(201).json({ message: "User successfully created" });
@@ -250,9 +270,6 @@ export const otpVerify = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc    Logout user / clear cookie
-// @route   POST /api/users/logout
-// @access  Public
 const logoutUser = (req, res) => {
   res.cookie("jwt", "", {
     httpOnly: true,
@@ -260,9 +277,7 @@ const logoutUser = (req, res) => {
   });
   res.status(200).json({ message: "Logged out successfully" });
 };
-// @desc    Get user profile
-// @route   GET /api/users/profile
-// @access  Private
+
 const getUserProfile = asyncHandler(async (req, res) => {
   const userId = req.userId;
   try {
@@ -275,13 +290,11 @@ const getUserProfile = asyncHandler(async (req, res) => {
 
     const { password, ...rest } = user._doc;
 
-    res
-      .status(200)
-      .json({
-        success: true,
-        message: "Profile info is getting",
-        data: { ...rest },
-      });
+    res.status(200).json({
+      success: true,
+      message: "Profile info is getting",
+      data: { ...rest },
+    });
   } catch (err) {
     console.error("Error fetching user profile:", err);
     res
@@ -294,13 +307,10 @@ const getMyAppointments = async (req, res) => {
   try {
     const userId = req.userId;
 
-    // retrieve appointments from booking for specific user
     const bookings = await Booking.find({ user: req.userId });
 
-    // extract doctor ids from appointment bookings
     const doctorIds = bookings.map((el) => el.doctor.id);
 
-    // retrieve doctors using doctor ids
     const doctors = await Doctor.find({ _id: { $in: doctorIds } }).select(
       "-password"
     );
@@ -319,10 +329,9 @@ const getMyAppointments = async (req, res) => {
 const updateUser = async (req, res) => {
   try {
     const id = req.params.id;
-    const { name, email, mobile, password, gender, age, blood, role } =
+    const { name, email, mobile, password, gender, age, blood, role ,photo} =
       req.body;
 
-    // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const updatedUser = await User.findByIdAndUpdate(
@@ -332,11 +341,12 @@ const updateUser = async (req, res) => {
           name,
           email,
           mobile,
-          password: hashedPassword, // Store the hashed password
+          password: hashedPassword,
           gender,
           age,
           blood,
           role,
+          photo,
         },
       },
       { new: true }
@@ -352,12 +362,14 @@ const updateUser = async (req, res) => {
     res.status(500).json({ success: false, message: "Failed to update" });
   }
 };
-export const getDoctors = asyncHandler(async(req,res)=>{
-  const doctors = await Doctor.find({},{password:0})
-  if(doctors){
-      res.status(200).json({doctorsData:doctors})
-  }else{
-      res.status(400).json({error:"Error in Fetching Doctors Data"})
+export const getDoctors = asyncHandler(async (req, res) => {
+  const doctors = await Doctor.find({}, { password: 0 });
+  if (doctors) {
+    res.status(200).json({ doctorsData: doctors });
+  } else {
+    res
+      .status(400)
+      .json({ status: false, error: "Error in Fetching Doctors Data" });
   }
 });
 export const deleteUser = async (req, res) => {
@@ -410,5 +422,4 @@ export {
   resetPassword,
   logoutUser,
   updateUser,
-  
 };

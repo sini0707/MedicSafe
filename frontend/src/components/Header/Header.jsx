@@ -9,13 +9,15 @@ import { useDispatch } from 'react-redux';
 import { baseURL } from '../../../../backend/config/db';
 import {logout} from "../../slices/authSlice";
  
+
+
 const navLinks = [
   {
     path: '/home',
     display: 'Home'
   },
   {
-    path: '/get-doctors',
+    path: '/finddoctors',
     display: 'Find a Doctor'
   },
   {
@@ -119,11 +121,11 @@ const Header = () => {
         <div className='flex items-center gap-4'>
           {user && user.token ? ( // Check if user and token exist
             <div>
-              <NavLink to= "/users/profile/me">
+              <NavLink to= "/users/profile/me" className="flex items-center">
                 <figure className='w-[35px] h-[35px] rounded-full cursor-pointer'>
-                  <img src={user?.photo} className="w-full rounded-full object-cover" alt="" />
+                  <img src={user?.photo} className="w-full  rounded-full " alt="" />
                 </figure>
-                <h2>Welcome {user.name}</h2>
+                <h2 className=" ml-3 mr-2">Welcome {user.name}</h2>
                 <button onClick={logoutHandler} className='bg-primaryColor py-2 px-6 text-white font [600] h-[44px] flex items-center rounded-[50px]'>
                  Logout
           </button>

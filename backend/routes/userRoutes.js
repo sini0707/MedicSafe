@@ -35,7 +35,7 @@ router.post('/resend-email-check',resendEmailCheck  );
  router.post('/reset-password',resetPassword);
  router.post('/google',Google);
  router.post('/logout',logoutUser);
- router.get('/get-doctors',getDoctors);
+router.get('/getdoctors',getDoctors);
 
 
 
