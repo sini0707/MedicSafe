@@ -26,6 +26,7 @@ import DoctorOtpVerify from '../pages/Doctors/DoctorOtpVerify.jsx';
 import DoctorLogin from '../pages/Doctors/DoctorLogin.jsx';
 import DoctorsHome from '../pages/Doctors/DoctorsHome.jsx';
 import Doctorss from '../pages/Doctors/Doctors.jsx';
+import ChangePassword from '../pages/Users/ChangePassword.jsx';
 // import DoctorProfile from '../pages/Doctors/DoctorProfile.jsx';
 
 
@@ -46,7 +47,9 @@ function Routers() {
 
 <Route path="/contact" element={<Contact/>}/>
 <Route path="/services" element={<Services/>}/>
+<Route path="/changepassword" element={<ChangePassword/>}/>
 <Route path="/users/profile/me" element={<ProtectedRoute allowedRoles={['patient']}><MyAccount/></ProtectedRoute>} />
+
 
 
 

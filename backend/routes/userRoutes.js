@@ -16,9 +16,11 @@ import {
   getSingleUser,
   logoutUser,
   updateUser,
-  getDoctors
+  getDoctors,
+  ChangePassword,
 } from '../Controllers/userController.js';
 import { protect } from '../middleware/authMiddleware.js';
+
 const router = express.Router();
 
 router.post('/register', register);
@@ -40,7 +42,8 @@ router.get('/getdoctors',getDoctors);
 
 
 router.get('/profile/me',protect,getUserProfile);
-router.post('/updateUser/:id',updateUser)
+router.post('/updateUser/:id',updateUser);
+router.post('/changepassword',ChangePassword);
 router.get("appointments/my-appointments",getMyAppointments)
 router.get("/:id",getSingleUser);
 router.get("/",getAllUser);

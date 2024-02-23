@@ -135,18 +135,36 @@ const forgotOtpVerify = asyncHandler(async (req, res) => {
   const { email, otp } = req.body;
   const userExists = await User.findOne({ email: email });
 
-  if (userExists && userExists.otp === Number(otp)) {
+//   if (userExists && userExists.otp === Number(otp)) {
+//     res.status(200).json({
+//       _id: userExists._id,
+//       name: userExists.name,
+//       email: userExists.email,
+//       otp: userExists.otp,
+//     });
+//   } else {
+//     res.status(400).json({ error: "OTP Incorrect" });
+//   }
+// });
+if (userExists) {
+  if (userExists.otp !== Number(otp)) {
+    return res.status(400).json({ error: "Invalid OTP" });
+  }
+  
+    userExists.verified = true;
+    userExists = await userExists.save();
+    generateToken(res, userExists._id);
     res.status(200).json({
       _id: userExists._id,
       name: userExists.name,
       email: userExists.email,
-      otp: userExists.otp,
+      blocked: userExists.blocked,
     });
   } else {
-    res.status(400).json({ error: "OTP Incorrect" });
+    res.status(404).json({ error: "User not found" });
   }
-});
 
+});
 const resendEmailCheck = asyncHandler(async (req, res) => {
   const { email } = req.body;
 
@@ -254,20 +272,23 @@ export const otpVerify = asyncHandler(async (req, res) => {
   let userExists = await User.findOne({ email });
 
   if (userExists) {
-    if (userExists.otp == Number(otp)) {
-      generateToken(res, userExists._id);
+    if (userExists.otp !== Number(otp)) {
+      return res.status(400).json({success: false,  message: "Invalid OTP" });
+    }
+    
       userExists.verified = true;
       userExists = await userExists.save();
-      res.status(201).json({
+      generateToken(res, userExists._id);
+      res.status(200).json({
         _id: userExists._id,
         name: userExists.name,
         email: userExists.email,
         blocked: userExists.blocked,
       });
     } else {
-      res.status(201).json({ error: "Invalid OTP" });
+      res.status(404).json({ error: "User not found" });
     }
-  }
+  
 });
 
 const logoutUser = (req, res) => {
@@ -362,6 +383,36 @@ const updateUser = async (req, res) => {
     res.status(500).json({ success: false, message: "Failed to update" });
   }
 };
+
+const ChangePassword = asyncHandler(async (req, res) => {
+  const { email, newpassword } = req.body;
+  console.log(req.body,'req');
+
+
+  const salt = await bcrypt.genSalt(10);
+  console.log(salt,'salt');
+  const hashPassword = await bcrypt.hash(newpassword, salt);
+console.log(hashPassword,'hasg');
+  const userExists = await User.findOne({ email: email });
+  console.log(userExists);
+  if (userExists) {
+    userExists.password = hashPassword;
+  
+    let changePassword = await userExists.save();
+    console.log(changePassword,'changedpasword');
+    if (changePassword) {
+      console.log("success");
+      res.status(200).json({ message: "Password Changed Successfully" });
+    } else {
+      console.log('fail');
+      res.status(400).json({ error: "Failed to change the password" });
+    }
+  } else {
+    res.status(400).json({ error: "User not found" });
+  }
+});
+
+
 export const getDoctors = asyncHandler(async (req, res) => {
   const doctors = await Doctor.find({}, { password: 0 });
   if (doctors) {
@@ -422,4 +473,5 @@ export {
   resetPassword,
   logoutUser,
   updateUser,
+  ChangePassword,
 };

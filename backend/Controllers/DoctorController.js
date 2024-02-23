@@ -99,22 +99,24 @@ export const DoctorOtpVerify = asyncHandler(async (req, res) => {
   let doctorExists = await Doctor.findOne({ email });
 
   if (doctorExists) {
-    if (doctorExists.otp == Number(otp)) {
-      DoctorgenToken(res, doctorExists._id);
-      doctorExists.verified = true;
-      doctorExists = await doctorExists.save();
-      res.status(201).json({
+    if (doctorExists.otp !== Number(otp)) {
+      return res.status(400).json({ error: "Invalid OTP" });
+    }
+    
+    doctorExists.verified = true;
+    doctorExists = await doctorExists.save();
+      generateToken(res, doctorExists._id);
+      res.status(200).json({
         _id: doctorExists._id,
         name: doctorExists.name,
         email: doctorExists.email,
         blocked: doctorExists.blocked,
       });
     } else {
-      res.status(201).json({ error: "Invalid OTP" });
+      res.status(404).json({ error: "User not found" });
     }
-  }
+  
 });
-
 export const DoctorLogin = async (req, res) => {
   try {
     const { email, password } = req.body;
