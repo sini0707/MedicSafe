@@ -17,17 +17,17 @@ console.log("hell0");
       console.log(token);
  
   
-       const decoded = jwt.verify(token, process.env.JWT_SECRET);
+       const decoded = jwt.verify(token, process.env.DOCTOR_JWT_SECRET);
        console.log(decoded,"token+jwt")
-       const userId=decoded.userId
+       const userId=decoded.doctorId
       
-      if(decoded.role!=='user'){
-        res.status(401).json({error:"Not authorized,user not found"})
-        throw new Error("Not authorized,user not found")
-      }else{
+    //   if(decoded.role!=='user'){
+    //     res.status(401).json({error:"Not authorized,user not found"})
+    //     throw new Error("Not authorized,user not found")
+    //   }else{
         req.userId = userId; 
               next();
-      }
+    //   }
     
     } catch (error) {
       console.error(error,'errrrrorrrr');

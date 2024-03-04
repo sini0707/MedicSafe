@@ -98,8 +98,8 @@ const DoctorLogin = () => {
           <p className="mt-5 text-textColor text-center">
   Dont have an account? 
   <Link to='/doctors/signup' className="text-primaryColor font-medium ml-1">Register</Link>
-  {/* <span className="ml-3">|</span>
-  <Link to='/forgot' className="text-primaryColor ml-3">Forgot Password</Link> */}
+  <span className="ml-3">|</span>
+  <Link to='/doctors/forgot' className="text-primaryColor ml-3">Forgot Password</Link>
 </p>
 
         </form>

@@ -1,62 +1,48 @@
- import { useState } from "react";
+
+import { useState } from "react";
  import apiInstance from "../../axiosApi/axiosInstance";
  import { useNavigate } from "react-router-dom";
 
 import { baseURL } from '../../../../backend/config/db';
 
-const ChangePasswordForm = ({email}) => {
-  console.log(email);
-  const [currentPassword,setcurrentPassword]=useState('');
+const DoctorChangePassword = ({email}) => {
+    const [currentPassword,setcurrentPassword]=useState('');
   const [newpassword, newSetPassword] = useState('');
   const [confirmPass, setConfirmPass] = useState('');
-  // const [success, setSuccess] = useState(false);
-  // const [error, setError] = useState(null);
   const [loading,setLoading]=useState(false)
-  const [passwordChanged, setPasswordChanged] = useState(false); // State to track if password changed
-
-  
+  const [passwordChanged, setPasswordChanged] = useState(false); 
 
   const navigate = useNavigate();
         console.log(email,"email")
+        
+        
+        const submitHandler = async (e) => {
 
-  
-    const submitHandler = async (e) => {
-
-      e.preventDefault();
-
-      try {
-        if (newpassword !== confirmPass) {
-          console.log('yes');
-          // setError("New password and confirm password must match");
-
-          return;
+            e.preventDefault();
+            try {
+                if (newpassword !== confirmPass) {
+                 return;
+                }
+        
+                setLoading(true); 
+        
+                    const res = await apiInstance.post(`${baseURL}/doctors/changepassword`, {
+                      email,
+                      currentPassword,
+                      newpassword,
+                      confirmPass,
+                     
+                    });
+                    setPasswordChanged(true);
+                    window.location.reload()
+                  } catch (error) {
+                    console.log(error);
+                    
+                  }
         }
 
-        setLoading(true); // Set loading state to true when the form is submitted
-
-            const res = await apiInstance.post(`${baseURL}/users/changepassword`, {
-              email,
-              currentPassword,
-              newpassword,
-              confirmPass,
-             
-            });
-            setPasswordChanged(true);
-            window.location.reload()
-          } catch (error) {
-            console.log(error);
-            // Handle error response
-            // setSuccess(false);
-            // setError("An error occurred while changing the password. Please try again later.");
-          }
-        };
-      
-
-      
-    
   return (
-
-<div className="bg-gray-100 flex items-center justify-center h-screen">
+    <div className="bg-gray-100 flex items-center justify-center h-screen">
 <div className="bg-white p-8 rounded-lg shadow-lg max-w-sm w-full">
   <div className="flex items-center space-x-2 mb-6">
     <img
@@ -99,7 +85,7 @@ const ChangePasswordForm = ({email}) => {
       <input
     onChange={(e) => {
       newSetPassword(e.target.value);
-      console.log(e.target.value); // Add console log here
+      console.log(e.target.value); 
     }}
         type="password"
         id="newPassword"
@@ -117,7 +103,7 @@ const ChangePasswordForm = ({email}) => {
       <input
     onChange={(e) => {
       setConfirmPass(e.target.value);
-      console.log(e.target.value); // Add console log here
+      console.log(e.target.value); 
     }}
         type="password"
         id="confirmPassword"
@@ -142,7 +128,7 @@ const ChangePasswordForm = ({email}) => {
   </form>
 </div>
 </div>
-)
+  )
 }
 
- export default ChangePasswordForm;
+export default DoctorChangePassword

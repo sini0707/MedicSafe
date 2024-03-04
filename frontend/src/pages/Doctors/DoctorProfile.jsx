@@ -1,12 +1,120 @@
+import uploadImageCloudinary from "../../../../backend/utils/uploadCloudinary";
+import { useEffect, useState } from 'react';
+import { baseURL } from "../../../../backend/config/db";
+import { setDoctorCredentials } from "../../slices/doctorSlices/doctorAuthSlice";
+import { useNavigate} from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import {toast} from 'react-toastify';
+import {doctoken} from "../../../config";
 
+const DoctorProfile = (doctor) => {
+  
+    const docId=doctor. doctor._id;
+    console.log(doctor,"doctor");
+  const [selectedFile,setSelectedFile]=useState(null);
+  const [selectedCertificate, setSelectedCertificate] = useState(null);
+  console.log(selectedFile,"photo");
+  console.log(selectedCertificate,"certificate");
 
-const DoctorProfile = () => {
+  const [loading,setLoading]=useState(false)
+  const [formData,setFormData]=useState({
+    name:'',
+    email:'',
+    mobile:"",
+    photo:"null",
+    experience:"",
+    education:"",
+    certificate:"",
+    fees:"",
+    address:"",
+    
+  });
+  const dispatch = useDispatch();
+  const navigate=useNavigate();
+
+  const handleInputChange=(e)=>{
+    setFormData({...formData,[e.target.name]:e.target.value})
+  };
+  const handleFileInputChange=async (event)=>{
+    console.log('fileinput');
+    const file=event.target.files[0];
+console.log(file,'file');
+    const data=await uploadImageCloudinary(file)
+   console.log(data.url,'data');
+    setSelectedFile(data.url);
+    setFormData({...formData,photo:data.url});
+
+ }
+ const handleCertificateInputChange = async (event) => {
+  const file = event.target.files[0];
+  const data = await uploadImageCloudinary(file);
+  setSelectedCertificate(data.url);
+  setFormData({ ...formData, certificate: data.url });
+};
+
+ useEffect(() => {
+  if (doctor && doctor.doctor) {
+ 
+  setFormData({
+    name: doctor.doctor.name ,
+    email: doctor.doctor.email,
+    mobile:doctor.doctor.mobile,
+    photo: doctor.doctor.photo || '',
+    experience:doctor.doctor.experience||'',
+    education:doctor.doctor.education||"",
+    certificate:doctor.doctor.certificate||"",
+    fees:doctor.doctor.fees||"",
+    address:doctor.doctor.address||"",
+    role: doctor.role || 'doctor', 
+    
+  
+  });
+}
+}, [doctor]);
+
 
 
     const submitHandler = async(e)=>{
       
           e.preventDefault()
-        }
+
+          setLoading(true);
+    try {
+    
+   
+      const res = await fetch(`${baseURL}/doctors/updateDoctor/${docId}`, {
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${doctoken}`,
+        },
+        body:JSON.stringify(formData,)
+           // Convert the data to JSON
+      });
+
+      const responseData = await res.json(); 
+
+  
+      if (!res.ok) {
+        throw new Error(responseData.message || 'Failed to update profile');
+      }
+      
+        const { message,data } = responseData;
+         // Include the token from the existing user data
+        data.token = doctor.doctor.token;
+        dispatch(setDoctorCredentials(data));
+        toast.success(message || 'Profile successfully updated'); 
+   
+  setLoading(false);
+
+    } catch (err) {
+      console.log(err)
+      toast.error(err.message);
+      setLoading(false);
+    }
+  };
+  
+        
   return (
     <section className="p-4 px-5 lg:px-0">
       <div className="faded-blue-div text-center md:text-left w-full max-w-[1000px] mx-auto rounded-lg shadow-md p-5">
@@ -22,207 +130,99 @@ const DoctorProfile = () => {
           className="md:flex md:justify-between md:mx-[60px] items-center"
         >
           <div className="px-2 m-2">
-            <div className="flex">
-              <div className="mb-2 h-40 me-2 bg-blue-300 w-1/2 rounded-lg">
-                <img src='' className='w-full h-full rounded-lg' alt="doctor-image" />
-              </div>
-              <div className="mb-2 ms-2 p-4 w-1/2">
-                <div>
-                  <label
-                    htmlFor="uploadPhoto"
-                    className="inline-block text-sm font-medium text-blue-500 dark:text-blue-200"
-                  >
-                    Upload your Photo
-                  </label>
-                  <input
-                    className="relative py-1 m-0 block w-full min-w-0 flex-auto cursor-pointer rounded border border-solid border-blue-300 bg-clip-padding px-3 py-[0.32rem] text-xs font-normal text-blue-700 transition duration-300 ease-in-out file:-mx-3 file:-my-[0.32rem] file:cursor-pointer file:overflow-hidden file:rounded-none file:border-0 file:border-solid file:border-inherit file:bg-blue-100 file:px-3 file:py-[0.32rem] file:text-blue-700 file:transition file:duration-150 file:ease-in-out file:[border-inline-end-width:1px] file:[margin-inline-end:0.75rem] hover:file:bg-blue-200 focus:border-primary focus:text-blue-700 focus:shadow-te-primary focus:outline-none dark:border-blue-600 dark:text-blue-200 dark:file:bg-blue-700 dark:file:text-blue-100 dark:focus:border-primary"
-                    id="uploadPhoto"
-                    
-                    accept="image/*"
-                    type="file"
-                  />
+          <div className='mb-5 flex items-center gap-3'>
+            {formData.photo && (
+            <figure className='w-[60px] h-[60px] rounded-full border-2 border-solid border-primaryColor flex items-center justify-center'>
+              <img
+              src={formData.photo} alt="" className='w-full rounded-full'/>
+
+            </figure>)}
+            <div className='relative w-[130px] h-[50px]'>
+              <input type='file'name='photo'id='customFile' onChange={handleFileInputChange}   accept='.jpg,.png'
+              className='absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer'/>
+              <label htmlFor='customFile'
+              className='absolute top-0 left-0 w-full h-full flex items-center px-[0.75rem] py-[0.375rem] text-[15px] leading-6 overflow-hidden bg-[#0066ff46] text-headingColor font semibold rounded-lg truncate cursor-pointer'
+              >
+                {selectedFile ? selectedFile.name :"Upload Photo"}
+                </label>
                 </div>
-              </div>
-            </div>
 
-            <div className="my-[10px]">
-              <label
-                className="text-blue-500 text-sm font-medium"
-                htmlFor="name"
-              >
-                Name
-              </label>
-              <input
-                type="text"
-                name="name"
-                id="name"
-                // value={name}
-               
-                placeholder="Enter Your Name"
-                className="block px-2 py-1 w-full text-[15px] border-solid border-b-2 focus:text-[16px] focus:border-blue-500 focus:outline-none"
-              />
-            </div>
+          </div>
 
-            <div className="my-[10px]">
-              <label
-                className="text-blue-500 text-sm font-medium"
-                htmlFor="email"
-              >
-                Email
-              </label>
-              <input
-                type="email"
-                name="email"
-                id="email"
-                // value={email}
-                
-                placeholder="Enter Your Email"
-                className="block px-2 py-1 w-full text-[15px] border-solid border-b-2 focus:text-[16px] focus:border-blue-500 focus:outline-none"
-              />
-            </div>
+          <div className="mb-5">
+            <input type="text" placeholder="Full Name" name="name" value={formData.name} onChange={(e)=>handleInputChange(e)}
+            className="w-full pr-4 py-3 border-b border-solid border-[#0066ff61] focus:outline-none focus:border-b-primaryColor text-[16px] leading-7 text-headingColor
+            placeholder:text-textColor  cursor-pointer"/>
+          </div>
 
-            <div className="my-[10px]">
-              <label
-                className="text-blue-500 text-sm font-medium"
-                htmlFor="specialization"
-              >
-                Specialisation
-              </label>
-              <input
-                type="text"
-                name="specialisation"
-                id="specialization"
-               
-                
-                placeholder="Your Specialization"
-                className="block px-2 py-1 w-full text-[15px] border-solid border-b-2 focus:text-[16px] focus:border-blue-500 focus:outline-none"
-              />
-            </div>
-            <div className="my-[10px]">
-              <label
-                className="text-blue-500 text-sm font-medium"
-                htmlFor="address"
-              >
-                Address
-              </label>
-              <textarea
-                name="address"
-                id="address"
-                
-                cols="50"
-                rows="4"
-                placeholder="Enter Your Address"
-                className="block px-2 py-1 w-full text-[15px] border-solid border-b-2 focus:text-[16px] focus:border-blue-500 focus:outline-none"
-              ></textarea>
-            </div>
+          <div className="mb-5">
+            <input type="email" placeholder="Enter your email" name="email" value={formData.email} onChange={(e)=>handleInputChange(e)}
+            className="w-full pr-4 py-3 border-b border-solid border-[#0066ff61] focus:outline-none focus:border-b-primaryColor text-[16px] leading-7 text-headingColor
+            placeholder:text-textColor  cursor-pointer"/>
+          </div>
+          
+          <div className="mb-5">
+            <input type="number" placeholder="your mobile" name="mobile" value={formData.mobile} onChange={(e)=>handleInputChange(e)} 
+            className="w-full pr-4 py-3 border-b border-solid border-[#0066ff61] focus:outline-none focus:border-b-primaryColor text-[16px] leading-7 text-headingColor
+            placeholder:text-textColor  cursor-pointer "/>
+          </div>
+
+          <div className="mb-5">
+            <input type="text" placeholder="your specialization" name="specialization" value={formData.specialization} onChange={(e)=>handleInputChange(e)} 
+            className="w-full pr-4 py-3 border-b border-solid border-[#0066ff61] focus:outline-none focus:border-b-primaryColor text-[16px] leading-7 text-headingColor
+            placeholder:text-textColor  cursor-pointer "/>
+          </div>
+           
+
+          <div className="mb-5">
+            <input type="text" placeholder=" Your Address" name="address" value={formData.address} onChange={(e)=>handleInputChange(e)} 
+            className="w-full pr-4 py-3 border-b border-solid border-[#0066ff61] focus:outline-none focus:border-b-primaryColor text-[16px] leading-7 text-headingColor
+            placeholder:text-textColor  cursor-pointer "/>
+          </div>
+          <div className="mb-5">
+            <input type="text" placeholder=" Your Education" name="education" value={formData.education} onChange={(e)=>handleInputChange(e)} 
+            className="w-full pr-4 py-3 border-b border-solid border-[#0066ff61] focus:outline-none focus:border-b-primaryColor text-[16px] leading-7 text-headingColor
+            placeholder:text-textColor  cursor-pointer "/>
+          </div>
+          <div className="mb-5">
+            <input type="text" placeholder=" Your Experience" name="experience" value={formData.experience} onChange={(e)=>handleInputChange(e)} 
+            className="w-full pr-4 py-3 border-b border-solid border-[#0066ff61] focus:outline-none focus:border-b-primaryColor text-[16px] leading-7 text-headingColor
+            placeholder:text-textColor  cursor-pointer "/>
+          </div>
+
+
+          
           </div>
           <div className="px-2">
-          <div className="mb-3 flex">
-              <div className="me-2 w-1/2">
-                <label
-                  htmlFor="uploadResume"
-                  className="mb-2 inline-block text-blue-500 text-sm font-medium dark:text-blue-200"
-                >
-                  Upload your Resume
+          
+            
+            
+            <div className="mb-5">
+            <input type="number" placeholder="enter fees" name="fees" value={formData.fees} onChange={(e)=>handleInputChange(e)} 
+            className="w-full pr-4 py-3 border-b border-solid border-[#0066ff61] focus:outline-none focus:border-b-primaryColor text-[16px] leading-7 text-headingColor
+            placeholder:text-textColor  cursor-pointer "/>
+          </div>
+
+          <div className='mb-5 flex items-center gap-3'>
+            {formData.certificate && (
+            <figure className='w-[60px] h-[60px] rounded-full border-2 border-solid border-primaryColor flex items-center justify-center'>
+              <img
+              src={formData.certificate} alt="" className='w-full rounded-full'/>
+
+            </figure>)}
+            <div className='relative w-[130px] h-[50px]'>
+              <input type='file'name='certificate'id='customFile2' onChange={handleCertificateInputChange}   accept='.jpg,.png'
+              className='absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer'/>
+              <label htmlFor='customFile2'
+              className='absolute top-0 left-0 w-full h-full flex items-center px-[0.75rem] py-[0.375rem] text-[15px] leading-6 overflow-hidden bg-[#0066ff46] text-headingColor font semibold rounded-lg truncate cursor-pointer'
+              >
+                {selectedCertificate ? selectedCertificate.name :"Upload Certificate"}
                 </label>
-                <input
-                  className="relative m-0 block w-full min-w-0 flex-auto cursor-pointer rounded border border-solid border-blue-300 bg-clip-padding px-3 py-[0.32rem] text-xs font-normal text-blue-700 transition duration-300 ease-in-out file:-mx-3 file:-my-[0.32rem] file:cursor-pointer file:overflow-hidden file:rounded-none file:border-0 file:border-solid file:border-inherit file:bg-blue-100 file:px-3 file:py-[0.32rem] file:text-blue-700 file:transition file:duration-150 file:ease-in-out file:[border-inline-end-width:1px] file:[margin-inline-end:0.75rem] hover:file:bg-blue-200 focus:border-primary focus:text-blue-700 focus:shadow-te-primary focus:outline-none dark:border-blue-600 dark:text-blue-200 dark:file:bg-blue-700 dark:file:text-blue-100 dark:focus:border-primary"
-                  id="uploadResume"
-                  accept="application/pdf"
-                
-                  type="file"
-                />
-                <p className="text-blue-500 text-xs font-bold mt-1">
-                  Only pdf files are accepted**
-                </p>
-              </div>
-              <div className="ms-2 w-1/2">
-                <label
-                  className="text-blue-500 text-sm font-medium"
-                  htmlFor="fees"
-                >
-                  Fees
-                </label>
-                <input
-                  type="number"
-                  name="fees"
-                  id="fees"
-                 
-                  placeholder="Enter Your Fees"
-                  className="block mt-1 px-2 py-1 w-full text-[15px] border-solid border-b-2 focus:text-[16px] focus:border-blue-500 focus:outline-none"
-                />
-              </div>
-            </div>
-            <div className="my-[20px]">
-              <div>
-                <label
-                  className="text-sm text-blue-500 font-medium"
-                  htmlFor="qualification"
-                >
-                  Qualification
-                </label>
-                <textarea
-                  name="qualification"
-                  className="block px-2 py-1 w-full text-[15px] border-solid border-b-2 focus:text-[16px] focus:border-blue-500 focus:outline-none"
-                  id="qualification"
-                 
-                  placeholder="Qualification"
-                  cols="30"
-                  rows="2"
-                ></textarea>
-              </div>
-            </div>
-            <div className="my-[20px]">
-              <div>
-                <label
-                  className="text-sm text-blue-500 font-medium"
-                  htmlFor="experience"
-                >
-                  Experience
-                </label>
-                <textarea
-                  name="experience"
-                  className="block px-2 py-1 w-full text-[15px] border-solid border-b-2 focus:text-[16px] focus:border-blue-500 focus:outline-none"
-              
-                 
-                  placeholder="Experience"
-                  cols="30"
-                  rows="2"
-                ></textarea>
-              </div>
-              <div className="my-[20px]">
-                <label
-                  className="text-blue-500 text-sm font-medium"
-                  htmlFor="Password"
-                >
-                  Password
-                </label>
-                <input
-                  type="password"
-                  name="password"
-                  id="Password"
-                 
-                  placeholder="Enter Your Password"
-                  className="block px-2 py-1 w-full text-[15px] border-solid border-b-2 focus:text-[16px] focus:border-blue-500 focus:outline-none"
-                />
-              </div>
-              <div className="my-[20px]">
-                <label
-                  className="text-blue-500 text-sm font-medium"
-                  htmlFor="Confirm Password"
-                >
-                  Confirm Password
-                </label>
-                <input
-                  type="password"
-                  name="password"
-                  id="Confirm Password"
-                  
-                  placeholder="Confirm Password"
-                  className="block px-2 py-1 w-full text-[15px] border-solid border-b-2 focus:text-[16px] focus:border-blue-500 focus:outline-none"
-                />
-              </div>
-            </div>
+                </div>
+
+          </div>
+
+        
             <div className="flex items-center justify-center">
               <button
                 type="submit"
@@ -234,9 +234,7 @@ const DoctorProfile = () => {
           </div>
         </form>
         <div className="text-center">
-          <p className="text-blue-500 font-bold my-2">
-            **Approval is done by the admin team only after proper verification
-          </p>
+         
         </div>
       </div>
     </section>

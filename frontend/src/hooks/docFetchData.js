@@ -48,6 +48,7 @@ const docFetchData = (url) => {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [result, setResult] = useState([]);
 
     useEffect(() => {
         const fetchData = async () => {

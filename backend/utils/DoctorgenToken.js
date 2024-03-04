@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 
 const DoctorgenToken = (res, doctorId) => {
-  const token = jwt.sign({ doctorId }, process.env.DOCTOR_JWT_SECRET, {
+  const token = jwt.sign({ doctorId ,role:'doctor'}, process.env.DOCTOR_JWT_SECRET, {
     expiresIn: "30d",
   });
 

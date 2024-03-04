@@ -97,23 +97,34 @@ const EmailVerify = () => {
      e.preventDefault();
       try{
        console.log(email,otp,'email');
+       const queryParams = new URLSearchParams(location.search);
+       const isForgotPassword = queryParams.get("forgot-password") === "true";
+
         const res = await verify({ email, otp }); 
-        if(res.error){
-          toast.error(res.error)
+     
+        if(res.data){
+          toast.success(res.data.message)
+          
+        if (isForgotPassword) {
+          navigate('/resetPassword', { state: { email } });
+      } else {
+          navigate('/login');
+      }
+
           return
         }
-        dispatch(setCredentials({...res}));
-        const queryParams = new URLSearchParams(location.search);
-        const isForgotPassword = queryParams.get("forgot-password") === "true";
-
-        if (isForgotPassword) {
-            navigate('/resetPassword', { state: { email } });
-        } else {
-            navigate('/login');
+        else{
+          // console.log(res.error,"error");
+          throw new Error(JSON.stringify(res.error))
         }
+        // dispatch(setCredentials({...res}));
+      
+
       }
-       catch(err) {
-        console.log(err,'errr');
+       catch(error) {
+        const errorMessage = JSON.parse(error.message).data.message;
+        console.log('Error message:', errorMessage);
+        toast.error(errorMessage)
       }
     }
    

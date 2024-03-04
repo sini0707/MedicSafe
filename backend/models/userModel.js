@@ -51,7 +51,25 @@ const userSchema = mongoose.Schema(
     blocked:{
       type:Boolean,
       default:false
-    }
+    },
+    bookings:[
+      {
+        doctorId:{
+          type:mongoose.Schema.Types.ObjectId,
+          ref:'Doctor'
+        },
+        date:{
+          type:Date
+        },
+        slot:{
+          type:Number
+        },
+        createdAt:{
+          type:Date,
+          default:Date.now()
+        }
+      }
+    ],
   },
   {
     timestamps: true,

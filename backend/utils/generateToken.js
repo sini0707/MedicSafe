@@ -1,11 +1,10 @@
 import jwt from 'jsonwebtoken';
 
 const generateToken = (res, userId) => {
-  const token = jwt.sign({ userId }, process.env.JWT_SECRET, {
+  const token = jwt.sign({ userId ,role:'user'}, process.env.JWT_SECRET, {
     expiresIn: '30d',
   });
-console.log(token,'generatetoenpage');
-console.log(userId,'userid');
+
   res.cookie('jwt', token, {
     httpOnly: true,
     secure: process.env.NODE_ENV !== 'development', // Use secure cookies in production

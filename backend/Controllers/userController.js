@@ -116,6 +116,8 @@ const forgotEmailCheck = asyncHandler(async (req, res) => {
   const userExists = await User.findOne({ email: email });
 
   if (userExists && !userExists.blocked) {
+
+    
     let newotp = Math.floor(1000 + Math.random() * 9000);
     userExists.otp = newotp;
     await userExists.save();
@@ -135,17 +137,6 @@ const forgotOtpVerify = asyncHandler(async (req, res) => {
   const { email, otp } = req.body;
   const userExists = await User.findOne({ email: email });
 
-//   if (userExists && userExists.otp === Number(otp)) {
-//     res.status(200).json({
-//       _id: userExists._id,
-//       name: userExists.name,
-//       email: userExists.email,
-//       otp: userExists.otp,
-//     });
-//   } else {
-//     res.status(400).json({ error: "OTP Incorrect" });
-//   }
-// });
 if (userExists) {
   if (userExists.otp !== Number(otp)) {
     return res.status(400).json({ error: "Invalid OTP" });
@@ -268,25 +259,34 @@ const register = asyncHandler(async (req, res) => {
 
 export const otpVerify = asyncHandler(async (req, res) => {
   const { email, otp } = req.body;
+  console.log('Received email:', email);
+  console.log('Received OTP:',  otp);
 
   let userExists = await User.findOne({ email });
 
+  console.log('User found:', userExists);
   if (userExists) {
     if (userExists.otp !== Number(otp)) {
+      console.log('Invalid OTP:', otp);
+
       return res.status(400).json({success: false,  message: "Invalid OTP" });
-    }
-    
+    }else{
       userExists.verified = true;
       userExists = await userExists.save();
       generateToken(res, userExists._id);
-      res.status(200).json({
+      res.status(200).json({success:true,
+        message: "OTP verified successfully",
         _id: userExists._id,
         name: userExists.name,
         email: userExists.email,
         blocked: userExists.blocked,
       });
+
+    }
+    
+  
     } else {
-      res.status(404).json({ error: "User not found" });
+      res.status(404).json({success:false, error: "User not found" });
     }
   
 });
@@ -300,7 +300,10 @@ const logoutUser = (req, res) => {
 };
 
 const getUserProfile = asyncHandler(async (req, res) => {
+  console.log("ivideeeeeee");
   const userId = req.userId;
+  console.log(userId);
+  
   try {
     const user = await User.findById(userId);
     if (!user) {
@@ -308,6 +311,7 @@ const getUserProfile = asyncHandler(async (req, res) => {
         .status(404)
         .json({ success: false, message: "User not found" });
     }
+  
 
     const { password, ...rest } = user._doc;
 
@@ -350,11 +354,10 @@ const getMyAppointments = async (req, res) => {
 const updateUser = async (req, res) => {
   try {
     const id = req.params.id;
-    const { name, email, mobile, password, gender, age, blood, role ,photo} =
+    const { name, email, mobile, gender, age, blood, role ,photo} =
       req.body;
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-
+   
     const updatedUser = await User.findByIdAndUpdate(
       id,
       {
@@ -362,7 +365,6 @@ const updateUser = async (req, res) => {
           name,
           email,
           mobile,
-          password: hashedPassword,
           gender,
           age,
           blood,
@@ -414,10 +416,14 @@ console.log(hashPassword,'hasg');
 
 
 export const getDoctors = asyncHandler(async (req, res) => {
+  console.log('Fetching doctors data...');
   const doctors = await Doctor.find({}, { password: 0 });
   if (doctors) {
+    console.log('Doctors data retrieved:', doctors);
+
     res.status(200).json({ doctorsData: doctors });
   } else {
+    console.error('Error in fetching doctors data.');
     res
       .status(400)
       .json({ status: false, error: "Error in Fetching Doctors Data" });

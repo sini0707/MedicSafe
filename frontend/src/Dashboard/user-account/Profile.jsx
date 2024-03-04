@@ -3,18 +3,17 @@ import { useEffect, useState } from 'react'
 
 import uploadImageCloudinary from "../../../../backend/utils/uploadCloudinary";
 import { useNavigate} from 'react-router-dom';
-
+import { useDispatch } from 'react-redux';
 import {toast} from 'react-toastify'
- import {HashLoader} from 'react-spinners/HashLoader'
 import { baseURL } from "../../../../backend/config/db"
+import { setCredentials } from "../../slices/authSlice.js";
 
+import {token} from "../../../config.js"
 
 const Profile = (user) => {
-  console.log(user.user._id ,"userrrrr");
- const  userId=user.user._id;
+  const  userId=user.user._id;
 
   const [selectedFile,setSelectedFile]=useState(null)
-  
   const [loading,setLoading]=useState(false)
   const [formData,setFormData]=useState({
     name:'',
@@ -29,15 +28,27 @@ const Profile = (user) => {
     emerPerson:"",
     emerNumber:"",
     gender:"",
+
     
   });
 
-
+  const dispatch = useDispatch();
   const navigate=useNavigate();
-  useEffect(()=>{
-    setFormData({name:user.name,email:user.email,password:user.password,photo:user.photo,gender:user.gender,blood:user.blood});
-
-  },[user]);
+  
+  useEffect(() => {
+    
+    setFormData({
+      name: user.user.name ,
+      email: user.user.email,
+      photo: user.user.photo || '',
+      gender: user.user.gender || '',
+      age:user.user.age,
+      role: user.role || 'patient',
+      confirmpass: '', 
+      blood: user.user.blood || '', 
+   
+    });
+  }, [user]);
 
 
   const handleInputChange=(e)=>{
@@ -57,31 +68,33 @@ console.log(file,'file');
     event.preventDefault();
     setLoading(true);
     try {
-     
+    
+   
       const res = await fetch(`${baseURL}/users/updateUser/${userId}`, {
         method: 'post',
         headers: {
           'Content-Type': 'application/json',
-         
+          'Authorization': `Bearer ${token}`,
         },
-        body:JSON.stringify(formData)
+        body:JSON.stringify(formData,)
            // Convert the data to JSON
       });
 
       const responseData = await res.json(); 
+
   
       if (!res.ok) {
         throw new Error(responseData.message || 'Failed to update profile');
       }
       
-        const { message } = responseData;
+        const { message,data } = responseData;
+         // Include the token from the existing user data
+        data.token = user.user.token;
+        dispatch(setCredentials(data));
         toast.success(message || 'Profile successfully updated'); 
    
   setLoading(false);
-  toast.success(message)
-  navigate("/users/profile/me")
-     
-    
+
     } catch (err) {
       console.log(err)
       toast.error(err.message);
@@ -95,23 +108,15 @@ console.log(file,'file');
           <div className="mb-5">
             <input type="text" placeholder="Full Name" name="name" value={formData.name} onChange={(e)=>handleInputChange(e)}
             className="w-full pr-4 py-3 border-b border-solid border-[#0066ff61] focus:outline-none focus:border-b-primaryColor text-[16px] leading-7 text-headingColor
-            placeholder:text-textColor  cursor-pointer aria-readonly readOnly"/>
+            placeholder:text-textColor  cursor-pointer"/>
           </div>
           <div className="mb-5">
             <input type="email" placeholder="Enter your email" name="email" value={formData.email} onChange={(e)=>handleInputChange(e)}
             className="w-full pr-4 py-3 border-b border-solid border-[#0066ff61] focus:outline-none focus:border-b-primaryColor text-[16px] leading-7 text-headingColor
             placeholder:text-textColor  cursor-pointer"/>
           </div>
-          <div className="mb-5">
-            <input type="password" placeholder="password" name="password" value={formData.password} onChange={(e)=>handleInputChange(e)} 
-            className="w-full pr-4 py-3 border-b border-solid border-[#0066ff61] focus:outline-none focus:border-b-primaryColor text-[16px] leading-7 text-headingColor
-            placeholder:text-textColor  cursor-pointer "/>
-          </div>
-          <div className="mb-5">
-            <input type="password" placeholder="confirmpassword" name="confirmpassword" value={formData.confirmpassword} onChange={(e)=>handleInputChange(e)} 
-            className="w-full pr-4 py-3 border-b border-solid border-[#0066ff61] focus:outline-none focus:border-b-primaryColor text-[16px] leading-7 text-headingColor
-            placeholder:text-textColor  cursor-pointer "/>
-          </div>
+          
+          
           <div className="mb-5">
             <input type="number" placeholder="your mobile" name="mobile" value={formData.mobile} onChange={(e)=>handleInputChange(e)} 
             className="w-full pr-4 py-3 border-b border-solid border-[#0066ff61] focus:outline-none focus:border-b-primaryColor text-[16px] leading-7 text-headingColor
@@ -171,7 +176,8 @@ console.log(file,'file');
           </div>
           <div className="mt-7">
             <button  disabled={loading && true} type="submit"className="w-full bg-primaryColor text-white text-[18px] leading-[30px] rounded-lg px-4 py-3">
-              {loading ? (<HashLoader size={25} color="#ffffff"/>):"Update"}
+              {/* {loading ? (<HashLoader size={25} color="#ffffff"/>):"Update"} */}
+              Update
             </button>
 
           </div>

@@ -47,14 +47,15 @@ doctor.approved===true && (doctor.name.toLowerCase().includes(search.toLowerCase
     <sectopn className="bg-[#fff9ea]">
         <div className="container text-center">
             <h2 className="heading">Find a Doctor</h2>
-            <div className="max-w-[670px] mt-[20px] mx-auto bg-[#0066ff2c] rounded-md flex justify-between">
+            {/* <div className="max-w-[670px] mt-[20px] mx-auto bg-[#0066ff2c] rounded-md flex justify-between">
             <input 
              type="search" onChange={handleSearch}
     className="py-4 pl-4 pr-2 bg-transparent w-full focus:outline-none cursor-pointer"
     placeholder="Search Doctor"/>
+    
      <button className="btn mt- 0 rounded-[0px] rounded-r-md">
        Search</button>
-            </div>
+            </div> */}
 
         </div>
         <div>

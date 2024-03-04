@@ -34,7 +34,7 @@ const Header = () => {
 
   const user=useSelector((state)=>state.auth.userInfo)
  
-
+console.log(user,'user');
   const headerRef=useRef(null)
   const menuRef=useRef(null)
  const dispatch=useDispatch()

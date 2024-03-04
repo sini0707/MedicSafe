@@ -44,6 +44,9 @@ const DoctorSchema= new mongoose.Schema({
         type: String,
         required: true,
       },
+      otp:{
+        type:Number
+      },
       experience: {
         type: String,
         required: true,
@@ -52,6 +55,40 @@ const DoctorSchema= new mongoose.Schema({
         type: String,
         required: true,
       },
+      certificate: { 
+        type: Array 
+      },
+      bookings: [
+        {
+          date: {
+            type: Date,
+          },
+          slots: [
+            {
+              userId: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'User', // Reference to the User model
+              },
+            },
+          ],
+        },
+      ],
+      available: [
+        {
+          date: {
+            type: Date, // You can use Date for the date field
+          },
+          fromTime: {
+            type: String, // You can use String for the time fields
+          },
+          toTime: {
+            type: String,
+          },
+          expiresAt: {
+            type: Date, // This field will be used for automatic expiration
+          },
+        },
+      ],
      
     },
     {

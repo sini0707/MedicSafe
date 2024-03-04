@@ -1,6 +1,7 @@
 import {useEffect,useState} from 'react'
 
 import {token} from "../../config.js"
+console.log(token,"tokennnn");
 
 const useFetchData = (url) => {
     const [data,setData]=useState([])
@@ -28,6 +29,7 @@ const useFetchData = (url) => {
             }catch(err){
                 setLoading(false)
                 setError(err.message)
+                console.log(error,"fetchDs");
 
             }
         }

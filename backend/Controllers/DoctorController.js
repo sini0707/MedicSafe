@@ -51,8 +51,9 @@ export const register = async (req, res) => {
       experience,
       role,
     } = req.body;
-
+console.log(req.body,'reqbody');
     const doctorExists = await Doctor.findOne({ email });
+    
     if (doctorExists) {
       return res.status(400).json({ message: "Doctor already exists" });
     }
@@ -100,20 +101,20 @@ export const DoctorOtpVerify = asyncHandler(async (req, res) => {
 
   if (doctorExists) {
     if (doctorExists.otp !== Number(otp)) {
-      return res.status(400).json({ error: "Invalid OTP" });
+      return res.status(400).json({ success:false,message:"invalid otp",error: "Invalid OTP" });
     }
     
     doctorExists.verified = true;
     doctorExists = await doctorExists.save();
-      generateToken(res, doctorExists._id);
-      res.status(200).json({
+     DoctorgenToken(res, doctorExists._id);
+      res.status(200).json({success:true,message:"Otp verified successfully",
         _id: doctorExists._id,
         name: doctorExists.name,
         email: doctorExists.email,
         blocked: doctorExists.blocked,
       });
     } else {
-      res.status(404).json({ error: "User not found" });
+      res.status(404).json({ error: "Doctor not found" });
     }
   
 });
@@ -147,8 +148,54 @@ export const DoctorLogin = async (req, res) => {
   }
 };
 
+export const forgotEmailCheck = asyncHandler(async (req, res) => {
+  const { email } = req.body;
+  const doctorExists = await User.findOne({ email: email });
+
+  if (doctorExists && !doctorExists.blocked) {
+    let newotp = Math.floor(1000 + Math.random() * 9000);
+    doctorExists.otp = newotp;
+    await doctorExists.save();
+
+    sendOtpLink(doctorExists.email, newotp);
+    res.status(200).json({
+      _id: doctorExists._id,
+      name:doctorExists.name,
+      email:doctorExists.email,
+    });
+  } else {
+    res.status(400).json({ error: "User not found or blocked by admin" });
+  }
+});
+
+export const forgotOtpVerify = asyncHandler(async (req, res) => {
+  const { email, otp } = req.body;
+  const doctorExists = await User.findOne({ email: email });
+
+if (doctorExists) {
+  if (doctorExists.otp !== Number(otp)) {
+    return res.status(400).json({ error: "Invalid OTP" });
+  }
+  
+  doctorExists.verified = true;
+  doctorExists = await doctorExists.save();
+  generateDoctorToken(res, doctorExists._id);
+    res.status(200).json({
+      _id: doctorExists._id,
+      name: doctorExists.name,
+      email:doctorExists.email,
+      blocked: doctorExists.blocked,
+    });
+  } else {
+    res.status(404).json({ error: "Dcotor not found" });
+  }
+
+});
+
 export const updatedDoctor = async (req, res) => {
+
   const id = req.params.id;
+  console.log(id,"docotr idd")
   try {
     const updatedDoctor = await Doctor.findByIdAndUpdate(
       id,
@@ -157,6 +204,7 @@ export const updatedDoctor = async (req, res) => {
       },
       { new: true }
     );
+    console.log("Updated Doctor:", updatedDoctor);
     res.status(200).json({
       sucess: true,
       message: "Successfully updated",
@@ -166,6 +214,51 @@ export const updatedDoctor = async (req, res) => {
     res.status(500).json({ sucess: false, message: "Failed to update" });
   }
 };
+
+
+export const manageTime = async (req, res) => {
+  const {docId,date,from,to} = req.body
+  console.log('Received request with data:', req.body);
+  let newTime = { date:date,fromTime:from,toTime:to,expiresAt:date }
+  console.log('New time data:', newTime);
+  const doctor = await Doctor.updateOne(
+      { _id: docId },
+      { $push: { available: newTime } });
+      console.log('Doctor update result:', doctor);
+  if(doctor){
+      res.status(201).json({
+          _id:doctor._id,
+          name:doctor.name,
+          email:doctor.email
+      })
+  }else{
+      res.status(400)
+      throw new Error('Error Occured')
+  }
+  
+};
+export const deleteTimings = asyncHandler(async(req,res)=>{
+  const { docId,id } = req.params
+  const doctor = await Doctor.findByIdAndUpdate(docId,{$pull: { available: { _id: id } }})
+  if(doctor){
+      res.status(200).json({message:"Successfully Deleted"})
+  }else{
+      res.status(400).json({message:"Failed to Delete"})
+  }
+});
+
+export const getTimings = asyncHandler(async(req,res)=>{
+  const { id } = req.params
+  const doctor = await Doctor.findOne({_id:id})
+  console.log(doctor);
+  if(doctor){
+      res.status(200).json({timings:doctor.available})
+  }else{
+      res.status(400).json({error:"Failed to Fetch"})
+  }
+});
+
+
 export const deleteDoctor = async (req, res) => {
   const id = req.params.id;
   try {
@@ -178,17 +271,49 @@ export const deleteDoctor = async (req, res) => {
     res.status(500).json({ success: false, message: "Failed to delete" });
   }
 };
+export const getDoctor = asyncHandler(async(req,res)=>{
+  console.log("hereee");
+  const userId = req.userId;
+
+  console.log(userId);
+  try {
+    const user = await Doctor.findById(userId);
+    console.log(user);
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+    }
+  
+
+    const { password, ...rest } = user._doc;
+
+    res.status(200).json({
+      success: true,
+      message: "Profile info is getting",
+      data: { ...rest },
+    });
+  } catch (err) {
+    console.error("Error fetching user profile:", err);
+    res
+      .status(500)
+      .json({ success: false, message: "Something went wrong, cannot get" });
+  }
+});
 export const getSingleDoctor = async (req, res) => {
+  console.log(id,'idddd')
   const id = req.params.id;
 
   try {
     const doctor = await Doctor.findById(id).select("-password");
+    console.log("Doctor found:", doctor);
     res.status(200).json({
       sucess: true,
       message: "Doctor found",
       data: doctor,
     });
   } catch (err) {
+    console.error("Error fetching doctor:", err);
     res.status(404).json({ sucess: false, message: "no doctor found" });
   }
 };

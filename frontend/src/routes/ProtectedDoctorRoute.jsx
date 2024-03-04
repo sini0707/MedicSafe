@@ -3,14 +3,14 @@
 import { Navigate } from 'react-router-dom';
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
+ 
+  const doctor=JSON.parse( localStorage.getItem("doctorInfo"));
 
-  const user=JSON.parse( localStorage.getItem("userInfo"));
-
-  if(user){
+  if(doctor){
    
-    const role=user.role
+    const role=doctor.role
     
-    const token=user.token
+    const token=doctor.token
    
     const isAllowed = allowedRoles.includes(role);
    

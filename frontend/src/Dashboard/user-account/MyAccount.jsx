@@ -1,4 +1,4 @@
-import {  useState } from "react";
+import {  useState,useEffect } from "react";
 import MyBookings from "./MyBookings";
 import Profile from "./Profile";
 import { useDispatch } from "react-redux";
@@ -16,7 +16,7 @@ const MyAccount = () => {
 const dispatch = useDispatch();
  const navigate = useNavigate();
   const [tab, setTab] = useState("bookings");
-  
+
 
   const {
     data: userData,
@@ -24,18 +24,20 @@ const dispatch = useDispatch();
     error,
    
   } = useGetProfile(`${baseURL}/users/profile/me`);
+
   
-  console.log("Loading:", loading);
-  console.log("Error:", error);
-  console.log("UserData:", userData);
+  useEffect(() => {
+    if (error) {
+      
+      console.log("Error in user profile fetching data");
+      console.log(error,"errr")
+    }
+  }, [error, userData, loading, userData]);
 
   const handleLogout = () => {
     dispatch(logout());
   };
-  // const handleChangePassword = (email) => { // Accept email as a parameter
-  //   console.log(email,'email');
-  //   navigate("/changepassword", { state: { email } }); // Navigate to the ChangePassword component with email as state
-  // };
+  
   return (
     <section>
       <div className="max-w-[1170px] px-5 mx-auto">
@@ -107,8 +109,10 @@ const dispatch = useDispatch();
                 </button>
               </div>
 
-              {tab === "bookings" && <MyBookings />}
+              {/* {tab === "bookings" && <MyBookings />} */}
+              {/* {tab === "settings" && <Profile user={userData} token={token} />} */}
               {tab === "settings" && <Profile user={userData}  />}
+
               {tab === "changePassword" && <ChangePasswordForm email={userData.email} />} {/* Render ChangePassword component if tab is set to changePassword */}
 
             </div>
