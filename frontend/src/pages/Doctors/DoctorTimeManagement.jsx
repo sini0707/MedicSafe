@@ -69,23 +69,23 @@ const DoctorTimeManagement = () => {
     // },[]); 
  
 
-    const handleDelete = async(id)=>{
-        let res = await apiInstance.get(`${baseURL}/doctors/delete-timing/${doctorInfo._id}/${id}`)
-        if(res){
-            toast.success("Deleted Successfully")
-        }else{
-            toast.error("Failed to Delete")
+    const handleDelete = async (id) => {
+        try {
+            const res = await apiInstance.get(`${baseURL}/doctors/delete-timing/${doctorInfo._id}/${id}`);
+            if (res) {
+                toast.success("Deleted Successfully");
+                // Filter out the deleted timing from the state
+                setTimings(prevTimings => prevTimings.filter(time => time._id !== id));
+            } else {
+                toast.error("Failed to Delete");
+            }
+        } catch (error) {
+            console.error("Error while deleting time:", error);
+            toast.error("Failed to delete time");
         }
-    }
-    // useEffect(() => {
-    //     const fetchTimings = async ()=>{
-    //         let res = await apiInstance.get(`${baseURL}/doctors/get-timings/${doctorInfo._id}`)
-    //         // console.log(res.data.timings)
-    //         setTimings(res.data.timings)
-    //     }
-    //     fetchTimings();
-    // }, [handleSubmit,handleDelete])
-
+    };
+    
+   
   return (
     <section className="container">
     <div className='flex'>

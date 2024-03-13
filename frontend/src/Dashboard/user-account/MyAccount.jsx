@@ -78,7 +78,7 @@ const dispatch = useDispatch();
                   Logout
                 </button>
                 <button
-                  onClick={() => setTab("changePassword")} // Pass email to handleChangePassword
+                  onClick={() => setTab("changePassword")} 
                   className="w-full bg-red-600 mt-4 p-3 text-[16px] leading-7 rounded-md text-white"
                 >
                   Change Password
@@ -109,8 +109,8 @@ const dispatch = useDispatch();
                 </button>
               </div>
 
-              {/* {tab === "bookings" && <MyBookings />} */}
-              {/* {tab === "settings" && <Profile user={userData} token={token} />} */}
+              {tab === "bookings" && <MyBookings />}
+              
               {tab === "settings" && <Profile user={userData}  />}
 
               {tab === "changePassword" && <ChangePasswordForm email={userData.email} />} {/* Render ChangePassword component if tab is set to changePassword */}

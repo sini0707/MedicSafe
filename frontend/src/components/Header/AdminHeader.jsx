@@ -91,7 +91,7 @@ const AdminHeader = () => {
   ) : (
     <NavLink to="/a">
               <button className='bg-primaryColor py-2 px-6 text-white font [600] h-[44px] flex items-center rounded-[50px]'>
-                Login
+                Logout
               </button>
             </NavLink>
 

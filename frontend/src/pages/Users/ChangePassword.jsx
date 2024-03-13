@@ -5,7 +5,7 @@
 import { baseURL } from '../../../../backend/config/db';
 
 const ChangePasswordForm = ({email}) => {
-  console.log(email);
+
   const [currentPassword,setcurrentPassword]=useState('');
   const [newpassword, newSetPassword] = useState('');
   const [confirmPass, setConfirmPass] = useState('');
@@ -17,7 +17,7 @@ const ChangePasswordForm = ({email}) => {
   
 
   const navigate = useNavigate();
-        console.log(email,"email")
+       
 
   
     const submitHandler = async (e) => {
@@ -26,13 +26,12 @@ const ChangePasswordForm = ({email}) => {
 
       try {
         if (newpassword !== confirmPass) {
-          console.log('yes');
-          // setError("New password and confirm password must match");
+       
 
           return;
         }
 
-        setLoading(true); // Set loading state to true when the form is submitted
+        setLoading(true);
 
             const res = await apiInstance.post(`${baseURL}/users/changepassword`, {
               email,
@@ -45,9 +44,7 @@ const ChangePasswordForm = ({email}) => {
             window.location.reload()
           } catch (error) {
             console.log(error);
-            // Handle error response
-            // setSuccess(false);
-            // setError("An error occurred while changing the password. Please try again later.");
+            
           }
         };
       
@@ -80,7 +77,7 @@ const ChangePasswordForm = ({email}) => {
         <input
     onChange={(e) => {
       setcurrentPassword(e.target.value);
-      console.log(e.target.value); // Add console log here
+     
     }}
          
           type="password"
@@ -99,7 +96,7 @@ const ChangePasswordForm = ({email}) => {
       <input
     onChange={(e) => {
       newSetPassword(e.target.value);
-      console.log(e.target.value); // Add console log here
+     
     }}
         type="password"
         id="newPassword"
@@ -117,7 +114,7 @@ const ChangePasswordForm = ({email}) => {
       <input
     onChange={(e) => {
       setConfirmPass(e.target.value);
-      console.log(e.target.value); // Add console log here
+    
     }}
         type="password"
         id="confirmPassword"

@@ -16,19 +16,19 @@ export const ResetPassword = () => {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ password,email }), // Changed from Password to password
+        body: JSON.stringify({ password,email }), 
       });
 
       if (response.status !== 200) {
         throw new Error('Failed to verify');
       }
 
-      // dispatch(setCredentials(response.data));
-      console.log("Credentials set:", response.data);
+    
+    
       navigate('/home');
     } catch (err) {
       console.error('Error:', err.message);
-      // Handle error
+ 
     }
   }
 

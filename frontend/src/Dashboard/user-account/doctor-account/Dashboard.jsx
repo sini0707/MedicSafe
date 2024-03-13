@@ -1,6 +1,6 @@
 
 import { useState ,useEffect} from "react";
-import Appointments from "../../../pages/Doctors/Appointments";
+import MyAppointments from "../../../pages/Doctors/MyAppointments";
 import DoctorProfile from "../../../pages/Doctors/DoctorProfile";
 
 import { useDispatch } from "react-redux";
@@ -110,7 +110,7 @@ const Dashboard = () => {
              
             </div>
 
-            {tab === "appointments" && <Appointments />}
+            {tab === "appointments" && <MyAppointments />}
             {tab === "settings" && <DoctorProfile doctor={doctorData} />}
            
             {tab === "changePassword" && <DoctorChangePassword />} {/* Render ChangePassword component if tab is set to changePassword */}

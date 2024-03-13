@@ -16,7 +16,7 @@ import ServiceList from "../../components/Services/ServiceList";
 import DoctorList from "../../components/Doctors/DoctorList";
 import FaqListComponent from "../../components/Faq/FaqListComponent";
 
-// import Testimonial from "../../components/Testimonial/Testimonial";
+
 
 const Home = () => {
   return (

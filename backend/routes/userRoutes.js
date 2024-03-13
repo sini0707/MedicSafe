@@ -1,4 +1,4 @@
-import express from 'express';
+import express from "express";
 
 import {
   login,
@@ -6,50 +6,52 @@ import {
   forgotOtpVerify,
   register,
   otpVerify,
-  resendEmailCheck ,
+  resendEmailCheck,
   resetPassword,
   Google,
   getUserProfile,
   getMyAppointments,
-  deleteUser,
+  CancelBooking,
   getAllUser,
   getSingleUser,
   logoutUser,
   updateUser,
   getDoctors,
   ChangePassword,
-  // getUser,
-} from '../Controllers/userController.js';
-import { protect } from '../middleware/authMiddleware.js';
+  getDoctorTimings,
+  
+} from "../Controllers/userController.js";
+import { protect } from "../middleware/authMiddleware.js";
+ import { getCheckoutSession}  from "../Controllers/bookingController.js";
 
 const router = express.Router();
 
-router.post('/register', register);
-router.post('/otpverify',otpVerify);
-router.post('/login',login);
-router.post('/forgot-email-check',forgotEmailCheck);
-router.post('/forget-otp-verify',forgotOtpVerify);
-router.post('/resend-email-check',resendEmailCheck  );
+router.post("/register", register);
+router.post("/otpverify", otpVerify);
+router.post("/login", login);
+router.post("/forgot-email-check", forgotEmailCheck);
+router.post("/forget-otp-verify", forgotOtpVerify);
+router.post("/resend-email-check", resendEmailCheck);
+
+router.post("/reset-password", resetPassword);
+router.post("/google", Google);
+router.post("/logout", logoutUser);
+router.get("/getdoctors", getDoctors);
+
+router.get("/profile/me", protect, getUserProfile);
+router.post("/updateUser/:id", protect, updateUser);
+router.post("/changepassword", ChangePassword);
+router.get("/appointments/myappointments",protect, getMyAppointments);
+router.get("/:id", protect, getSingleUser);
+router.get("/", protect, getAllUser);
+router.put("/cancelBooking/:id", protect,CancelBooking);
 
 
 
 
+router.get("/get-timings/:doctorId", getDoctorTimings);
 
- router.post('/reset-password',resetPassword);
- router.post('/google',Google);
- router.post('/logout',logoutUser);
-router.get('/getdoctors',getDoctors);
-
-
-
-router.get('/profile/me',protect,getUserProfile);
-router.post('/updateUser/:id',protect,updateUser);
-router.post('/changepassword',ChangePassword);
-router.get('/appointments/my-appointments', protect, getMyAppointments); 
-router.get("/:id", protect,getSingleUser);
-router.get("/",protect,getAllUser);
-// router.get("/getuser/:id",getUser);
-
-router.delete("/:id",deleteUser);
+router.post("/checkout-session/:doctorId/:userId", getCheckoutSession);
+// router.get('/get-bookings/:id',getBookings)
 
 export default router;

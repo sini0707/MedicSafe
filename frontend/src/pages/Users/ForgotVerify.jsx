@@ -17,7 +17,7 @@ const ForgotVerify = () => {
    
 const handleInputChange = (e) => {
         const enteredEmail = e.target.value; 
-        console.log(enteredEmail); 
+      
         setEmail(enteredEmail); 
     };
     
@@ -38,49 +38,16 @@ const handleInputChange = (e) => {
                 throw new Error('Failed to verify email');
             }
            
-            console.log('Email verification successful');
+           
             
-            console.log("Credentials set:", response.data);
+
              navigate(`/otpVerify?email=${email}&forgot-password=${true}`, { state: { email } });
         } catch (err) {
             console.error('Error:', err.message);
           
         }
     };
-    // const resendOTP = async () => {
-    //     try {
-    //         const response = await fetch(`${baseURL}/resend-otp`, {
-    //             method: "post",
-    //             headers: {
-    //                 'Content-Type': 'application/json'
-    //             },
-    //             body: JSON.stringify({ email }),
-    //         });
     
-    //         if (response.status !== 200) {
-    //             throw new Error('Failed to resend OTP');
-    //         }
-    
-    //         const responseData = await response.json();
-    //         console.log('Response Data:', responseData); // Log the response data
-    //         console.log('OTP resent successfully');
-    //         setResendCooldown(60); // Reset cooldown timer
-    //         setResendCount(prevCount => prevCount + 1);
-    //     } catch (err) {
-    //         console.error('Error:', err.message);
-    //     }
-    // };
-    
-    // useEffect(() => {
-    //     let intervalId;
-    //     if (resendCooldown > 0) {
-    //         intervalId = setInterval(() => {
-    //             setResendCooldown(prevTime => prevTime - 1);
-    //         }, 1000);
-    //     }
-    //     return () => clearInterval(intervalId);
-    // }, [resendCooldown]);
-
 
     return (
         <main id="content" role="main" className="w-full max-w-md mx-auto p-6">

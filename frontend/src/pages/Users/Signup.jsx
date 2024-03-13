@@ -27,7 +27,7 @@ const Signup = () => {
 
   const handleInputChange=(e)=>{
     setFormData({...formData,[e.target.name]:e.target.value})
-    console.log(formData,"bloooddd");
+  
   };
   const handleFileInputChange=async (event)=>{
     const file=event.target.files[0];
@@ -36,7 +36,7 @@ const Signup = () => {
     setPreviewURL(data.url);
     setSelectedFile(data.url);
     setFormData({...formData,photo:data.url});
-    console.log(formData);
+
 
     // later we will use cloudinary to upload images
     

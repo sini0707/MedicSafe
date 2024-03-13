@@ -1,8 +1,9 @@
 import mongoose from "mongoose";
 import Doctor from "../models/DoctorSchema.js";
 import asyncHandler from "express-async-handler";
-import BookingSchema from "../models/BookingSchema.js";
+import Booking from "../models/BookingSchema.js";
 import DoctorgenToken from "../utils/DoctorgenToken.js";
+import User from "../models/userModel.js"
 import bcrypt from "bcryptjs";
 import nodemailer from "nodemailer";
 import { generateDoctorToken } from "../utils/generateToken.js";
@@ -51,9 +52,8 @@ export const register = async (req, res) => {
       experience,
       role,
     } = req.body;
-console.log(req.body,'reqbody');
     const doctorExists = await Doctor.findOne({ email });
-    
+
     if (doctorExists) {
       return res.status(400).json({ message: "Doctor already exists" });
     }
@@ -79,13 +79,11 @@ console.log(req.body,'reqbody');
 
     await sendOtpLink(email, newotp);
 
-    res
-      .status(201)
-      .json({
-        success: true,
-        message: "Doctor successfully registered",
-        doctor,
-      });
+    res.status(201).json({
+      success: true,
+      message: "Doctor successfully registered",
+      doctor,
+    });
   } catch (err) {
     console.error(err);
     res
@@ -101,22 +99,27 @@ export const DoctorOtpVerify = asyncHandler(async (req, res) => {
 
   if (doctorExists) {
     if (doctorExists.otp !== Number(otp)) {
-      return res.status(400).json({ success:false,message:"invalid otp",error: "Invalid OTP" });
+      return res
+        .status(400)
+        .json({ success: false, message: "invalid otp", error: "Invalid OTP" });
     }
-    
+
     doctorExists.verified = true;
     doctorExists = await doctorExists.save();
-     DoctorgenToken(res, doctorExists._id);
-      res.status(200).json({success:true,message:"Otp verified successfully",
+    DoctorgenToken(res, doctorExists._id);
+    res
+      .status(200)
+      .json({
+        success: true,
+        message: "Otp verified successfully",
         _id: doctorExists._id,
         name: doctorExists.name,
         email: doctorExists.email,
         blocked: doctorExists.blocked,
       });
-    } else {
-      res.status(404).json({ error: "Doctor not found" });
-    }
-  
+  } else {
+    res.status(404).json({ error: "Doctor not found" });
+  }
 });
 export const DoctorLogin = async (req, res) => {
   try {
@@ -160,8 +163,8 @@ export const forgotEmailCheck = asyncHandler(async (req, res) => {
     sendOtpLink(doctorExists.email, newotp);
     res.status(200).json({
       _id: doctorExists._id,
-      name:doctorExists.name,
-      email:doctorExists.email,
+      name: doctorExists.name,
+      email: doctorExists.email,
     });
   } else {
     res.status(400).json({ error: "User not found or blocked by admin" });
@@ -170,32 +173,36 @@ export const forgotEmailCheck = asyncHandler(async (req, res) => {
 
 export const forgotOtpVerify = asyncHandler(async (req, res) => {
   const { email, otp } = req.body;
-  const doctorExists = await User.findOne({ email: email });
 
-if (doctorExists) {
-  if (doctorExists.otp !== Number(otp)) {
-    return res.status(400).json({ error: "Invalid OTP" });
-  }
-  
-  doctorExists.verified = true;
-  doctorExists = await doctorExists.save();
-  generateDoctorToken(res, doctorExists._id);
-    res.status(200).json({
-      _id: doctorExists._id,
-      name: doctorExists.name,
-      email:doctorExists.email,
-      blocked: doctorExists.blocked,
-    });
+  let doctorExists = await Doctor.findOne({ email });
+
+  if (doctorExists) {
+    if (doctorExists.otp !== Number(otp)) {
+      return res
+        .status(400)
+        .json({ success: false, message: "invalid otp", error: "Invalid OTP" });
+    }
+
+    doctorExists.verified = true;
+    doctorExists = await doctorExists.save();
+    DoctorgenToken(res, doctorExists._id);
+    res
+      .status(200)
+      .json({
+        success: true,
+        message: "Otp verified successfully",
+        _id: doctorExists._id,
+        name: doctorExists.name,
+        email: doctorExists.email,
+        blocked: doctorExists.blocked,
+      });
   } else {
-    res.status(404).json({ error: "Dcotor not found" });
+    res.status(404).json({ error: "Doctor not found" });
   }
-
 });
 
 export const updatedDoctor = async (req, res) => {
-
   const id = req.params.id;
-  console.log(id,"docotr idd")
   try {
     const updatedDoctor = await Doctor.findByIdAndUpdate(
       id,
@@ -204,7 +211,6 @@ export const updatedDoctor = async (req, res) => {
       },
       { new: true }
     );
-    console.log("Updated Doctor:", updatedDoctor);
     res.status(200).json({
       sucess: true,
       message: "Successfully updated",
@@ -215,46 +221,157 @@ export const updatedDoctor = async (req, res) => {
   }
 };
 
-
 export const manageTime = async (req, res) => {
-  const {docId,date,from,to} = req.body
-  console.log('Received request with data:', req.body);
-  let newTime = { date:date,fromTime:from,toTime:to,expiresAt:date }
-  console.log('New time data:', newTime);
+  const { docId, date, from, to } = req.body;
+  let newTime = { date: date, fromTime: from, toTime: to, expiresAt: date };
   const doctor = await Doctor.updateOne(
-      { _id: docId },
-      { $push: { available: newTime } });
-      console.log('Doctor update result:', doctor);
-  if(doctor){
-      res.status(201).json({
-          _id:doctor._id,
-          name:doctor.name,
-          email:doctor.email
-      })
-  }else{
-      res.status(400)
-      throw new Error('Error Occured')
+    { _id: docId },
+    { $push: { available: newTime } }
+  );
+  if (doctor) {
+    res.status(201).json({
+      _id: doctor._id,
+      name: doctor.name,
+      email: doctor.email,
+    });
+  } else {
+    res.status(400);
+    throw new Error("Error Occured");
   }
-  
 };
-export const deleteTimings = asyncHandler(async(req,res)=>{
-  const { docId,id } = req.params
-  const doctor = await Doctor.findByIdAndUpdate(docId,{$pull: { available: { _id: id } }})
-  if(doctor){
-      res.status(200).json({message:"Successfully Deleted"})
-  }else{
-      res.status(400).json({message:"Failed to Delete"})
+export const deleteTimings = asyncHandler(async (req, res) => {
+  const { docId, id } = req.params;
+  const doctor = await Doctor.findByIdAndUpdate(docId, {
+    $pull: { available: { _id: id } },
+  });
+  if (doctor) {
+    res.status(200).json({ message: "Successfully Deleted" });
+  } else {
+    res.status(400).json({ message: "Failed to Delete" });
   }
 });
 
-export const getTimings = asyncHandler(async(req,res)=>{
-  const { id } = req.params
-  const doctor = await Doctor.findOne({_id:id})
-  console.log(doctor);
-  if(doctor){
-      res.status(200).json({timings:doctor.available})
-  }else{
-      res.status(400).json({error:"Failed to Fetch"})
+export const getTimings = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const doctor = await Doctor.findOne({ _id: id });
+  if (doctor) {
+    res.status(200).json({ timings: doctor.available });
+  } else {
+    res.status(400).json({ error: "Failed to Fetch" });
+  }
+});
+
+// export const bookingDetails = asyncHandler(async (req, res) => {
+  
+//   const { docId } = req.params;
+
+//   try {
+
+//     let bookings=await Booking.find({doctor:docId})
+//     console.log(bookings);
+ 
+//     const doctor = await Doctor.findById(docId);
+//     if (!doctor) {
+//       return res.status(404).json({ error: "Doctor not found" });
+//     }
+
+//     let indianDates = bookings.map((booking) => {
+//       // Convert UTC date to IST
+//       const indianDate = new Date(booking.createdAt).toLocaleString("en-IN", {
+//           timeZone: "Asia/Kolkata",
+//       });
+  
+//       // Split the Indian date and time parts
+//       const [indianDateString, indianTimeString] = indianDate.split(', ');
+  
+//       return { indianDate: indianDateString, indianTime: indianTimeString };
+//   });
+
+  
+//   const Appointment = [];
+//   let userId=bookings.user
+//   console.log(userId,"userIddd")
+//   let user=await User.findById(userId)
+//   console.log(user,"user$$$$");
+
+//       if (user) {
+       
+//         bookings.forEach((booking, index) => {
+//           const bookingDetail = {
+//               name: user.name,
+//               email: user.email,
+//               blood: user.blood,
+//               date: indianDates[index].indianDate,
+//               time: indianDates[index].indianTime,
+//               isPaid: booking.isPaid,
+//               ticketPrice: booking.ticketPrice,
+//               createdAt: booking.createdAt,
+//           };
+  
+//           // Push the booking detail to the array
+//           Appointment.push(bookingDetail);
+        
+//          });
+//          console.log(Appointment,
+//           'booking detais');
+//       }
+    
+  
+
+//     res.status(200).json({});
+//   } catch (error) {
+//     res.status(500).json({ error: error.message });
+//   }
+// });
+
+export const bookingDetails = asyncHandler(async (req, res) => {
+  const { docId } = req.params;
+
+  try {
+    let bookings = await Booking.find({ doctor: docId });
+    console.log(bookings);
+
+    const doctor = await Doctor.findById(docId);
+    if (!doctor) {
+      return res.status(404).json({ error: "Doctor not found" });
+    }
+
+    const Appointment = [];
+
+    for (let i = 0; i < bookings.length; i++) {
+      const booking = bookings[i];
+
+      // Find the user by ID from the current booking
+      const user = await User.findById(booking.user);
+
+      if (user) {
+        // Convert UTC date to IST
+        const indianDate = new Date(booking.createdAt).toLocaleString("en-IN", {
+          timeZone: "Asia/Kolkata",
+        });
+        // Split the Indian date and time parts
+        const [indianDateString, indianTimeString] = indianDate.split(', ');
+
+        const bookingDetail = {
+          name: user.name,
+          email: user.email,
+          blood: user.blood,
+          date: indianDateString,
+          time: indianTimeString,
+          isPaid: booking.isPaid,
+          ticketPrice: booking.ticketPrice,
+          createdAt: booking.createdAt,
+        };
+
+        // Push the booking detail to the array
+        Appointment.push(bookingDetail);
+      }
+    }
+
+    console.log(Appointment, 'booking details');
+    res.status(200).json(Appointment);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -271,20 +388,16 @@ export const deleteDoctor = async (req, res) => {
     res.status(500).json({ success: false, message: "Failed to delete" });
   }
 };
-export const getDoctor = asyncHandler(async(req,res)=>{
-  console.log("hereee");
+export const getDoctor = asyncHandler(async (req, res) => {
   const userId = req.userId;
 
-  console.log(userId);
   try {
     const user = await Doctor.findById(userId);
-    console.log(user);
     if (!user) {
       return res
         .status(404)
         .json({ success: false, message: "User not found" });
     }
-  
 
     const { password, ...rest } = user._doc;
 
@@ -301,12 +414,10 @@ export const getDoctor = asyncHandler(async(req,res)=>{
   }
 });
 export const getSingleDoctor = async (req, res) => {
-  console.log(id,'idddd')
   const id = req.params.id;
 
   try {
     const doctor = await Doctor.findById(id).select("-password");
-    console.log("Doctor found:", doctor);
     res.status(200).json({
       sucess: true,
       message: "Doctor found",

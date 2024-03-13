@@ -31,9 +31,7 @@ const navigate=useNavigate()
   const handleInputChange=e=>{
     setFormData({...formData,[e.target.name]:e.target.value})
   }
-  // const handleRoleChange = e => {
-  //   setRole(e.target.value);
-  // };
+  
 
   
   const submitHandler = async (event) => {
@@ -49,7 +47,7 @@ const navigate=useNavigate()
         credentials: 'include',
         body: JSON.stringify(formData),
       });
-      console.log(res,'ressssss');
+      
       const result = await res.json();
       if (!res.ok) {
         throw new Error(result.message);

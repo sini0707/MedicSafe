@@ -17,10 +17,7 @@ const bookingSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    appointmentDate: {
-      type: Date,
-      required: true,
-    },
+
     status: {
       type: String,
       enum: ["pending", "approved", "cancelled"],
@@ -30,8 +27,21 @@ const bookingSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+    isCancelled:{
+      type:Boolean,
+      default:false
+    }
   },
   { timestamps: true }  // This line should be inside the main Schema object
 );
+// bookingSchema.pre(/^find,function(next){
+//   this.populate("user").populate({
+//     path:"doctor",
+//     select:"name",
+//   });
+// });
 
+
+
+   
 export default mongoose.model("Booking", bookingSchema);

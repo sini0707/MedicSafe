@@ -1,9 +1,11 @@
 import {useEffect,useState} from 'react'
 
 import {token} from "../../config.js"
-console.log(token,"tokennnn");
+
+
 
 const useFetchData = (url) => {
+ 
     const [data,setData]=useState([])
     const [loading,setLoading]=useState(false)
     const [error,setError]=useState(null)
@@ -20,6 +22,7 @@ const useFetchData = (url) => {
                     ,credentials:'include'
                 })
                 const result=await res.json()
+               
                 
                 if(!res.ok){
                     throw new Error(result.message + ' ')
@@ -29,7 +32,7 @@ const useFetchData = (url) => {
             }catch(err){
                 setLoading(false)
                 setError(err.message)
-                console.log(error,"fetchDs");
+                console.log(err,"fetchDs");
 
             }
         }

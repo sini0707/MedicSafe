@@ -5,20 +5,15 @@ import Admin from '../models/adminModel.js';
 
 const protect = asyncHandler(async (req, res, next) => {
 
-console.log("hell0");
- 
   const Authtoken=req.headers.authorization;
-  console.log(req.headers.authorization,"ath");
-  
   if (Authtoken) {
     try {
 
       const token = Authtoken.split(" ")[1];
-      console.log(token);
- 
+      
   
        const decoded = jwt.verify(token, process.env.DOCTOR_JWT_SECRET);
-       console.log(decoded,"token+jwt")
+    
        const userId=decoded.doctorId
       
     //   if(decoded.role!=='user'){

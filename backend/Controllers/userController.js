@@ -4,7 +4,7 @@ import bcrypt from "bcryptjs";
 import nodemailer from "nodemailer";
 import asyncHandler from "express-async-handler";
 import generateToken from "../utils/generateToken.js";
-import BookingSchema from "../models/BookingSchema.js";
+import Booking from "../models/BookingSchema.js";
 import generateDoctorToken from "../utils/DoctorgenToken.js";
 
 const sendOtpLink = (email, otp) => {
@@ -41,7 +41,7 @@ const login = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
   const userpwd=await user.matchPassword(password)
-  console.log(userpwd,"userpassword")
+ 
 
   if (user && !user.blocked && (await user.matchPassword(password))) {
     const token = generateToken(res, user._id);
@@ -259,15 +259,15 @@ const register = asyncHandler(async (req, res) => {
 
 export const otpVerify = asyncHandler(async (req, res) => {
   const { email, otp } = req.body;
-  console.log('Received email:', email);
-  console.log('Received OTP:',  otp);
+
+
 
   let userExists = await User.findOne({ email });
 
-  console.log('User found:', userExists);
+ 
   if (userExists) {
     if (userExists.otp !== Number(otp)) {
-      console.log('Invalid OTP:', otp);
+   
 
       return res.status(400).json({success: false,  message: "Invalid OTP" });
     }else{
@@ -300,9 +300,8 @@ const logoutUser = (req, res) => {
 };
 
 const getUserProfile = asyncHandler(async (req, res) => {
-  console.log("ivideeeeeee");
   const userId = req.userId;
-  console.log(userId);
+ 
   
   try {
     const user = await User.findById(userId);
@@ -329,27 +328,29 @@ const getUserProfile = asyncHandler(async (req, res) => {
 });
 
 const getMyAppointments = async (req, res) => {
+  console.log("dlkjdlkjdlkjdlj");
+  const userId=req.userId
+  console.log(userId)
   try {
     const userId = req.userId;
-
-    const bookings = await Booking.find({ user: req.userId });
-
-    const doctorIds = bookings.map((el) => el.doctor.id);
-
-    const doctors = await Doctor.find({ _id: { $in: doctorIds } }).select(
-      "-password"
-    );
+    console.log(userId)
+    const bookings = await Booking.find({ user: userId }).populate("doctor", "name specialization imagePath").sort({ createdAt: -1 });
+  
+    if (bookings.length === 0) {
+      throw new Error("Oops! You don't have any appointments yet!");
+    }
+  
     res.status(200).json({
       success: true,
-      message: "Appointment are getting",
-      data: doctors,
+      message: "Appointments are fetched successfully",
+      data: bookings,
     });
-  } catch (err) {
-    res
-      .status(500)
-      .json({ success: false, message: "something went wrong,cannot get" });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
   }
 };
+
+
 
 const updateUser = async (req, res) => {
   try {
@@ -388,25 +389,25 @@ const updateUser = async (req, res) => {
 
 const ChangePassword = asyncHandler(async (req, res) => {
   const { email, newpassword } = req.body;
-  console.log(req.body,'req');
+
 
 
   const salt = await bcrypt.genSalt(10);
-  console.log(salt,'salt');
+ 
   const hashPassword = await bcrypt.hash(newpassword, salt);
-console.log(hashPassword,'hasg');
+
   const userExists = await User.findOne({ email: email });
-  console.log(userExists);
+
   if (userExists) {
     userExists.password = hashPassword;
   
     let changePassword = await userExists.save();
-    console.log(changePassword,'changedpasword');
+   
     if (changePassword) {
-      console.log("success");
+
       res.status(200).json({ message: "Password Changed Successfully" });
     } else {
-      console.log('fail');
+    
       res.status(400).json({ error: "Failed to change the password" });
     }
   } else {
@@ -415,32 +416,67 @@ console.log(hashPassword,'hasg');
 });
 
 
-export const getDoctors = asyncHandler(async (req, res) => {
-  console.log('Fetching doctors data...');
+ const getDoctors = asyncHandler(async (req, res) => {
   const doctors = await Doctor.find({}, { password: 0 });
   if (doctors) {
-    console.log('Doctors data retrieved:', doctors);
-
     res.status(200).json({ doctorsData: doctors });
   } else {
-    console.error('Error in fetching doctors data.');
     res
       .status(400)
       .json({ status: false, error: "Error in Fetching Doctors Data" });
   }
 });
-export const deleteUser = async (req, res) => {
-  const id = req.params.id;
+
+
+
+
+
+
+export const getDoctorTimings = async (req, res) => {
+ 
+  const doctorId = req.params.doctorId;
+  
+
   try {
-    await User.findByAndDelete(id);
-    res.status(200).json({
-      sucess: true,
-      message: "Successfully deleted",
-    });
-  } catch (err) {
-    res.status(500).json({ success: false, message: "Failed to delete" });
+   
+    const doctor = await Doctor.findById(doctorId);
+    
+    if (!doctor) {
+      return res.status(404).json({ message: 'Doctor not found' });
+    }
+
+    const timings = doctor.timings; 
+   
+    res.json({ timings });
+  } catch (error) {
+    console.error('Error fetching doctor timings:', error);
+    res.status(500).json({ message: 'Internal server error' });
   }
 };
+
+export const CancelBooking= async (req, res) => {
+ 
+  const bookingId = req.params.id;
+  console.log(bookingId)
+
+  const booking = await Booking.findById(bookingId);
+  console.log(booking);
+  const doctor = await Doctor.findById(booking.doctor._id);
+
+  try {
+    const CancelBooking = await Booking.findByIdAndUpdate(
+      bookingId,
+      { $set: { isCancelled: true}});
+
+    res.status(200).json({
+      sucess: true,
+      message: "Successfully Cancelled",
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, message: "Failed to cancel" });
+  }
+};
+
 export const getSingleUser = async (req, res) => {
   const id = req.params.id;
 
@@ -480,4 +516,7 @@ export {
   logoutUser,
   updateUser,
   ChangePassword,
+
+  getDoctors,
+  
 };

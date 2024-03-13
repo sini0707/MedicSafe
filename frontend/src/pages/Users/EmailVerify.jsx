@@ -40,8 +40,8 @@ const EmailVerify = () => {
      }
     
      const location = useLocation();
-     console.log(location.state,"state");
-    // const email = location.state.email;
+  
+   
     const email = location.state ? location.state.email : '';
    
 
@@ -53,7 +53,7 @@ const EmailVerify = () => {
      const handleResendOTP = async (e) => {
       e.preventDefault()
 
-       console.log('Resending OTP...',email); 
+     
       
       try {
         const res = await resendOTP({ email }); 
@@ -96,7 +96,7 @@ const EmailVerify = () => {
     const submitHandler = async(e)=>{
      e.preventDefault();
       try{
-       console.log(email,otp,'email');
+     
        const queryParams = new URLSearchParams(location.search);
        const isForgotPassword = queryParams.get("forgot-password") === "true";
 
@@ -114,10 +114,10 @@ const EmailVerify = () => {
           return
         }
         else{
-          // console.log(res.error,"error");
+       
           throw new Error(JSON.stringify(res.error))
         }
-        // dispatch(setCredentials({...res}));
+       
       
 
       }
