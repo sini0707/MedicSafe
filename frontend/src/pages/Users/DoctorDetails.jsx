@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+ import starIcon from "../../../src/assets/images/Star.png"
 
 import { useNavigate,useParams } from "react-router-dom";
 import apiInstance from "../../axiosApi/axiosInstance";
@@ -8,11 +9,16 @@ import formatDate from "../../utils/convertDate";
 import { toast } from "react-toastify";
 import { token } from "../../../config";
 import { useSelector } from "react-redux";
+import DoctorAbout from "../Doctors/DoctorAbout.jsx";
+// import Feedback from "react-bootstrap/esm/Feedback";
+import Feedback from "../Doctors/Feedback.jsx";
 
 const DoctorDetails = () => {
+  const [tab,setTab]=useState('about')
   const [details, setDetails] = useState({}); 
   let { id } = useParams();
   const doctorId = id;
+
   
   const userInfo = useSelector(state => state.auth.userInfo);
   const userId = userInfo._id;
@@ -24,6 +30,8 @@ const DoctorDetails = () => {
       );
     
       setDetails(res.data.data);
+
+    
  
     } catch (error) {
       console.log(error);
@@ -31,9 +39,13 @@ const DoctorDetails = () => {
     }
   };
 
+
   useEffect(() => {
     fetchDoctor();
   }, [])
+
+
+  
   
   const bookHandler = async ()=>{
     
@@ -74,10 +86,26 @@ const DoctorDetails = () => {
           <div className="details text-center mx-5 md:text-left h-full">
             <div className="flex justify-center md:justify-start py-2">
               <h1 className="px-2 font-bold text-3xl">{details.name}</h1>
+              <div className="flex items-center gap-[6px]">
+              <span className="flex items-center gap-[6px] text-[14px] leading-5 lg:text-[16px] lg:leading-7 font-semibold text-headingColor">
+                {/* <img src={starIcon} alt=""/>{details.rating} */}
+
+              </span>
+              <span className="text-[14px] leading-5 lg:text-[16px] lg:leading-7 font-[400] text-textColor">{}</span>
+              </div>
               <span className="h-fit inline-flex items-center rounded-md bg-blue-50 px-2 py-2 text-xs font-bold text-blue-700 ring-1 ring-inset ring-blue-700/10">
-                {details.specialization}
+                {details.specialization} 
               </span>
             </div>
+            <h3 className="p-2 font-medium ">
+              Experience :{" "}
+              <span className="text-blue-500 font-bold"> {details.experience} years </span>
+            </h3>
+
+            <h3 className="p-2 font-medium ">
+              Qualification :{" "}
+              <span className="text-blue-500 font-bold"> {details.qualification}</span>
+            </h3>
             <h3 className="p-2 font-medium ">
               Consulting fee :{" "}
               <span className="text-blue-500 font-bold"> {details.fees}</span>
@@ -95,6 +123,9 @@ const DoctorDetails = () => {
                   id="from"
                 /> */}
               </div>
+
+
+              
               {/* <button  onClick={bookHandler} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 mx-2 rounded">
                 Book Appointment
               </button> */}
@@ -166,9 +197,38 @@ const DoctorDetails = () => {
                 </tbody>
               </table>
             </div>
+            
           </div>
+          
         </div>
+        
       </div>
+      <div className="mt-[50px] border-b border-solid border-[#0066ff34]">
+                <button onClick={()=>setTab('about')}
+                className={`${tab==='about'&& 'border-b border-solid border-primaryColor'
+              } py-2 px-5 mr-5 text-[16px] leading-7 text-headingColor  font-semibold`}
+                >
+                  About
+                  </button>
+
+                  <button onClick={()=>setTab('feedback')}
+                  className={`${tab==='feedback' && 
+                  'border-b border-solid border-primaryColor'
+                } py-2 px-5 mr-5 text-[16px] leading-7 text-headingColor  font-semibold`}
+                >
+                Feedback
+                  </button>
+
+              </div>
+              <div className="mt-[50px]">
+                {
+                  tab==='about' &&  <DoctorAbout details={details}/>
+                }
+                 {
+                  tab==='feedback' &&  <Feedback details={details}/>
+                }
+
+              </div>
 
       
     </section>

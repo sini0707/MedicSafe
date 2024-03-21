@@ -1,68 +1,106 @@
 
 
 import DoctorList from "../../components/Doctors/DoctorList"
-import { useSelector } from "react-redux"
+
 import { baseURL } from "../../../../backend/config/db";
 import apiInstance from "../../axiosApi/axiosInstance";
 import { useState,useEffect } from "react";
 
+
+  import Pagination from "../../components/Pagination/Pagination";
+
+
 const Doctorss = () => {
   const [doctors ,setDoctors]=useState([]);
   const [search,setSearch] =useState("");
-  const [filteredResult,setFilteredResult]=useState([])
-  console.log(filteredResult,"filteredDoctors")
+  const [currentPage, setCurrentPage] = useState(1);
+  const [doctorsPerPage] =useState(3); 
+  const [filteredResult,setFilteredResult]=useState([]);
+
+  
+ 
   useEffect(()=>{
-    fetchDoctors()
-  },[])
 
-   const fetchDoctors=async()=>{
-    try {
-      const res = await apiInstance.get(`${baseURL}/users/getdoctors`);
-      const doctorsList=res.data.doctorsData
-    console.log(doctorsList,'doctrlistttt');
-      if(doctorsList){
-        setDoctors(doctorsList)
+    const fetchDoctors=async()=>{
+      try {
+        const res = await apiInstance.get(`${baseURL}/users/getdoctors`, {
+          params: { page: currentPage, pageSize: doctorsPerPage, search: search }, 
+        });
+        const doctorsList=res.data.doctorsData;
+  
+    
+        if(doctorsList){
+          setDoctors(doctorsList)
+        }
+  
+        
+      } catch (error) {
+        console.log(error)
       }
-      
-    } catch (error) {
-      console.log(error)
-    }
-   }
-
-   const filteredDoctors=(data)=>{
-return data.filter(
-(doctor)=>
-doctor.approved===true && (doctor.name.toLowerCase().includes(search.toLowerCase()))
-)
-   }
-   const handleSearch=(event)=>{
+     }
+  
+    fetchDoctors()
+    
+  },[currentPage, doctorsPerPage, search])
+  
+  
+  const handleSearch = (event) => {
     setSearch(event.target.value);
-    const filterdDoctors=filteredDoctors(doctors)
-    setFilteredResult(filterdDoctors)
+   
+  };
 
-   }
+   
+   const totalDoctors = doctors.length;
+   const totalPages = Math.ceil(totalDoctors / doctorsPerPage);
+ 
+   const handlePageChange = (pageNumber) => {
+     setCurrentPage(pageNumber);
+   };
+ 
+   const filterdDoctors = doctors.filter(
+    (doctor) =>
+      doctor.approved === true &&
+      (doctor.name.toLowerCase().includes(search.toLowerCase()) ||
+        doctor.specialization.toLowerCase().includes(search.toLowerCase()))
+  );
 
+   const indexOfLastDoctor = currentPage * doctorsPerPage;
+   const indexOfFirstDoctor = indexOfLastDoctor - doctorsPerPage;
+   const currentDoctors = filterdDoctors.slice(indexOfFirstDoctor, indexOfLastDoctor);
+
+   
   return (
     <>
-    <sectopn className="bg-[#fff9ea]">
+    <section className="bg-[#fff9ea]">
         <div className="container text-center">
             <h2 className="heading">Find a Doctor</h2>
-            {/* <div className="max-w-[670px] mt-[20px] mx-auto bg-[#0066ff2c] rounded-md flex justify-between">
+            <div className="max-w-[670px] mt-[20px] mx-auto bg-[#0066ff2c] rounded-md flex justify-between">
             <input 
              type="search" onChange={handleSearch}
     className="py-4 pl-4 pr-2 bg-transparent w-full focus:outline-none cursor-pointer"
     placeholder="Search Doctor"/>
     
-     <button className="btn mt- 0 rounded-[0px] rounded-r-md">
-       Search</button>
-            </div> */}
+    
+            </div>
+            
 
         </div>
         <div>
-          <DoctorList doctors={doctors} />
+        
+            <DoctorList doctors={currentDoctors} />
+          
+          
         </div>
+        
+        <Pagination
+          totalPosts={totalDoctors} 
+          postPerPage={doctorsPerPage}
+          setCurrentPage={setCurrentPage}
+          currentPage={currentPage}
+        />
+        
 
-    </sectopn>
+    </section>
     </>
   )
 }

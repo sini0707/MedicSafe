@@ -1,15 +1,69 @@
-import React, { useState } from 'react';
+import  { useState ,useEffect} from 'react';
 import { AiFillStar } from 'react-icons/ai';
+import { useSelector } from 'react-redux';
+import useFetchData from '../../hooks/useFetchData';
 
-const FeedbackForm = () => {
+import { baseURL } from "../../../../backend/config/db";
+
+
+
+const FeedbackForm = ({ details, setshowFeedbackForm }) => {
+   
+    
     const [rating, setRating] = useState(0);
+   
     const [hover, setHover] = useState(0);
     const [reviewText, setReviewText] = useState("");
+  
+    const userInfo = useSelector(state => state.auth.userInfo);
+  
+    const userId = userInfo._id;
+    const token=userInfo.token;
+  
+    const reviewData = {
+        rating,
+        reviewText,
+        user: userId,
+         doctor: details._id,
+      };
+      console.log(reviewData,'we want review data')
 
-    const handleSubmitReview=async e=>{
-        e.preventDefault();
-        // later we will use our api
-    }
+    
+  
+    const { fetchData, data: reviews } = useFetchData(`${baseURL}/users/getallreviews`);
+
+useEffect(() => {
+  fetchData();
+}, []);
+
+
+   
+
+const handleSubmitReview = async (e) => {
+  e.preventDefault();
+
+  try {
+    const res = await fetch(`${baseURL}/users/createreviews`, {
+      method: 'post',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      },
+      credentials: 'include',
+      body: JSON.stringify({ review: reviewData })
+    });
+    
+
+    console.log(res);
+  } catch (error) {
+    console.error("Error submitting review:", error);
+   
+  }
+};
+
+    
+        
+
 
     return (
         <form action="">
@@ -21,7 +75,7 @@ const FeedbackForm = () => {
                     {[...Array(5).keys()].map((_, index) => {
                         index += 1;
                         return (
-                            <button
+                            <button 
                                 key={index}
                                 type='button'
                                 className={`${
@@ -30,6 +84,7 @@ const FeedbackForm = () => {
                                         : "text-gray-400"
                                 } bg-transparent border-none outline-none text-[22px] cursor-pointer`}
                                 onClick={() => setRating(index)}
+
                                 onMouseEnter={() => setHover(index)}
                                 onMouseLeave={() => setHover(rating)}
                                 onDoubleClick={() => {

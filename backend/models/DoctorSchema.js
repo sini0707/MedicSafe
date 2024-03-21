@@ -58,6 +58,7 @@ const DoctorSchema= new mongoose.Schema({
       certificate: { 
         type: Array 
       },
+      reviews: [{ type: mongoose.Types.ObjectId, ref: "Review" }],
       bookings: [
         {
           date: {

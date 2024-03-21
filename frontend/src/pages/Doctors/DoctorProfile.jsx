@@ -75,20 +75,17 @@ console.log(file,'file');
 
 
     const submitHandler = async(e)=>{
-      
-          e.preventDefault()
-
-          setLoading(true);
+       e.preventDefault();
+        setLoading(true);
     try {
     
-   
-      const res = await fetch(`${baseURL}/doctors/updateDoctor/${docId}`, {
+   const res = await fetch(`${baseURL}/doctors/updateDoctor/${docId}`, {
         method: 'post',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${doctoken}`,
         },
-        body:JSON.stringify(formData,)
+        body:JSON.stringify(formData),
            // Convert the data to JSON
       });
 
@@ -102,6 +99,7 @@ console.log(file,'file');
         const { message,data } = responseData;
          // Include the token from the existing user data
         data.token = doctor.doctor.token;
+        setFormData(data);
         dispatch(setDoctorCredentials(data));
         toast.success(message || 'Profile successfully updated'); 
    

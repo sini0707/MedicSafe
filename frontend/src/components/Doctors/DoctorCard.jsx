@@ -7,44 +7,14 @@ import { BiSolidRightArrow } from "react-icons/bi";
 
 
 const DoctorCard = ({doctor}) => {
-  console.log(doctor,"doctor");
 
-    const{ name,imagePath,specialization,fees}=doctor;
+
+    const{ name,imagePath,specialization,fees,qualification,rating}=doctor;
+   
     
     
 
   return (
-//    <div className='p-3 lg:p-5'>
-//     <div>
-//         <img src={imagePath} className='w-full'alt=""/>
-//     </div>
-//     <h2 className='text-[18px] leading-[30px] lg:text-[26px] lg:leading-9 text-headingColor font-[700] mt-3 lg:mt-5'>{name}</h2>
-//     <div className="mt-2 lg:mt-4 flex items-center  justify-between">
-//         <span className='bg-[#CCF0F3] text-irisBlueColor py-1 px-2 lg:py-2 lg:px-6 text-[12px] leading-4 lg:text-[16px] lg:leading-7 font-semibold rounded'>{specialization}
-
-//         </span> 
-//         <div className="flex items-center gap-[6px]">
-// <span className="flex items-center gap-[6px] text-[14px] leading-6 lg:text-[16px] lg:leading-7 font-semibold text-headingColor">
-
-// </span>
-
-
-// </div> 
-
-//         </div>
-//         <div className="mt-[18px] lg:mt-5 flex items-center justify-between">
-// <div>
-
-// </div>
-
-// <Link
-//                   to={`/users/doctorDetails/${doctor._id}`}
-//                   className="w-[44px] h-[44px] rounded-full border border-solid border-[#181A1E] flex items-center justify-center group:hover:bg:primaryColor hover:border-none"
-//                 >
-//               <BiSolidRightArrow className="group-hover:text-white w-6 h-5" />
-//                 </Link>
-// </div>
-//    </div>
 
 
 <>
@@ -72,14 +42,14 @@ const DoctorCard = ({doctor}) => {
         <span className="text-slate-400 pt-2 font-semibold">{specialization}</span>
         <div className="h-20">
           <span className="line-clamp-3 py-2 text-sm font-light leading-relaxed">
-            Miles Morales catapults across the Multiverse, where he encounters
+          {qualification}
           </span>
         </div>
         <div className="grid grid-cols-2 flex group justify-between">
           <div className="font-black flex flex-col">
-            <span className="text-yellow-500 text-lg">IMDB SCORE</span>
+            <span className="text-yellow-500 text-lg">Rating</span>
             <span className="text-lg flex gap-x-1 items-center group-hover:text-yellow-600">
-              8.8
+              {rating}
               <svg
                 width="18px"
                 height="18px"
@@ -106,6 +76,7 @@ const DoctorCard = ({doctor}) => {
           <div className="flex flex-col items-end">
             <div className="h-7">
               <span className="text-lg font-bold gap-x-2 text-300">Rs.{fees}</span>
+              
             </div>
             <Link
                  to={`/users/doctorDetails/${doctor._id}`}

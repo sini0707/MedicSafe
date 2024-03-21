@@ -13,7 +13,8 @@ import {
   getDoctor,
   getSingleDoctor,
   bookingDetails,
-  // deleteAppointments,
+  approveVideoCall,
+  
 } from "../Controllers/DoctorController.js";
 
 import { protect } from "../middleware/DoctorAuthMiddleware.js";
@@ -31,6 +32,7 @@ router.get("/delete-timing/:docId/:id", deleteTimings);
 router.get("/get-timings/:id", getTimings);
 router.get("/getdoctor/:id", getSingleDoctor);
 router.get("/booking-details/:docId", bookingDetails);
-// router.get("/delete-Appointments/:userId/:id", deleteAppointments);
+router.post("/approveVideoCall/:id", approveVideoCall);
+
 
 export default router;

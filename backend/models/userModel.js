@@ -71,7 +71,12 @@ const userSchema = mongoose.Schema(
         }
       }
     ],
+    VideoCallApprove: {
+      type: Boolean,
+      default: false,
+    },
   },
+
   {
     timestamps: true,
   }

@@ -4,13 +4,22 @@ import { useState } from 'react';
 import { baseURL } from '../../../../backend/config/db';
 import Swal from 'sweetalert2';
 import { useSelector } from 'react-redux';
+import { FcVideoCall } from "react-icons/fc";
+import { useNavigate } from 'react-router-dom';
+// import Pagination from '../../components/Pagination/Pagination';
+
 
 
 const Appointments = ({appointment }) => {
   console.log(appointment);
+  const navigate = useNavigate();
+  const user=useSelector((state)=>state.auth.userInfo);
 
-  const user=useSelector((state)=>state.auth.userInfo)
-  console.log(user.token,"from redux");
+  // const [currentPage, setCurrentPage] = useState(1);
+  // const [appointmentsPerPage] = useState(3);
+  // const [filteredAppointments, setFilteredAppointments] = useState([]);
+
+ 
  
   const handleCancelButton = async (id) => {
 
@@ -25,7 +34,7 @@ const Appointments = ({appointment }) => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          console.log(id,"cancelidddd")
+        
           const res =await fetch(`${baseURL}/users/cancelBooking/${id}`, {
             method: "PUT", 
             headers: {
@@ -58,6 +67,38 @@ const Appointments = ({appointment }) => {
     });
   }
 
+  if (user) {
+    const userId = user._id; 
+   
+  }
+
+  const MakeVideoCall = async (userId) => {
+    try {
+      
+      const res = await fetch(`${baseURL}/users/makeVideoCall/${userId}`, {
+        method: "get",
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      });
+      const result = await res.json();
+
+      if (!res.ok) {
+        Swal.fire({
+          icon: "error",
+          title: "Something Went Wrong ",
+          text: result.error,
+        });
+      } else {
+        // createRoom();
+        navigate(`/users/room/${result.roomId}`);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+    };
+  
+
   return (
     <div>
      
@@ -74,7 +115,10 @@ const Appointments = ({appointment }) => {
   Cancel
 </button> */}
 <button onClick={!appointment.isCancelled ? () => handleCancelButton(appointment._id) : 'Cancelled'} className={`bg-red-500 px-8 py-2 mt-6 rounded-3xl text-gray-100 font-semibold uppercase tracking-wide ${appointment.isCancelled ? 'cursor-not-allowed opacity-50' : ''}`}>Cancel</button>
-
+<FcVideoCall
+                   onClick={() => MakeVideoCall(user._id)}
+                  className="w-12 text-2xl h-12 ml-auto cursor-pointer "
+                />
   </div>
 </div>  
 

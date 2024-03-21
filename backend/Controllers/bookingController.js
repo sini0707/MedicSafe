@@ -18,8 +18,7 @@ var customer = await stripe.customers.create({
 
     let doctorId=req.params.doctorId
     let userId=req.params.userId
-    console.log(userId,"userId")
-    console.log(doctorId,"doctorId")
+   
 
     try{
        

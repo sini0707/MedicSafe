@@ -6,7 +6,7 @@ import { formatDate } from '../../utils/formateDate';
 const DoctorAbout = () => {
   return (
     <div>
-        <div>
+        {/* <div>
             <h3 className='text-[20px] leading-[30px] text-headingColor font-semibold'>About of
             <span className='text-irisBlueColor font-bold text-[24px] leading-9'>
                   Muhibur Rahman
@@ -88,7 +88,7 @@ const DoctorAbout = () => {
 
 
         </div>
-      
+       */}
     </div>
   )
 }

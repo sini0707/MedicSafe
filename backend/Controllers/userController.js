@@ -6,6 +6,7 @@ import asyncHandler from "express-async-handler";
 import generateToken from "../utils/generateToken.js";
 import Booking from "../models/BookingSchema.js";
 import generateDoctorToken from "../utils/DoctorgenToken.js";
+import { v4 as uuidv4 } from "uuid";
 
 const sendOtpLink = (email, otp) => {
   try {
@@ -328,12 +329,12 @@ const getUserProfile = asyncHandler(async (req, res) => {
 });
 
 const getMyAppointments = async (req, res) => {
-  console.log("dlkjdlkjdlkjdlj");
+ 
   const userId=req.userId
-  console.log(userId)
+  
   try {
     const userId = req.userId;
-    console.log(userId)
+   
     const bookings = await Booking.find({ user: userId }).populate("doctor", "name specialization imagePath").sort({ createdAt: -1 });
   
     if (bookings.length === 0) {
@@ -457,10 +458,9 @@ export const getDoctorTimings = async (req, res) => {
 export const CancelBooking= async (req, res) => {
  
   const bookingId = req.params.id;
-  console.log(bookingId)
-
+  
   const booking = await Booking.findById(bookingId);
-  console.log(booking);
+  
   const doctor = await Doctor.findById(booking.doctor._id);
 
   try {
@@ -501,6 +501,29 @@ export const getAllUser = async (req, res) => {
     });
   } catch (err) {
     res.status(404).json({ sucess: false, message: "Not found" });
+  }
+};
+
+export const MakeVideoCall = async (req, res) => {
+  const userId = req.params.id;
+  
+  try {
+    
+    const user = await User.find({_id:userId});
+   
+
+
+    // if (!user.VideoCallApprove) {
+    //   throw new Error("You are not approved for this Facility");
+    // } else {
+      const roomId = `${uuidv4()}-${userId}`;
+    
+
+      res.status(200).json({ message: "Video Call", roomId });
+    // }
+  } catch (error) {
+    console.log(error);
+    res.status(404).json({ error: error.message });
   }
 };
 

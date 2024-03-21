@@ -6,6 +6,7 @@ import Admin from '../models/adminModel.js';
 const protect = asyncHandler(async (req, res, next) => {
  
   const Authtoken=req.headers.authorization;
+ 
   if (Authtoken) {
     try {
 

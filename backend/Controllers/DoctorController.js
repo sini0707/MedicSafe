@@ -7,7 +7,8 @@ import User from "../models/userModel.js"
 import bcrypt from "bcryptjs";
 import nodemailer from "nodemailer";
 import { generateDoctorToken } from "../utils/generateToken.js";
-
+import { Pagination } from "react-bootstrap";
+import { v4 as uuidv4 } from "uuid";
 const sendOtpLink = (email, otp) => {
   try {
     const transporter = nodemailer.createTransport({
@@ -261,75 +262,14 @@ export const getTimings = asyncHandler(async (req, res) => {
   }
 });
 
-// export const bookingDetails = asyncHandler(async (req, res) => {
-  
-//   const { docId } = req.params;
 
-//   try {
-
-//     let bookings=await Booking.find({doctor:docId})
-//     console.log(bookings);
- 
-//     const doctor = await Doctor.findById(docId);
-//     if (!doctor) {
-//       return res.status(404).json({ error: "Doctor not found" });
-//     }
-
-//     let indianDates = bookings.map((booking) => {
-//       // Convert UTC date to IST
-//       const indianDate = new Date(booking.createdAt).toLocaleString("en-IN", {
-//           timeZone: "Asia/Kolkata",
-//       });
-  
-//       // Split the Indian date and time parts
-//       const [indianDateString, indianTimeString] = indianDate.split(', ');
-  
-//       return { indianDate: indianDateString, indianTime: indianTimeString };
-//   });
-
-  
-//   const Appointment = [];
-//   let userId=bookings.user
-//   console.log(userId,"userIddd")
-//   let user=await User.findById(userId)
-//   console.log(user,"user$$$$");
-
-//       if (user) {
-       
-//         bookings.forEach((booking, index) => {
-//           const bookingDetail = {
-//               name: user.name,
-//               email: user.email,
-//               blood: user.blood,
-//               date: indianDates[index].indianDate,
-//               time: indianDates[index].indianTime,
-//               isPaid: booking.isPaid,
-//               ticketPrice: booking.ticketPrice,
-//               createdAt: booking.createdAt,
-//           };
-  
-//           // Push the booking detail to the array
-//           Appointment.push(bookingDetail);
-        
-//          });
-//          console.log(Appointment,
-//           'booking detais');
-//       }
-    
-  
-
-//     res.status(200).json({});
-//   } catch (error) {
-//     res.status(500).json({ error: error.message });
-//   }
-// });
 
 export const bookingDetails = asyncHandler(async (req, res) => {
   const { docId } = req.params;
 
   try {
     let bookings = await Booking.find({ doctor: docId });
-    console.log(bookings);
+   
 
     const doctor = await Doctor.findById(docId);
     if (!doctor) {
@@ -353,6 +293,8 @@ export const bookingDetails = asyncHandler(async (req, res) => {
         const [indianDateString, indianTimeString] = indianDate.split(', ');
 
         const bookingDetail = {
+          user:user._id,
+          doctor:doctor._id,
           name: user.name,
           email: user.email,
           blood: user.blood,
@@ -368,7 +310,7 @@ export const bookingDetails = asyncHandler(async (req, res) => {
       }
     }
 
-    console.log(Appointment, 'booking details');
+  
     res.status(200).json(Appointment);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -390,9 +332,13 @@ export const deleteDoctor = async (req, res) => {
 };
 export const getDoctor = asyncHandler(async (req, res) => {
   const userId = req.userId;
-
+ 
+  
   try {
-    const user = await Doctor.findById(userId);
+    const user = await Doctor.findById(userId)
+    
+   
+
     if (!user) {
       return res
         .status(404)
@@ -400,6 +346,7 @@ export const getDoctor = asyncHandler(async (req, res) => {
     }
 
     const { password, ...rest } = user._doc;
+   
 
     res.status(200).json({
       success: true,
@@ -413,6 +360,7 @@ export const getDoctor = asyncHandler(async (req, res) => {
       .json({ success: false, message: "Something went wrong, cannot get" });
   }
 });
+
 export const getSingleDoctor = async (req, res) => {
   const id = req.params.id;
 
@@ -486,3 +434,38 @@ export const logoutDoctor = (req, res) => {
   });
   res.status(200).json({ message: "Logged out successfully" });
 };
+
+export const approveVideoCall = async (req, res) => {
+  const userId = req.params.id;
+ 
+
+
+  const status = req.query.status;
+ 
+
+
+  try {
+    const changeStatus = await User.findByIdAndUpdate(
+      userId,
+      { $set: { VideoCallApprove: status } },
+      { new: true }
+    );
+   
+
+    if (!changeStatus) {
+
+     
+      return res.status(404).json({ message: "User not found" });
+    }
+    const roomId = `${uuidv4()}-${userId}`;
+  
+    const doctor = await Doctor.findOne();
+   
+    res
+      .status(200)
+      .json({ status: true, message: "User status changed", roomId });
+  } catch (error) {
+    res.status(500).json({ status: false, message: "Change status failed " });
+  }
+};
+

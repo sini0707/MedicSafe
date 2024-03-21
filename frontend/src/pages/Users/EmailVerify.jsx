@@ -123,7 +123,7 @@ const EmailVerify = () => {
       }
        catch(error) {
         const errorMessage = JSON.parse(error.message).data.message;
-        console.log('Error message:', errorMessage);
+       
         toast.error(errorMessage)
       }
     }

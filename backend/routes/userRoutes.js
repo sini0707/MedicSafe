@@ -19,10 +19,12 @@ import {
   getDoctors,
   ChangePassword,
   getDoctorTimings,
+  MakeVideoCall,
   
 } from "../Controllers/userController.js";
 import { protect } from "../middleware/authMiddleware.js";
  import { getCheckoutSession}  from "../Controllers/bookingController.js";
+ import{createReview, getAllReviews} from "../Controllers/reviewController.js"
 
 const router = express.Router();
 
@@ -45,6 +47,9 @@ router.get("/appointments/myappointments",protect, getMyAppointments);
 router.get("/:id", protect, getSingleUser);
 router.get("/", protect, getAllUser);
 router.put("/cancelBooking/:id", protect,CancelBooking);
+ router.post("/createreviews",protect,createReview);
+ router.get("/getallreviews/:id",protect,getAllReviews);
+
 
 
 
@@ -52,6 +57,8 @@ router.put("/cancelBooking/:id", protect,CancelBooking);
 router.get("/get-timings/:doctorId", getDoctorTimings);
 
 router.post("/checkout-session/:doctorId/:userId", getCheckoutSession);
-// router.get('/get-bookings/:id',getBookings)
+
+router.get("/makeVideoCall/:id", MakeVideoCall);
+
 
 export default router;

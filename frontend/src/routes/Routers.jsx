@@ -25,13 +25,15 @@ import DoctorLogin from "../pages/Doctors/DoctorLogin.jsx";
 import DoctorsHome from "../pages/Doctors/DoctorsHome.jsx";
 import Doctorss from "../pages/Doctors/Doctors.jsx";
 import ChangePassword from "../pages/Users/ChangePassword.jsx";
-// import MyAppointments from '../pages/Doctors/Appointments.jsx';
+
 import DoctorProfile from "../pages/Doctors/DoctorProfile.jsx";
 import DoctorTimeManagement from "../pages/Doctors/DoctorTimeManagement.jsx";
 import DoctorChangePassword from "../pages/Doctors/DoctorChangePassword.jsx";
 import DoctorForgotVerify from "../pages/Doctors/DoctorForgotVerify.jsx";
 import MyAppointments from "../pages/Doctors/MyAppointments.jsx";
 import MyBookings from "../Dashboard/user-account/MyBookings.jsx";
+import UserVideoCallRoom from "../pages/Users/UserVideoCallRoom.jsx";
+import DoctorVideoCallRoom from "../pages/Doctors/DoctorVideoCallRoom.jsx";
 
 function Routers() {
   return (
@@ -58,6 +60,8 @@ function Routers() {
         }
       />
 
+<Route path="/users/room/:roomId" element={<UserVideoCallRoom  />} />
+
       <Route path="/checkout-success" element={<SuccessPayment />} />
 
       <Route path='/bookings' element={<MyBookings/>}/>
@@ -80,6 +84,7 @@ function Routers() {
         path="/doctors/changepassword"
         element={<DoctorChangePassword />}
       />
+       <Route path="/doctors/room/:roomId" element={<DoctorVideoCallRoom />} />
 
       <Route path="/admin" element={<AdminLogin />} />
       <Route path="/admin/home" element={<AdminHome />} />

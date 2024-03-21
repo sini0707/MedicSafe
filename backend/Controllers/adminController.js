@@ -23,7 +23,7 @@ const adminLogin = asyncHandler(async (req, res) => {
           token: token,
         },
       });
-      console.log("Success: Admin successfully logged in");
+     
     } else {
       res.status(400);
       throw new Error("Invalid email or password");
@@ -133,7 +133,7 @@ const getDoctors = asyncHandler(async (req, res) => {
   if (doctors) {
     res.status(200).json({ doctorsData: doctors });
   } else {
-    console.log("Error in Fetching");
+   
     res.status(400).json("Error in Fetching");
   }
 });

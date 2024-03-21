@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import DoctorSchema from "./DoctorSchema";
 
 const reviewSchema=new mongoose.Schema(
     {
@@ -23,8 +22,15 @@ const reviewSchema=new mongoose.Schema(
             default:0,
         },
     },
-    {timeStamps:true}
+    {timeStamps:true},
 );
+reviewSchema.pre(/^find/, function (next) {
+    this.populate({
+      path: "user",
+      select: "name photo",
+    }); 
+    next();
+  })
 
 
 

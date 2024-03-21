@@ -5,6 +5,7 @@ import {token} from "../../config.js"
 
 
 const useFetchData = (url) => {
+  
  
     const [data,setData]=useState([])
     const [loading,setLoading]=useState(false)
@@ -15,13 +16,16 @@ const useFetchData = (url) => {
 
             setLoading(true)
             try{
-
+                console.log("Fetching data from:", url);
                 const res=await fetch(url,{
+                    
                     headers:{ Authorization:`Bearer ${token}`
                     }
                     ,credentials:'include'
                 })
+                console.log("Response status:", res.status);
                 const result=await res.json()
+                console.log("Response data:", result);
                
                 
                 if(!res.ok){
