@@ -7,17 +7,14 @@ import uploadImageCloudinary from '../../../../backend/utils/uploadCloudinary';
 // import { setCredentials } from "../../slices/doctorSlices/doctorAuthSlice";
 import apiInstance from "../../axiosApi/axiosInstance";
 
+
 const DoctorRegister = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+ 
 
-  // const { doctorInfo } = useSelector((state) => state.docAuth);
 
-  // useEffect(() => {
-  //     if (doctorInfo) {
-  //         navigate("/doctors/home");
-  //     }
-  // }, [navigate, doctorInfo]);
+ 
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -29,9 +26,9 @@ const DoctorRegister = () => {
   const [password, setPassword] = useState("");
   const [confirmpass, setConfirmpass] = useState("");
   const [image, setImage] = useState(null);
-  const [role,setRole]=useState("Doctor")
-
-
+  const [role,setRole]=useState("Doctor");
+  const [specializationList, setSpecializationList] = useState([]);
+  
 
   const handleFileInputChange = async (event) => {
       const file = event.target.files[0];
@@ -82,6 +79,19 @@ const DoctorRegister = () => {
           toast.error(err?.response?.data?.message || err.message);
       }
   };
+  useEffect(() => {
+    const fetchSpecializationList = async () => {
+        try {
+            // Fetch specializationList data from API
+            const res = await apiInstance.get(`${baseURL}/admin/getspecialization`);
+            setSpecializationList(res.data);
+        } catch (error) {
+            console.error("Error fetching specializationList:", error);
+        }
+    };
+
+    fetchSpecializationList(); // Call the function
+}, []);
   
     
   return (
@@ -162,24 +172,38 @@ const DoctorRegister = () => {
               />
             </div>
             <div className="my-[10px]">
-              <label
-                className="text-blue-500 text-sm font-medium"
-                htmlFor="specialization"
-              >
-                Specialisation
-              </label>
-              <input
-                type="text"
-                name=" specialisation"
-                value={specialization}
-                onChange={(e) => {setSpecialization(e.target.value);
-                  console.log("Specialisation:", e.target.value);
-                }}
-                id="specialization"
-                placeholder="Your Specialization"
-                className="block px-2 py-1 w-full text-[15px] border-solid border-b-2 focus:text-[16px] focus:border-blue-500 focus:outline-none"
-              />
-            </div>
+  <label
+    className="text-blue-500 text-sm font-medium"
+    htmlFor="specialization"
+  >
+    Specialisation
+  </label>
+  <select
+                        name="specialization"
+                        id="specialization"
+                        className="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
+                        value={specialization}
+                        onChange={(e) => {
+                          console.log("Selected value:", e.target.value);
+                          setSpecialization(e.target.value);
+                        }}
+                      >
+                        <option value="">Select a Specialization</option>
+
+                        {specializationList ? (
+                          specializationList.map((specialization, index) => {
+                            return (
+                              <option value={specialization._id} key={index}>
+                                {specialization.name}
+                              </option>
+                            );
+                          })
+                        ) : (
+                          <option value="">No Data Available</option>
+                        )}
+                      </select>
+</div>
+
             <div className="my-[10px]">
               <label
                 className="text-blue-500 text-sm font-medium"

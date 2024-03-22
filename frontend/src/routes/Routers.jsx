@@ -34,6 +34,8 @@ import MyAppointments from "../pages/Doctors/MyAppointments.jsx";
 import MyBookings from "../Dashboard/user-account/MyBookings.jsx";
 import UserVideoCallRoom from "../pages/Users/UserVideoCallRoom.jsx";
 import DoctorVideoCallRoom from "../pages/Doctors/DoctorVideoCallRoom.jsx";
+import Specialization from "../pages/Admin/Specialization.jsx";
+
 
 function Routers() {
   return (
@@ -91,6 +93,8 @@ function Routers() {
       <Route path="/admin/userlist" element={<AdminUsers />} />
       <Route path="/admin/doctorslist" element={<AdminDoctors />} />
       <Route path="/admin/bookings" element={<AdminBookings />} />
+      <Route path="/admin/specializations" element={<Specialization />} />
+    
     </Routes>
   );
 }

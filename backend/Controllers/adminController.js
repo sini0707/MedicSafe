@@ -4,6 +4,8 @@ import asyncHandler from "express-async-handler";
 import User from "../models/userModel.js";
 import bcrypt from "bcryptjs";
 import Doctor from "../models/DoctorSchema.js";
+import Specialization from "../models/SpecializationModel.js"
+
 
 const adminLogin = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
@@ -138,6 +140,43 @@ const getDoctors = asyncHandler(async (req, res) => {
   }
 });
 
+
+const addSpecialization = asyncHandler(async (req, res) => {
+  const { name, description } = req.body;
+  console.log("Name:", name);
+  console.log("Description:", description);
+
+  let specializationRegx = new RegExp(name, "i");
+  console.log("Regular Expression:", specializationRegx);
+
+  const specialization = await Specialization.findOne({
+    name: specializationRegx,
+  });
+  console.log("Specialization found:", specialization);
+
+  if (specialization) {
+    res.status(409);
+    throw new Error("Specialization already existing");
+  }
+
+  const newSpecialization = await Specialization.create({
+    name,
+    description,
+  });
+  console.log("New Specialization created:", newSpecialization);
+
+  res.status(200).json({
+    message: "Specialization created...",
+    data: newSpecialization,
+  });
+});
+
+const getAllSpecialization = asyncHandler(async (req, res) => {
+  const specializations = await Specialization.find();
+  console.log("Specializations:", specializations);
+  res.status(200).json(specializations);
+});
+
 export {
   adminLogin,
   getUsers,
@@ -146,4 +185,6 @@ export {
   approveDoctors,
   unblockUser,
   rejectDoctors,
+  addSpecialization,
+  getAllSpecialization,
 };

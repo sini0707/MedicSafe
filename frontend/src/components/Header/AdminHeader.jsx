@@ -23,6 +23,11 @@ const navlinks = [
     path: '/admin/bookings',
     display: 'Bookings',
   },
+  {
+     path: '/admin/specializations',
+     display: 'Departments',
+  },
+
 ];
 
 const AdminHeader = () => {

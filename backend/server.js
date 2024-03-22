@@ -11,7 +11,8 @@ import userRoutes from './routes/userRoutes.js';
 import doctorRoute from "./routes/doctor.js";
 import adminRoutes from './routes/adminRoutes.js'
  import path from 'path';
-//  import ChatRoute from './routes/ChatRoute.js'
+  import ChatRoute from './routes/ChatRoute.js'
+import MessageRoute from "./routes/MessageRoute.js"
 
 
 
@@ -37,7 +38,8 @@ app.use(cors({
 app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/doctors', doctorRoute);
 app.use("/api/v1/admin",adminRoutes);
-// app.use("/chat",ChatRoute)
+ app.use("/chat",ChatRoute);
+ app.use('/message',MessageRoute)
 
 
 // app.get('/', (req, res) => res.send('API running'));

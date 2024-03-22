@@ -5,7 +5,7 @@ import Loading from "../../components/Loader/Loading";
 import Error from "../../components/Error/Error";
 import DoctorCard from "../../components/Doctors/DoctorCard";
 import Appointments from "./Appointments";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 
 import Pagination from "../../components/Pagination/Pagination";
 
@@ -14,7 +14,11 @@ import Pagination from "../../components/Pagination/Pagination";
 
 const MyBookings = () => {
   const [currentPage, setCurrentPage] = useState(1);
-  const appointmentsPerPage = 4;
+  const[ appointmentsPerPage] = useState(4)
+  const [MyAppointments,setAppointments]=useState([])
+
+
+ 
   
   
   const {
@@ -23,13 +27,23 @@ const MyBookings = () => {
     error,
   } = useFetchData(`${baseURL}/users/appointments/myappointments?page=${currentPage}&pageSize=${appointmentsPerPage}`);
   
- 
+ useEffect(()=>{
+  setAppointments(appointments)
+ },[appointments])
+
   const totalAppointments = appointments.length;
 
+  const totalPages = Math.ceil(totalAppointments /appointmentsPerPage);
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
   
+
+  const indexOfLastDoctor = currentPage * appointmentsPerPage;
+  const indexOfFirstDoctor = indexOfLastDoctor - appointmentsPerPage;
+  const currentDoctors = MyAppointments.slice(indexOfFirstDoctor, indexOfLastDoctor)
+
+
  
   return (
     
@@ -44,12 +58,11 @@ const MyBookings = () => {
          ))} */}
         
          
-          {appointments.map((doctor) => (
+         
             
          
-        <Appointments appointment={doctor} key={doctor._id}  />
+        <Appointments appointment={currentDoctors}  />
         
-         ))}
          </div>
       {totalAppointments > appointmentsPerPage && (
         <Pagination

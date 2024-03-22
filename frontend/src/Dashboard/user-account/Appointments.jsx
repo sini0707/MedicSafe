@@ -11,7 +11,7 @@ import { useNavigate } from 'react-router-dom';
 
 
 const Appointments = ({appointment }) => {
-  console.log(appointment);
+
   const navigate = useNavigate();
   const user=useSelector((state)=>state.auth.userInfo);
 
@@ -97,33 +97,44 @@ const Appointments = ({appointment }) => {
       console.log(error);
     }
     };
+
+    appointment.map((value)=>{
+      console.log(value.doctor.imagePath,"each appointm")
+    })
   
+    return (
+      <div>
+        {appointment.map((value, index) => (
+        
+          <div key={index} className="flex items-center justify-center mt-5">
+            <div className="bg-white font-semibold text-center rounded-3xl border shadow-lg p-10 max-w-xs">
+              <div>
+                {/* Assuming there's a URL for the image */}
+                <img src={value?.doctor?.imagePath} className="w-full" alt="#" />
+              </div>
+              <h1 className="text-lg text-gray-700">{value.doctor.name}</h1>
+              {/* Assuming there's a property for the doctor's specialization */}
+              <h3 className="text-sm text-gray-400">{value.doctor.specialization}</h3>
+              {/* Assuming there's a button to cancel the appointment */}
+              <button onClick={() => handleCancelButton(value._id)}>Cancel Appointment</button>
+              {/* Assuming there's a button to make a video call */}
+              <button onClick={() => MakeVideoCall(value.user)}>Make Video Call</button>
+            </div>
+          </div>
+        ))}
+      </div>
 
-  return (
-    <div>
-     
-        <div className="flex items-center justify-center mt-5  ">
-       <div className="bg-white font-semibold text-center rounded-3xl border shadow-lg p-10 max-w-xs">
-       <div>
-          <img src={appointment?.doctor?.imagePath} className="w-full" alt="#" />
-        </div>
-        <h1 className="text-lg text-gray-700">{appointment?.doctor?.name}</h1>
-        <h3 className="text-sm text-gray-400">{appointment?.doctor?.specialization}</h3>
-     
-{/*    
-        <button onClick={() => handleCancelButton(appointment._id)} className="bg-red-500 px-8 py-2 mt-6 rounded-3xl text-gray-100 font-semibold uppercase tracking-wide">
-  Cancel
-</button> */}
-<button onClick={!appointment.isCancelled ? () => handleCancelButton(appointment._id) : 'Cancelled'} className={`bg-red-500 px-8 py-2 mt-6 rounded-3xl text-gray-100 font-semibold uppercase tracking-wide ${appointment.isCancelled ? 'cursor-not-allowed opacity-50' : ''}`}>Cancel</button>
-<FcVideoCall
-                   onClick={() => MakeVideoCall(user._id)}
-                  className="w-12 text-2xl h-12 ml-auto cursor-pointer "
-                />
-  </div>
-</div>  
-
- </div>  
-  )
+  
+      
+    );
+    
 }
 
 export default Appointments
+
+
+// <button onClick={!appointment.isCancelled ? () => handleCancelButton(appointment._id) : 'Cancelled'} className={`bg-red-500 px-8 py-2 mt-6 rounded-3xl text-gray-100 font-semibold uppercase tracking-wide ${appointment.isCancelled ? 'cursor-not-allowed opacity-50' : ''}`}>Cancel</button>
+// <FcVideoCall
+//                    onClick={() => MakeVideoCall(user._id)}
+//                   className="w-12 text-2xl h-12 ml-auto cursor-pointer "
+//                 />
