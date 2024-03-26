@@ -3,9 +3,11 @@ import { IoIosArrowRoundBack, IoIosArrowRoundForward } from "react-icons/io";
 
 function Pagination({ totalPosts, postPerPage, setCurrentPage, currentPage }) {
   let pages = [];
+  console.log("pages");
 
   for (let i = 1; i <= Math.ceil(totalPosts / postPerPage); i++) {
     pages.push(i);
+  
   }
 
   const previous = async () => {

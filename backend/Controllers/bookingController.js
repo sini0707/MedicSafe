@@ -18,6 +18,11 @@ var customer = await stripe.customers.create({
 
     let doctorId=req.params.doctorId
     let userId=req.params.userId
+
+    const indianDate=req.body.date
+    const indianTime=req.body.time
+
+ 
    
 
     try{
@@ -56,7 +61,11 @@ var customer = await stripe.customers.create({
             doctor:doctor._id,
             ticketPrice:doctor.fees,
             session:session.id,
+            slotTime:indianTime,
+            slotDate:indianDate
         });
+
+        console.log(booking,"new Booking")
         await booking.save();
         res.status(200).json({success:true,message:"Successfully paid",session})
     }catch(err){

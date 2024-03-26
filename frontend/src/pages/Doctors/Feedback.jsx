@@ -7,9 +7,10 @@ import { useSelector } from "react-redux";
 import { useEffect } from "react";
 import { baseURL } from "../../../../backend/config/db";
 
-const Feedback = ({ details }) => {
+const Feedback = ({details}) => {
 
   const [reviews, setReview] = useState([]);
+  const [consultationOccurred, setConsultationOccurred] = useState(false);
   
  
  const [showFeedbackForm,setShowFeedbackForm]=useState(false);
@@ -56,6 +57,15 @@ reviews.map((el,index)=>{
 
 
 })
+const handleFeedbackButtonClick = () => {
+  setShowFeedbackForm(true);
+};
+const checkConsultationOccurred = () => {
+  
+  setConsultationOccurred(true);
+};
+
+
 
 
   return (
@@ -91,6 +101,14 @@ reviews.map((el,index)=>{
     ))}
 </div>
 
+{consultationOccurred && !details.isCancelled && userInfo._id === details.user && (
+        <div className="text-center">
+          <button className="btn" onClick={handleFeedbackButtonClick}>
+            Give Feedback
+          </button>
+        </div>
+      )}
+
       {!showFeedbackForm && (
       <div className="text-center">
         <button className="btn" onClick={()=>setShowFeedbackForm(true)}>Give Feedback</button>
@@ -100,6 +118,9 @@ reviews.map((el,index)=>{
       <FeedbackForm
       details={details}
       setShowFeedbackForm={setShowFeedbackForm}
+      checkConsultationOccurred={checkConsultationOccurred}
+          bookedUserId={details.user}
+          userId={userId}
       />)}
     </div>
   );

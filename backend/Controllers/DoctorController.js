@@ -285,12 +285,7 @@ export const bookingDetails = asyncHandler(async (req, res) => {
       const user = await User.findById(booking.user);
 
       if (user) {
-        // Convert UTC date to IST
-        const indianDate = new Date(booking.createdAt).toLocaleString("en-IN", {
-          timeZone: "Asia/Kolkata",
-        });
-        // Split the Indian date and time parts
-        const [indianDateString, indianTimeString] = indianDate.split(', ');
+
 
         const bookingDetail = {
           user:user._id,
@@ -298,8 +293,8 @@ export const bookingDetails = asyncHandler(async (req, res) => {
           name: user.name,
           email: user.email,
           blood: user.blood,
-          date: indianDateString,
-          time: indianTimeString,
+          date: booking.slotDate,
+          time: booking.slotTime,
           isPaid: booking.isPaid,
           ticketPrice: booking.ticketPrice,
           createdAt: booking.createdAt,

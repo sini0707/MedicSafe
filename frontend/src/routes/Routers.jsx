@@ -35,6 +35,8 @@ import MyBookings from "../Dashboard/user-account/MyBookings.jsx";
 import UserVideoCallRoom from "../pages/Users/UserVideoCallRoom.jsx";
 import DoctorVideoCallRoom from "../pages/Doctors/DoctorVideoCallRoom.jsx";
 import Specialization from "../pages/Admin/Specialization.jsx";
+import Chat from "../pages/Users/Chat/Chat.jsx";
+import WalletComponent from "../pages/Users/WalletComponent.jsx";
 
 
 function Routers() {
@@ -61,6 +63,8 @@ function Routers() {
           </ProtectedRoute>
         }
       />
+<Route path="/wallet" element={<WalletComponent/>} />
+
 
 <Route path="/users/room/:roomId" element={<UserVideoCallRoom  />} />
 
@@ -87,6 +91,9 @@ function Routers() {
         element={<DoctorChangePassword />}
       />
        <Route path="/doctors/room/:roomId" element={<DoctorVideoCallRoom />} />
+     
+       <Route path="/chat" element={<Chat />} />
+
 
       <Route path="/admin" element={<AdminLogin />} />
       <Route path="/admin/home" element={<AdminHome />} />
@@ -94,7 +101,7 @@ function Routers() {
       <Route path="/admin/doctorslist" element={<AdminDoctors />} />
       <Route path="/admin/bookings" element={<AdminBookings />} />
       <Route path="/admin/specializations" element={<Specialization />} />
-    
+     
     </Routes>
   );
 }

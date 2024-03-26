@@ -8,7 +8,9 @@ import Loading from "../../components/Loader/Loading";
 import Error from "../../components/Error/Error";
 import {logout} from "../../slices/authSlice";
 import { useNavigate } from "react-router-dom";
-import ChangePasswordForm from '../../pages/Users/ChangePassword.jsx'
+import ChangePasswordForm from '../../pages/Users/ChangePassword.jsx';
+import { BsFillWalletFill } from "react-icons/bs";
+import WalletComponent from "../../pages/Users/WalletComponent.jsx";
 
 const MyAccount = () => {
 
@@ -16,6 +18,8 @@ const MyAccount = () => {
 const dispatch = useDispatch();
  const navigate = useNavigate();
   const [tab, setTab] = useState("bookings");
+
+  
 
 
   const {
@@ -37,6 +41,11 @@ const dispatch = useDispatch();
   const handleLogout = () => {
     dispatch(logout());
   };
+
+ 
+    const handleWalletClick = () => {
+      navigate('/wallet');
+    };
   
   return (
     <section>
@@ -71,18 +80,25 @@ const dispatch = useDispatch();
               </div>
 
               <div className="mt-[50px] md:mt-[100px]">
+              <WalletComponent />
                 <button
-                  onClick={handleLogout}
-                  className="w-full bg-[#181A1E] p-3 text-[16px] leading-7 rounded-md text-white"
-                >
-                  Logout
-                </button>
+  className="w-full flex items-center justify-center bg-gradient-to-r from-cyan-400 via-cyan-500 to-cyan-600 hover:bg-gradient-to-br focus:ring-4 focus:ring-cyan-300 dark:focus:ring-cyan-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mb-2 leading-7 rounded-md text-white shadow-md"
+
+  onClick={handleWalletClick}
+>
+  <BsFillWalletFill className="w-6 h-6 mr-2" />
+  <span>Wallet</span>
+</button>
+
                 <button
                   onClick={() => setTab("changePassword")} 
                   className="w-full bg-red-600 mt-4 p-3 text-[16px] leading-7 rounded-md text-white"
                 >
                   Change Password
                 </button>
+               
+                
+                
               </div>
             </div>
             <div className="md:col-span-2 md:px-[30px]">

@@ -18,7 +18,7 @@ const Appointments = ({appointment }) => {
   // const [currentPage, setCurrentPage] = useState(1);
   // const [appointmentsPerPage] = useState(3);
   // const [filteredAppointments, setFilteredAppointments] = useState([]);
-
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
  
  
   const handleCancelButton = async (id) => {
@@ -33,6 +33,7 @@ const Appointments = ({appointment }) => {
       confirmButtonText: "Yes, cancel it!"
     }).then(async (result) => {
       if (result.isConfirmed) {
+        console.log(result)
         try {
         
           const res =await fetch(`${baseURL}/users/cancelBooking/${id}`, {
@@ -48,6 +49,7 @@ const Appointments = ({appointment }) => {
               text: "Your appointment has been cancelled.",
               icon: "success"
             });
+            appointment[index].isCancelled = true;
           } else {
             Swal.fire({
               title: "Error!",
@@ -56,12 +58,7 @@ const Appointments = ({appointment }) => {
             });
           }
         } catch (error) {
-          console.error("Error cancelling appointment:", error);
-          Swal.fire({
-            title: "Error!",
-            text: "An error occurred while cancelling the appointment.",
-            icon: "error"
-          });
+          console.log(error)
         }
       }
     });
@@ -109,16 +106,60 @@ const Appointments = ({appointment }) => {
           <div key={index} className="flex items-center justify-center mt-5">
             <div className="bg-white font-semibold text-center rounded-3xl border shadow-lg p-10 max-w-xs">
               <div>
-                {/* Assuming there's a URL for the image */}
+            
                 <img src={value?.doctor?.imagePath} className="w-full" alt="#" />
               </div>
               <h1 className="text-lg text-gray-700">{value.doctor.name}</h1>
-              {/* Assuming there's a property for the doctor's specialization */}
+              
               <h3 className="text-sm text-gray-400">{value.doctor.specialization}</h3>
-              {/* Assuming there's a button to cancel the appointment */}
-              <button onClick={() => handleCancelButton(value._id)}>Cancel Appointment</button>
+             
+              {/* <button
+  type="button"
+  className="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2"
+  onClick={() => handleCancelButton(value._id)}
+  disabled={isButtonDisabled}
+  
+  >
+   
+  Cancel Appointment
+</button> */}
+
+{value.isCancelled ? (
+            <button
+              className="bg-red-500 px-8 py-2 mt-6 rounded-3xl text-gray-100 font-semibold uppercase tracking-wide cursor-not-allowed opacity-50"
+              disabled
+            >
+              Cancelled
+            </button>
+          ) : (
+            <button
+              type="button"
+              className="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2"
+              onClick={() => handleCancelButton(value._id)}
+              disabled={isButtonDisabled}
+            >
+              Cancel Appointment
+            </button>
+          )}
+
+
+
+
+
+
+              
               {/* Assuming there's a button to make a video call */}
-              <button onClick={() => MakeVideoCall(value.user)}>Make Video Call</button>
+              
+ <button
+ type="button"
+ className="text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2"
+ onClick={() => MakeVideoCall(value.user)}
+ style={{ marginLeft: '10px' }}
+>
+ Make Video Call
+</button>
+
+
             </div>
           </div>
         ))}

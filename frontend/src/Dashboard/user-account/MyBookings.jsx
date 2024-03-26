@@ -7,20 +7,19 @@ import DoctorCard from "../../components/Doctors/DoctorCard";
 import Appointments from "./Appointments";
 import { useState,useEffect } from "react";
 
-import Pagination from "../../components/Pagination/Pagination";
+import Pagination from '../../components/Pagination/Pagination'
 
 
 
 
 const MyBookings = () => {
   const [currentPage, setCurrentPage] = useState(1);
-  const[ appointmentsPerPage] = useState(4)
+  const[ appointmentsPerPage] = useState(3)
   const [MyAppointments,setAppointments]=useState([])
 
 
  
-  
-  
+ 
   const {
     data: appointments,
     loading,
@@ -33,7 +32,7 @@ const MyBookings = () => {
 
   const totalAppointments = appointments.length;
 
-  const totalPages = Math.ceil(totalAppointments /appointmentsPerPage);
+  let totalPagess = Math.ceil(totalAppointments /appointmentsPerPage);
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
@@ -44,7 +43,7 @@ const MyBookings = () => {
   const currentDoctors = MyAppointments.slice(indexOfFirstDoctor, indexOfLastDoctor)
 
 
- 
+ console.log(currentDoctors,'Doctoress')
   return (
     
     <div>

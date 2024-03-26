@@ -17,7 +17,14 @@ const bookingSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-
+    slotDate:{
+      type:String,
+      required:true
+    },
+    slotTime:{
+      type:String,
+      required:true
+    },
     status: {
       type: String,
       enum: ["pending", "approved", "cancelled"],
@@ -25,11 +32,11 @@ const bookingSchema = new mongoose.Schema(
     },
     isPaid: {
       type: Boolean,
-      default: true,
+      default: false,
     },
     isCancelled:{
       type:Boolean,
-      default:false
+      default:true,
     }
   },
   { timestamps: true }  // This line should be inside the main Schema object

@@ -7,6 +7,7 @@ import generateToken from "../utils/generateToken.js";
 import Booking from "../models/BookingSchema.js";
 import generateDoctorToken from "../utils/DoctorgenToken.js";
 import { v4 as uuidv4 } from "uuid";
+import Wallet from "../models/walletModel.js";
 
 const sendOtpLink = (email, otp) => {
   try {
@@ -456,7 +457,7 @@ export const getDoctorTimings = async (req, res) => {
 };
 
 export const CancelBooking= async (req, res) => {
- 
+ console.log("bookimgjdsnkkjs");
   const bookingId = req.params.id;
   
   const booking = await Booking.findById(bookingId);
@@ -527,6 +528,50 @@ export const MakeVideoCall = async (req, res) => {
   }
 };
 
+const userWallet = asyncHandler(async (req, res) => {
+console.log("he;;pdmdj");
+// try {
+//     const userId = req.userId;
+//     console.log(userId,'userId seen')
+//     // const { amount } = req.body;
+    
+//     // let wallet = await Wallet.findOne({ userId });
+//     // console.log(wallet); // Log wallet object
+//     // const transaction = {
+//     //   amount: Number(amount),
+//     //   type: "credit",
+//     // };
+//     // if (!wallet) {
+//     //   wallet = await Wallet.create({
+//     //     userId,
+//     //     balance: Number(amount),
+//     //     transactions: [transaction],
+//     //   });
+//     // } else {
+//     //   wallet.balance += Number(amount);
+//     //   wallet.transactions.push(transaction);
+//     //   await wallet.save();
+//     // }
+//     // res.status(200).json(wallet); 
+//   } catch (error) {
+//     console.error(error); // Log any errors
+//     res.status(500).json({ message: "Internal server error" });
+//   }
+});
+
+
+ const getUserWallet = asyncHandler(async (req, res) => {
+//   try {
+//     const userId = req.user;
+//     const userWallet = await Wallet.findOne({ userId }).select("-__v");
+//     console.log(userWallet); // Log userWallet object
+//     res.status(200).json(userWallet);
+//   } catch (error) {
+//     console.error(error); // Log any errors
+//     res.status(500).json({ message: "Internal server error" });
+//   }
+ });
+
 export {
   login,
   register,
@@ -541,5 +586,7 @@ export {
   ChangePassword,
 
   getDoctors,
+  userWallet,
+   getUserWallet,
   
 };
