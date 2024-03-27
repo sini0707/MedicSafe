@@ -11,13 +11,15 @@ const Feedback = ({details}) => {
 
   const [reviews, setReview] = useState([]);
   const [consultationOccurred, setConsultationOccurred] = useState(false);
+  const [slotBooked, setSlotBooked] = useState(false); 
   
- 
+
  const [showFeedbackForm,setShowFeedbackForm]=useState(false);
 
  const [formattedUpdatedAt, setFormattedUpdatedAt] = useState("");
  const userInfo = useSelector(state => state.auth.userInfo);
   const userId = userInfo._id;
+ 
  
 
  useEffect(() => {
@@ -62,6 +64,7 @@ const handleFeedbackButtonClick = () => {
 };
 const checkConsultationOccurred = () => {
   
+ 
   setConsultationOccurred(true);
 };
 
@@ -102,12 +105,15 @@ const checkConsultationOccurred = () => {
 </div>
 
 {consultationOccurred && !details.isCancelled && userInfo._id === details.user && (
+  
         <div className="text-center">
           <button className="btn" onClick={handleFeedbackButtonClick}>
             Give Feedback
           </button>
         </div>
       )}
+
+
 
       {!showFeedbackForm && (
       <div className="text-center">

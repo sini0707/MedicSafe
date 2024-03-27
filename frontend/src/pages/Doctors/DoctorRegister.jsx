@@ -35,7 +35,7 @@ const DoctorRegister = () => {
       try {
         const data = await uploadImageCloudinary(file);
       
-        console.log("Uploaded image URL:", data.url);
+      
         setImage(data.url);
     } catch (error) {
         console.error("Error uploading image:", error);
@@ -63,7 +63,7 @@ const DoctorRegister = () => {
       
   
           const res = await apiInstance.post(`${baseURL}/doctors/register`, requestData);
-          console.log('Response Data:', res);
+        
   
           if (!res.data.success) {
               // Handle unsuccessful registration
@@ -75,7 +75,7 @@ const DoctorRegister = () => {
         
       } catch (err) {
           // Handle errors
-        console.log(err,"aa")
+      
           toast.error(err?.response?.data?.message || err.message);
       }
   };
@@ -141,7 +141,7 @@ const DoctorRegister = () => {
                   value={name}
                   onChange={(e) => {
                       setName(e.target.value);
-                      console.log("Name:", e.target.value);
+                     
                   }}
                   id="name"
                   placeholder="Enter Your Name"
@@ -164,7 +164,7 @@ const DoctorRegister = () => {
                 onChange={(e) =>{
 
                  setEmail(e.target.value);
-                 console.log("Email:", e.target.value);
+                
                 }}
                 id="email"
                 placeholder="Enter Your Email"
@@ -184,7 +184,7 @@ const DoctorRegister = () => {
                         className="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
                         value={specialization}
                         onChange={(e) => {
-                          console.log("Selected value:", e.target.value);
+                         
                           setSpecialization(e.target.value);
                         }}
                       >
@@ -193,7 +193,7 @@ const DoctorRegister = () => {
                         {specializationList ? (
                           specializationList.map((specialization, index) => {
                             return (
-                              <option value={specialization._id} key={index}>
+                              <option value={specialization.name} key={index}>
                                 {specialization.name}
                               </option>
                             );
@@ -216,7 +216,7 @@ const DoctorRegister = () => {
                 id="address"
                 value={address}
                 onChange={(e) =>{ setAddress(e.target.value);
-                  console.log("Address:", e.target.value);
+                 
                 }}
                 cols="50"
                 rows="4"
@@ -225,26 +225,7 @@ const DoctorRegister = () => {
               ></textarea>
             </div>
             <div className="mb-3 flex">
-              {/* <div className="me-2 w-1/2">
-                <label
-                  htmlFor="uploadResume"
-                  className="mb-2 inline-block text-blue-500 text-sm font-medium dark:text-blue-200"
-                >
-                  Upload your Resume
-                </label>
-                <input
-                  className="relative m-0 block w-full min-w-0 flex-auto cursor-pointer rounded border border-solid border-blue-300 bg-clip-padding px-3 py-[0.32rem] text-xs font-normal text-blue-700 transition duration-300 ease-in-out file:-mx-3 file:-my-[0.32rem] file:cursor-pointer file:overflow-hidden file:rounded-none file:border-0 file:border-solid file:border-inherit file:bg-blue-100 file:px-3 file:py-[0.32rem] file:text-blue-700 file:transition file:duration-150 file:ease-in-out file:[border-inline-end-width:1px] file:[margin-inline-end:0.75rem] hover:file:bg-blue-200 focus:border-primary focus:text-blue-700 focus:shadow-te-primary focus:outline-none dark:border-blue-600 dark:text-blue-200 dark:file:bg-blue-700 dark:file:text-blue-100 dark:focus:border-primary"
-                  id="uploadResume"
-                  accept="application/pdf"
-                   onChange={(e) => {setResume(e.target.files[0]);
-                    console.log("Resume:", e.target.value);
-                  }}
-                  type="file"
-                />
-                <p className="text-blue-500 text-xs font-bold mt-1">
-                  Only pdf files are accepted**
-                </p>
-              </div> */}
+              
               <div className="ms-2 w-1/2">
                 <label
                   className="text-blue-500 text-sm font-medium"
@@ -257,7 +238,7 @@ const DoctorRegister = () => {
                   name="fees"
                   value={fees}
                   onChange={(e) =>{setFees(e.target.value);
-                    console.log("Fees:", e.target.value);
+                    
                   }}
                   id="fees"
                   placeholder="Enter Your Fees"
@@ -279,7 +260,7 @@ const DoctorRegister = () => {
                   name="qualification"
                   value={qualification}
                   onChange={(e) =>{ setQualification(e.target.value);
-                    console.log("qualification:", e.target.value);
+                   
                   }}
                   className="block px-2 py-1 w-full text-[15px] border-solid border-b-2 focus:text-[16px] focus:border-blue-500 focus:outline-none"
                   id="qualification"
@@ -301,7 +282,7 @@ const DoctorRegister = () => {
                   name="experience"
                   value={experience}
                   onChange={(e) =>{ setExperience(e.target.value);
-                    console.log("Experience:", e.target.value);
+                    
                   }}
                   className="block px-2 py-1 w-full text-[15px] border-solid border-b-2 focus:text-[16px] focus:border-blue-500 focus:outline-none"
                   id="experience"
@@ -322,7 +303,7 @@ const DoctorRegister = () => {
                   name="password"
                   value={password}
                   onChange={(e) => {setPassword(e.target.value);
-                    console.log("Password:", e.target.value);
+                   
                   }}
                   id="Password"
                   placeholder="Enter Your Password"
@@ -341,7 +322,7 @@ const DoctorRegister = () => {
                   name="password"
                   value={confirmpass}
                   onChange={(e) => {setConfirmpass(e.target.value);
-                    console.log("ConfirmPassword:", e.target.value);
+                 
                   }}
                   id="Confirm Password"
                   placeholder="Confirm Password"
@@ -360,7 +341,7 @@ const DoctorRegister = () => {
                   name="doctor"
                   value={role}
                   onChange={(e) => {setRole(e.target.value);
-                    console.log("role:", e.target.value);
+                    
                   }}
                   id="role"
                   placeholder="role"

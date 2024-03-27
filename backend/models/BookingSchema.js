@@ -32,11 +32,11 @@ const bookingSchema = new mongoose.Schema(
     },
     isPaid: {
       type: Boolean,
-      default: false,
+      default: true,
     },
     isCancelled:{
       type:Boolean,
-      default:true,
+      default:false,
     }
   },
   { timestamps: true }  // This line should be inside the main Schema object

@@ -111,9 +111,9 @@ const Specialization = () => {
       {/* <th className="p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell">
         Status
       </th> */}
-      <th className="p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell">
+      {/* <th className="p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell">
         Actions
-      </th>
+      </th> */}
     </tr>
   </thead>
   <tbody>
@@ -132,7 +132,7 @@ const Specialization = () => {
         {specialization.description}
       </td>
      
-      <td className="w-full lg:w-auto p-3 text-gray-800 text-center border border-b text-center block lg:table-cell relative lg:static">
+      {/* <td className="w-full lg:w-auto p-3 text-gray-800 text-center border border-b text-center block lg:table-cell relative lg:static">
         <span className="lg:hidden absolute top-0 left-0 bg-blue-200 px-2 py-1 text-xs font-bold uppercase">
           Actions
         </span>
@@ -145,7 +145,7 @@ const Specialization = () => {
         >
           unList
         </a>
-      </td>
+      </td> */}
     </tr>
   ))}
    

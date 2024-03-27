@@ -21,7 +21,7 @@ const MyAppointments = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [appointmentsPerPage] = useState(3);
   const [totalAppointments, setTotalAppointments] = useState(0);
-
+  const [desiredDate, setDesiredDate] = useState(""); 
   const { id } = useParams();
   const doctorInfo = useSelector((state) => state.docAuth.doctorInfo);
 
@@ -36,6 +36,9 @@ const MyAppointments = () => {
             params: { page: currentPage, pageSize: appointmentsPerPage },
           }
         );
+        const sortedAppointments = response.data.sort((a, b) => moment(b.date, 'DD/MM/YYYY').valueOf() - moment(a.date, 'DD/MM/YYYY').valueOf());
+
+        setBookingDetails(sortedAppointments);
 
         setBookingDetails(response.data);
 
@@ -79,7 +82,7 @@ const MyAppointments = () => {
         );
 
         let result = await res.json();
-        console.log(result, "result");
+        
 
         if (!res.ok) {
           throw new Error(result.message);
@@ -106,10 +109,7 @@ const MyAppointments = () => {
     indexOfLastAppointment
   );
 
-  console.log(currentAppointments, "current appointments");
-  console.log(bookingDetails, "tot");
-  // Parse slotDate and slotTime using Moment.js
-
+ 
   return (
     <>
       <table className="w-full border-collapse text-left text-sm text-gray-500">
@@ -163,19 +163,7 @@ const MyAppointments = () => {
               <td className="px-6 py-4">{item.date}</td>
               <td className="px-6 py-4">{item.time}</td>
 
-              {/* <td className="px-6 py-4">
-              <button
-                className="flex items-center text-blue-500 hover:text-blue-700"
-                onClick={() => handleVideoCall(item.user,true)}
-              >
-                <FcVideoCall className="mr-5" />
-                Start Video Call
-              </button>
-
-              
             
-            </td> */}
-
               <td className="px-6 py-4">
                 {console.log(item.date, "slot Date")}
 

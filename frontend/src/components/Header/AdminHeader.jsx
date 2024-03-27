@@ -19,10 +19,10 @@ const navlinks = [
     path: '/admin/doctorslist',
     display: 'Doctors',
   },
-  {
-    path: '/admin/bookings',
-    display: 'Bookings',
-  },
+  // {
+  //   path: '/admin/bookings',
+  //   display: 'Bookings',
+  // },
   {
      path: '/admin/specializations',
      display: 'Departments',

@@ -21,10 +21,17 @@ const DoctorDetails = () => {
   const [tab, setTab] = useState("about");
   const [details, setDetails] = useState({});
   const [slot, setSlot] = useState("");
+
   const [bookings, setBookings] = useState([]);
   const [available, setAvailable] = useState([]);
   const [date, setDate] = useState("");
+  const [time, setTime] = useState("");
+
   const [selectedDateSlots, setSelectedDateSlots] = useState([]);
+
+  const [availableTime, setAvailableTime] = useState([]);
+
+  const [slotBooked, setSlotBooked] = useState(false);
 
   let { id } = useParams();
   const doctorId = id;
@@ -51,10 +58,10 @@ const DoctorDetails = () => {
   }, []);
 
   const bookHandler = async (date, time) => {
-    if (!date) {
-      toast.error("Please select a date");
-      return;
-    }
+    // if (!date) {
+    //   toast.error("Please select a date");
+    //   return;
+    // }
 
     const indianDate = moment(date).tz("Asia/Kolkata").format("DD/MM/YYYY");
     const indianTime = moment
@@ -70,9 +77,8 @@ const DoctorDetails = () => {
         }
       );
 
-     
-
       window.location.href = res.data.session.url;
+      setSlotBooked(true);
 
       if (!res.ok) {
         throw new Error(res.data.message + " Please try again");
@@ -81,6 +87,7 @@ const DoctorDetails = () => {
       toast.error(err.message || "An error occurred while booking appointment");
     }
   };
+
   const dateHandler = (e) => {
     if (new Date(e.target.value) < Date.now()) {
       toast.error("select a future date");
@@ -89,45 +96,39 @@ const DoctorDetails = () => {
     setSlot("");
     let selectedDate = e.target.value;
     let formattedDate = formatDateToUTC(selectedDate);
-    console.log(formattedDate);
+
+    let availavleTimings = available.filter(
+      (item) => item.date === formattedDate
+    );
+    const timings = availavleTimings.map((elem) => {
+      return elem.fromTime;
+    });
+
+    setAvailableTime(timings);
 
     //to check already booked slot count
     let slotCount = 0;
     const existingBookingIndex = bookings.findIndex(
       (booking) => booking.date === formattedDate
     );
-    console.log(existingBookingIndex);
+
     if (existingBookingIndex == -1) {
       slotCount = 0;
     } else {
       slotCount = bookings[existingBookingIndex].slots.length;
-  
     }
 
     let check = details.available.filter((temp) => temp.date === formattedDate);
     if (check.length > 0) {
-      console.log(check);
       let slots = slotMaker(check, slotCount);
       setSlot(slots);
-      console.log(slots, "special Time");
     }
     setDate(selectedDate);
-    
-  }
-  
-//   let formattedDate = moment(selectedDate).format("YYYY-MM-DD");
-//   let slotsForSelectedDate = bookings.filter(
-//     (slot) => moment(slot.date).format("YYYY-MM-DD") === formattedDate
-//   );
+  };
 
-//   // Set the filtered slots for the selected date
-//   setSelectedDateSlots(slotsForSelectedDate);
+  /** setting Time */
 
-//   // Count the available slots for the selected date
-//   let slotCount = slotsForSelectedDate.length;
-//   setSlot(slotCount);
-// };
-
+  const handleTime = () => {};
 
   return (
     <section className="container flex-col h-5/6">
@@ -192,13 +193,6 @@ const DoctorDetails = () => {
                   id="from"
                 />
               </div>
-
-              <button
-                onClick={bookHandler}
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 mx-2 rounded"
-              >
-                Check Availablity
-              </button>
             </div>
             {slot && (
               <p className="mx-2 text-red-500">{slot} slots available</p>
@@ -209,12 +203,22 @@ const DoctorDetails = () => {
         <div className="h-60 w-full lg:w-2/5">
           <h3 className="text-blue-500 font-bold my-2">Special Timings</h3>
 
-          <div className="border-2 rounded-lg border-blue-300">
-           
+          {availableTime.map((elem) => (
+            <button
+              key={elem}
+              onClick={() => setTime(elem)}
+              className="mx-3 my-2 px-4 py-2 bg-blue-500 hover:bg-blue-700 text-white font-bold rounded"
+            >
+              {elem}
+            </button>
+          ))}
 
-          
-            
-          </div>
+          <button
+            className="focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900"
+            onClick={() => bookHandler(date, time)}
+          >
+            Book Now
+          </button>
         </div>
       </div>
       <div className="mt-[50px] border-b border-solid border-[#0066ff34]">
