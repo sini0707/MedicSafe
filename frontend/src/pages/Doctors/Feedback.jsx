@@ -1,4 +1,6 @@
 import  { useState } from "react";
+// import moment from "moment-timezone";
+import {toast} from "react-toastify";
 
 import { formatDate } from "../../utils/formateDate";
 import {AiFillStar} from "react-icons/ai";
@@ -14,11 +16,16 @@ const Feedback = ({details}) => {
   const [slotBooked, setSlotBooked] = useState(false); 
   
 
- const [showFeedbackForm,setShowFeedbackForm]=useState(false);
+ const [showFeedbackForm, setShowFeedbackForm]=useState(false);
+
+
+
 
  const [formattedUpdatedAt, setFormattedUpdatedAt] = useState("");
  const userInfo = useSelector(state => state.auth.userInfo);
   const userId = userInfo._id;
+
+  
  
  
 
@@ -28,7 +35,6 @@ const Feedback = ({details}) => {
     setFormattedUpdatedAt(formattedDate);
   }
 }, [userInfo]);
-
 
 
 useEffect(() => {
@@ -53,20 +59,53 @@ useEffect(() => {
     }
   };
   fetchReviews();
-}, []);
+}, [ ]);
 
 reviews.map((el,index)=>{
 
 
 })
-const handleFeedbackButtonClick = () => {
-  setShowFeedbackForm(true);
-};
-const checkConsultationOccurred = () => {
+const handleFeedbackButtonClick = async(doctorId) => {
   
- 
-  setConsultationOccurred(true);
+   console.log(doctorId,"doctor Id");
+
+   try {
+    const res = await fetch(
+      `${baseURL}/users/FeedbackCheck/${doctorId}`,
+      {
+        method: "get",
+        headers: {
+          Authorization: `Bearer ${userInfo.token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if(res.ok){
+      setShowFeedbackForm(true);
+    }
+    else{
+      // console.log("there is no booking")
+      toast.error("there is no booking")
+    }
+
+   } catch (error) {
+    console.log(console.log("error"));
+   }
+
 };
+
+// const checkConsultationOccurred = () => {
+//   console.log(details,"checkkkk")
+//   const consultationOccurred =
+//   details?.date && moment(details.date).isBefore(moment());
+// const appointmentNotCancelled = !details?.isCancelled;
+// return consultationOccurred && appointmentNotCancelled;
+
+ 
+
+
+// };
 
 
 
@@ -104,10 +143,12 @@ const checkConsultationOccurred = () => {
     ))}
 </div>
 
-{consultationOccurred && !details.isCancelled && userInfo._id === details.user && (
-  
+{!showFeedbackForm && (
         <div className="text-center">
-          <button className="btn" onClick={handleFeedbackButtonClick}>
+          <button
+            className="btn"
+            onClick={()=>handleFeedbackButtonClick(details._id)}
+          >
             Give Feedback
           </button>
         </div>
@@ -115,18 +156,12 @@ const checkConsultationOccurred = () => {
 
 
 
-      {!showFeedbackForm && (
-      <div className="text-center">
-        <button className="btn" onClick={()=>setShowFeedbackForm(true)}>Give Feedback</button>
-
-      </div>)}
+    
       {showFeedbackForm && (
       <FeedbackForm
       details={details}
       setShowFeedbackForm={setShowFeedbackForm}
-      checkConsultationOccurred={checkConsultationOccurred}
-          bookedUserId={details.user}
-          userId={userId}
+      
       />)}
     </div>
   );

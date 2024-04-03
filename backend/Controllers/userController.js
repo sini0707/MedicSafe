@@ -572,6 +572,36 @@ console.log("he;;pdmdj");
 //   }
  });
 
+
+ /** checking user have any Booking */
+
+ const checkFeedback=asyncHandler(async(req,res)=>{
+     try {
+      const docId=req.params.id
+    
+      let userId=req.userId
+      let Bookings=await Booking.find({user:userId})
+      let found = false;
+      for (const booking of Bookings) {
+          if (booking.doctor.toString() === docId) {
+              found = true;
+              break; // No need to continue once found
+          }
+      }
+  
+      if (found) {
+         res.status(200).json({success:true,message:"Booking found"})
+         console.log("found")
+      } else {
+         res.status(404).json({success:false,message:"No Booking"})
+      }
+      
+     } catch (error) {
+      
+      console.log(error)
+     }
+ })
+
 export {
   login,
   register,
@@ -584,9 +614,9 @@ export {
   logoutUser,
   updateUser,
   ChangePassword,
-
   getDoctors,
   userWallet,
    getUserWallet,
+   checkFeedback
   
 };

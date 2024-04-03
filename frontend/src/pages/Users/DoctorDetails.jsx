@@ -106,7 +106,7 @@ const DoctorDetails = () => {
 
     setAvailableTime(timings);
 
-    //to check already booked slot count
+    
     let slotCount = 0;
     const existingBookingIndex = bookings.findIndex(
       (booking) => booking.date === formattedDate
@@ -130,6 +130,7 @@ const DoctorDetails = () => {
 
   const handleTime = () => {};
 
+  
   return (
     <section className="container flex-col h-5/6">
       <div className="flex flex-col lg:flex-row md:justify-start items-center">
@@ -242,7 +243,7 @@ const DoctorDetails = () => {
       </div>
       <div className="mt-[50px]">
         {tab === "about" && <DoctorAbout details={details} />}
-        {tab === "feedback" && <Feedback details={details} />}
+        {tab === "feedback" && <Feedback details={details}  />}
       </div>
     </section>
   );

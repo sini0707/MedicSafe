@@ -15,7 +15,10 @@ import Pagination from '../../components/Pagination/Pagination'
 const MyBookings = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const[ appointmentsPerPage] = useState(3)
-  const [MyAppointments,setAppointments]=useState([])
+  const [MyAppointments,setAppointments]=useState([]);
+  // const [loading, setLoading] = useState(true);
+  // const [error, setError] = useState(null);
+
 
 
  
@@ -28,6 +31,8 @@ const MyBookings = () => {
   
  useEffect(()=>{
   setAppointments(appointments)
+
+  
  },[appointments])
 
   const totalAppointments = appointments.length;
@@ -42,8 +47,22 @@ const MyBookings = () => {
   const indexOfFirstDoctor = indexOfLastDoctor - appointmentsPerPage;
   const currentDoctors = MyAppointments.slice(indexOfFirstDoctor, indexOfLastDoctor)
 
+  // const handleCancelAppointment = (appointmentId) => {
+  //   // Call your backend API to cancel the appointment (implementation omitted)
+  //   console.log("Appointment with ID", appointmentId, "canceled!");
 
- console.log(currentDoctors,'Doctoress')
+  //   // Optimistic UI update: Remove appointment from displayed list immediately
+  //   const filteredAppointments = myAppointments.filter((appointment) => appointment._id !== appointmentId);
+  //   setAppointments(filteredAppointments);
+
+  //   // Simulate delay for backend confirmation (replace with actual API call if needed)
+  //   setTimeout(() => {
+  //     // Update appointments state after delay (assuming successful cancellation)
+  //     setAppointments(filteredAppointments);
+  //   }, 2000); // Adjust delay (in milliseconds) as needed
+  // };
+
+ 
   return (
     
     <div>
@@ -60,7 +79,7 @@ const MyBookings = () => {
          
             
          
-        <Appointments appointment={currentDoctors}  />
+        <Appointments appointment={currentDoctors}/>
         
          </div>
       {totalAppointments > appointmentsPerPage && (

@@ -16,12 +16,11 @@ const MyAppointments = () => {
   const navigate = useNavigate();
 
   const [bookingDetails, setBookingDetails] = useState([]);
-  console.log(bookingDetails, "boookingdetails");
-  //  const [appointments, setAppointments] = useState([]);
+
   const [currentPage, setCurrentPage] = useState(1);
   const [appointmentsPerPage] = useState(3);
   const [totalAppointments, setTotalAppointments] = useState(0);
-  const [desiredDate, setDesiredDate] = useState(""); 
+  const [desiredDate, setDesiredDate] = useState("");
   const { id } = useParams();
   const doctorInfo = useSelector((state) => state.docAuth.doctorInfo);
 
@@ -36,7 +35,11 @@ const MyAppointments = () => {
             params: { page: currentPage, pageSize: appointmentsPerPage },
           }
         );
-        const sortedAppointments = response.data.sort((a, b) => moment(b.date, 'DD/MM/YYYY').valueOf() - moment(a.date, 'DD/MM/YYYY').valueOf());
+        const sortedAppointments = response.data.sort(
+          (a, b) =>
+            moment(b.date, "DD/MM/YYYY").valueOf() -
+            moment(a.date, "DD/MM/YYYY").valueOf()
+        );
 
         setBookingDetails(sortedAppointments);
 
@@ -51,9 +54,18 @@ const MyAppointments = () => {
     fetchBookingDetails();
   }, [id, doctorInfo, docId, currentPage, appointmentsPerPage]);
 
+  const filterAppointmentsByDate = () => {
+    if (desiredDate === "") {
+      return bookingDetails;
+    } else {
+      return bookingDetails.filter(
+        (appointment) => appointment.date === desiredDate
+      );
+    }
+  };
+
 
   const totalPageCount = Math.ceil(totalAppointments / appointmentsPerPage);
-
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -82,7 +94,6 @@ const MyAppointments = () => {
         );
 
         let result = await res.json();
-        
 
         if (!res.ok) {
           throw new Error(result.message);
@@ -102,6 +113,12 @@ const MyAppointments = () => {
     }
   };
 
+  const handleFilterByDate = () => {
+    // Call filter function to update appointments
+    const filteredAppointments = filterAppointmentsByDate();
+    setBookingDetails(filteredAppointments);
+  };
+
   const indexOfLastAppointment = currentPage * appointmentsPerPage;
   const indexOfFirstAppointment = indexOfLastAppointment - appointmentsPerPage;
   const currentAppointments = bookingDetails.slice(
@@ -109,9 +126,12 @@ const MyAppointments = () => {
     indexOfLastAppointment
   );
 
- 
+  
+
   return (
     <>
+
+
       <table className="w-full border-collapse text-left text-sm text-gray-500">
         <thead className="text-xs text-gray-700 uppercase bg-gray-50">
           <tr>
@@ -163,7 +183,6 @@ const MyAppointments = () => {
               <td className="px-6 py-4">{item.date}</td>
               <td className="px-6 py-4">{item.time}</td>
 
-            
               <td className="px-6 py-4">
                 {console.log(item.date, "slot Date")}
 

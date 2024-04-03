@@ -22,6 +22,7 @@ import {
   MakeVideoCall,
   userWallet,
    getUserWallet,
+   checkFeedback
   
 } from "../Controllers/userController.js";
 import { protect } from "../middleware/authMiddleware.js";
@@ -53,6 +54,7 @@ router.put("/cancelBooking/:id", protect,CancelBooking);
  router.get("/getallreviews/:id",protect,getAllReviews);
  router.get('/wallet',userWallet);
   router.get('/get-wallet',protect,getUserWallet)
+  router.get("/FeedbackCheck/:id",protect,checkFeedback)
 
 
 
