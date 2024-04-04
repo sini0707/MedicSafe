@@ -456,27 +456,87 @@ export const getDoctorTimings = async (req, res) => {
   }
 };
 
-export const CancelBooking= async (req, res) => {
- console.log("bookimgjdsnkkjs");
+// export const CancelBooking= async (req, res) => {
+
+//   const bookingId = req.params.id;
+  
+//   const booking = await Booking.findById(bookingId);
+  
+//   const doctor = await Doctor.findById(booking.doctor._id);
+
+//   try {
+//     const CancelBooking = await Booking.findByIdAndUpdate(
+//       bookingId,
+//       { $set: { isCancelled: true}});
+
+  
+
+
+//     res.status(200).json({
+//       sucess: true,
+//       message: "Successfully Cancelled",
+//     });
+//   } catch (err) {
+//     res.status(500).json({ success: false, message: "Failed to cancel" });
+//   }
+// };
+
+
+
+export const CancelBooking = async (req, res) => {
   const bookingId = req.params.id;
   
-  const booking = await Booking.findById(bookingId);
-  
-  const doctor = await Doctor.findById(booking.doctor._id);
-
   try {
-    const CancelBooking = await Booking.findByIdAndUpdate(
-      bookingId,
-      { $set: { isCancelled: true}});
+   
+    const booking = await Booking.findById(bookingId);
+    console.log(booking,'booking got ittt')
 
-    res.status(200).json({
-      sucess: true,
-      message: "Successfully Cancelled",
+
+    if (!booking) {
+      return res.status(404).json({ success: false, message: "Booking not found" });
+    }
+
+ 
+    const paymentAmount = Number(booking.ticketPrice);
+    console.log(paymentAmount,'payment amount got it')
+    
+  
+    const doctor = await Doctor.findById(booking.doctor._id);
+    console.log(doctor,'doctor got it')
+
+  
+    booking.isCancelled = true;
+    await booking.save();
+
+   
+     let userWallet = await Wallet.findOne({ userId: booking.user });
+
+    if (!userWallet) {
+  
+      userWallet = new Wallet({ userId: booking.user });
+    }
+    
+  
+    userWallet.balance += paymentAmount;
+
+  
+    userWallet.transactions.push({
+      type: 'credit',
+      amount: paymentAmount,
+      date: new Date()
     });
-  } catch (err) {
-    res.status(500).json({ success: false, message: "Failed to cancel" });
+    
+
+    await userWallet.save();
+   
+    return res.status(200).json({ success: true, message: "Payment added to wallet successfully" });
+
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ success: false, message: "Failed to cancel booking" });
   }
-};
+}
+
 
 export const getSingleUser = async (req, res) => {
   const id = req.params.id;
@@ -528,49 +588,26 @@ export const MakeVideoCall = async (req, res) => {
   }
 };
 
-const userWallet = asyncHandler(async (req, res) => {
-console.log("he;;pdmdj");
-// try {
-//     const userId = req.userId;
-//     console.log(userId,'userId seen')
-//     // const { amount } = req.body;
-    
-//     // let wallet = await Wallet.findOne({ userId });
-//     // console.log(wallet); // Log wallet object
-//     // const transaction = {
-//     //   amount: Number(amount),
-//     //   type: "credit",
-//     // };
-//     // if (!wallet) {
-//     //   wallet = await Wallet.create({
-//     //     userId,
-//     //     balance: Number(amount),
-//     //     transactions: [transaction],
-//     //   });
-//     // } else {
-//     //   wallet.balance += Number(amount);
-//     //   wallet.transactions.push(transaction);
-//     //   await wallet.save();
-//     // }
-//     // res.status(200).json(wallet); 
-//   } catch (error) {
-//     console.error(error); // Log any errors
-//     res.status(500).json({ message: "Internal server error" });
-//   }
-});
 
 
- const getUserWallet = asyncHandler(async (req, res) => {
-//   try {
-//     const userId = req.user;
-//     const userWallet = await Wallet.findOne({ userId }).select("-__v");
-//     console.log(userWallet); // Log userWallet object
-//     res.status(200).json(userWallet);
-//   } catch (error) {
-//     console.error(error); // Log any errors
-//     res.status(500).json({ message: "Internal server error" });
-//   }
- });
+
+ export const getUserWallet =async (req, res) => {
+ console.log("common");
+  // try {
+   
+  //    const user =req.userId;
+   
+  //   console.log("Finding user ID:",user);
+  //   //  console.log("Finding user wallet:");
+  //   //  const userWallet = await Wallet.findOne({ user }).select("-__v");
+  //   // console.log("User wallet:", userWallet);
+  //   //  res.status(200).json(userWallet);
+  // } catch (error) {
+  //   // console.error(error); 
+  //   // res.status(500).json({ message: "Internal server error" });
+  // }
+
+ };
 
 
  /** checking user have any Booking */
@@ -615,8 +652,6 @@ export {
   updateUser,
   ChangePassword,
   getDoctors,
-  userWallet,
-   getUserWallet,
    checkFeedback
   
 };

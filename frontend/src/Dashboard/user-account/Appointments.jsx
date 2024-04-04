@@ -39,16 +39,15 @@ const Appointments = ({ appointment }) => {
               text: "Your appointment has been cancelled.",
               icon: "success",
             });
-            appointment[index].isCancelled = true;
-          } else {
-            Swal.fire({
-              title: "Error!",
-              text: "Failed to cancel appointment.",
-              icon: "error",
-            });
+            // appointment[index].isCancelled = true;
           }
         } catch (error) {
           console.log(error);
+          Swal.fire({
+            title: "Error!",
+            text: "Failed to cancel appointment.",
+            icon: "error",
+          });
         }
       }
     });

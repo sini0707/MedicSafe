@@ -20,7 +20,7 @@ import {
   ChangePassword,
   getDoctorTimings,
   MakeVideoCall,
-  userWallet,
+  // userWallet,
    getUserWallet,
    checkFeedback
   
@@ -52,8 +52,8 @@ router.get("/", protect, getAllUser);
 router.put("/cancelBooking/:id", protect,CancelBooking);
  router.post("/createreviews",protect,createReview);
  router.get("/getallreviews/:id",protect,getAllReviews);
- router.get('/wallet',userWallet);
-  router.get('/get-wallet',protect,getUserWallet)
+
+  router.get('/getwallet',protect,getUserWallet)
   router.get("/FeedbackCheck/:id",protect,checkFeedback)
 
 

@@ -44,7 +44,7 @@ const dispatch = useDispatch();
 
  
     const handleWalletClick = () => {
-      navigate('/wallet');
+      navigate('/users/wallet');
     };
   
   return (
@@ -80,7 +80,7 @@ const dispatch = useDispatch();
               </div>
 
               <div className="mt-[50px] md:mt-[100px]">
-              <WalletComponent />
+              
                 <button
   className="w-full flex items-center justify-center bg-gradient-to-r from-cyan-400 via-cyan-500 to-cyan-600 hover:bg-gradient-to-br focus:ring-4 focus:ring-cyan-300 dark:focus:ring-cyan-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mb-2 leading-7 rounded-md text-white shadow-md"
 

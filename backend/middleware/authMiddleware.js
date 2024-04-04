@@ -1,11 +1,10 @@
 import jwt, { decode } from 'jsonwebtoken';
 import asyncHandler from 'express-async-handler';
-import User from '../models/userModel.js';
-import Admin from '../models/adminModel.js';
 
 const protect = asyncHandler(async (req, res, next) => {
  
   const Authtoken=req.headers.authorization;
+
 
  
   if (Authtoken) {
@@ -16,9 +15,12 @@ const protect = asyncHandler(async (req, res, next) => {
        const decoded = jwt.verify(token, process.env.JWT_SECRET);
       
        const userId=decoded.userId
+       
+    
       
       
       if(decoded.role!=='user'){
+       
         res.status(401).json({error:"Not authorized,user not found"})
         throw new Error("Not authorized,user not found")
       }else{

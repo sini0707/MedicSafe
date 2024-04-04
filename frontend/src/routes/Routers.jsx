@@ -63,7 +63,7 @@ function Routers() {
           </ProtectedRoute>
         }
       />
-<Route path="/wallet" element={<WalletComponent/>} />
+<Route path="/users/wallet" element={<WalletComponent/>} />
 
 
 <Route path="/users/room/:roomId" element={<UserVideoCallRoom  />} />

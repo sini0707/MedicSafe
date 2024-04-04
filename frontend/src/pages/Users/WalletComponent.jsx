@@ -4,35 +4,46 @@ import { useSelector } from 'react-redux';
 
 const WalletComponent = () => {
     const user = useSelector((state) => state.auth.userInfo);
-    // console.log(user,"userId kittyyy");
-
+   
     const [wallet, setWallet] = useState(null);
 
-    // useEffect(() => {
-    //     fetchWallet();
-    //   }, []);
-    
+ 
       const fetchWallet = async () => {
-        console.log("fetch wallet");
+       
         try {
-        const response = await fetch(`${baseURL}/users/wallet`, {
+        const response = await fetch(`${baseURL}/users/getwallet`, {
             method: 'get',
             headers: {
               Authorization: `Bearer ${user.token}`,
+          
             },
           });
-          if (!response.ok) {
-            throw new Error("Failed to fetch wallet");
-          }
-          const data = await response.json();
-          setWallet(data);
+          console.log(response);
+    
         } catch (error) {
           console.error("Error fetching wallet:", error);
         }
        };
+  
+    
   return (
     <div>
-      <button onClick={fetchWallet}> </button>
+      <p className='text-center  text-lg font-bold text-red-200 '>Wallet component</p>
+      <button onClick={fetchWallet}>Click me</button>
+
+      {/* {wallet && (
+        <div>
+          <h2>Wallet Balance: {wallet.balance}</h2>
+          <h3>Transaction History:</h3>
+          <ul>
+            {wallet.transactions.map((transaction, index) => (
+              <li key={index}>
+                Amount: {transaction.amount}, Type: {transaction.type}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )} */}
     </div>
   )
 }
