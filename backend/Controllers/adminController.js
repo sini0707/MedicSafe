@@ -40,6 +40,7 @@ const adminLogin = asyncHandler(async (req, res) => {
 });
 
 const getUsers = asyncHandler(async (req, res) => {
+ 
   let users = await User.find({}, { password: 0 });
 
   if (users) {

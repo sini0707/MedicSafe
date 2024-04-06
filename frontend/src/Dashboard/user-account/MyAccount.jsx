@@ -1,4 +1,4 @@
-import {  useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import MyBookings from "./MyBookings";
 import Profile from "./Profile";
 import { useDispatch } from "react-redux";
@@ -6,47 +6,57 @@ import useGetProfile from "../../hooks/useFetchData";
 import { baseURL } from "../../../../backend/config/db";
 import Loading from "../../components/Loader/Loading";
 import Error from "../../components/Error/Error";
-import {logout} from "../../slices/authSlice";
+import { logout } from "../../slices/authSlice";
 import { useNavigate } from "react-router-dom";
-import ChangePasswordForm from '../../pages/Users/ChangePassword.jsx';
+import ChangePasswordForm from "../../pages/Users/ChangePassword.jsx";
 import { BsFillWalletFill } from "react-icons/bs";
-import WalletComponent from "../../pages/Users/WalletComponent.jsx";
+ import WalletComponent from "../../pages/Users/WalletComponent.jsx";
+ import { useSelector } from "react-redux";
 
 const MyAccount = () => {
-
-
-const dispatch = useDispatch();
- const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [tab, setTab] = useState("bookings");
-
-  
+  const [walletBalance, setWalletBalance] = useState(0);
+  const user = useSelector((state) => state.auth.userInfo);
 
 
   const {
     data: userData,
     loading,
     error,
-   
   } = useGetProfile(`${baseURL}/users/profile/me`);
 
-  
   useEffect(() => {
     if (error) {
-      
-      console.log("Error in user profile fetching data");
-      console.log(error,"errr")
+      console.log(error, "errr");
     }
   }, [error, userData, loading, userData]);
+ 
+ 
+  // useEffect(() => {
+  
 
-  const handleLogout = () => {
-    dispatch(logout());
+  //   fetchWalletBalance();
+  // }, []);
+
+  // const handleWalletClick = () => {
+  //   navigate('/users/wallet');
+  // };
+
+  const handleCancellation = async () => {
+    try {
+       const response = await fetch(`${baseURL}/users/getwallet`,{
+        method:"GET"
+       })
+     
+     } catch (error) {
+       console.error("Error fetching wallet balance:");
+     }
   };
 
- 
-    const handleWalletClick = () => {
-      navigate('/users/wallet');
-    };
   
+
   return (
     <section>
       <div className="max-w-[1170px] px-5 mx-auto">
@@ -69,7 +79,7 @@ const dispatch = useDispatch();
                   {userData.name}
                 </h3>
                 <p className="text-textColor text-[15px] leading-6 font-medium">
-                {userData.email}
+                  {userData.email}
                 </p>
                 <p className="text-textColor text-[15px] leading-6 font-medium">
                   Blood Type:
@@ -80,25 +90,20 @@ const dispatch = useDispatch();
               </div>
 
               <div className="mt-[50px] md:mt-[100px]">
-              
                 <button
-  className="w-full flex items-center justify-center bg-gradient-to-r from-cyan-400 via-cyan-500 to-cyan-600 hover:bg-gradient-to-br focus:ring-4 focus:ring-cyan-300 dark:focus:ring-cyan-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mb-2 leading-7 rounded-md text-white shadow-md"
-
-  onClick={handleWalletClick}
->
-  <BsFillWalletFill className="w-6 h-6 mr-2" />
-  <span>Wallet</span>
-</button>
+                  onClick={handleCancellation}
+                  className="w-full flex items-center justify-center bg-gradient-to-r from-cyan-400 via-cyan-500 to-cyan-600 hover:bg-gradient-to-br focus:ring-4 focus:ring-cyan-300 dark:focus:ring-cyan-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mb-2 leading-7 rounded-md text-white shadow-md"
+                >
+                  <BsFillWalletFill   className="w-6 h-6 mr-2" />
+                  <span>Wallet (${walletBalance})</span>
+                </button>
 
                 <button
-                  onClick={() => setTab("changePassword")} 
+                  onClick={() => setTab("changePassword")}
                   className="w-full bg-red-600 mt-4 p-3 text-[16px] leading-7 rounded-md text-white"
                 >
                   Change Password
                 </button>
-               
-                
-                
               </div>
             </div>
             <div className="md:col-span-2 md:px-[30px]">
@@ -124,13 +129,12 @@ const dispatch = useDispatch();
                   Profile Settings
                 </button>
               </div>
-
               {tab === "bookings" && <MyBookings />}
-              
-              {tab === "settings" && <Profile user={userData}  />}
-
-              {tab === "changePassword" && <ChangePasswordForm email={userData.email} />} {/* Render ChangePassword component if tab is set to changePassword */}
-
+              {tab === "settings" && <Profile user={userData} />}
+              {tab === "changePassword" && (
+                <ChangePasswordForm email={userData.email} />
+              )}{" "}
+              {/* Render ChangePassword component if tab is set to changePassword */}
             </div>
           </div>
         )}

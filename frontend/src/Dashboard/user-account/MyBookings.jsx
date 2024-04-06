@@ -14,7 +14,7 @@ import Pagination from '../../components/Pagination/Pagination'
 
 const MyBookings = () => {
   const [currentPage, setCurrentPage] = useState(1);
-  const[ appointmentsPerPage] = useState(3)
+  const[ appointmentsPerPage] = useState(4)
   const [MyAppointments,setAppointments]=useState([]);
   // const [loading, setLoading] = useState(true);
   // const [error, setError] = useState(null);

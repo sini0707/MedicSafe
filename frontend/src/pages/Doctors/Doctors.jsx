@@ -18,10 +18,13 @@ const Doctorss = () => {
   const [doctorsPerPage] =useState(3); 
   const [filteredResult,setFilteredResult]=useState([]);
   const [filter,setFilter]= useState('')
-  const [sortted,setSortted]= useState('')
+  const [sortted,setSortted]= useState('');
+  const [minRating, setMinRating] = useState(0); 
+   const [filterRating,setfilterRating]=useState(0);
 
-  console.log(sortted,'sorttted')
-  console.log(filter,'sorttted')
+  
+
+ 
 
  
   useEffect(()=>{
@@ -36,6 +39,7 @@ const Doctorss = () => {
     
         if(doctorsList){
           setDoctors(doctorsList)
+         
         }
   
         
@@ -49,10 +53,12 @@ const Doctorss = () => {
   },[currentPage, doctorsPerPage, search])
   
   
+ 
   const handleSearch = (event) => {
     setSearch(event.target.value);
    
   };
+
 
    
    const totalDoctors = doctors.length;
@@ -69,7 +75,7 @@ const Doctorss = () => {
         doctor.specialization.toLowerCase().includes(search.toLowerCase()))
   );
 
-  console.log(filterdDoctors,'doctores')
+
   if(sortted !=='' ){
     filterdDoctors = filterdDoctors.sort((a,b)=>a.fees-b.fees)
     }
@@ -77,11 +83,16 @@ const Doctorss = () => {
       filterdDoctors = filterdDoctors.filter((item)=>item.specialization === filter)
 
     }
+    if (minRating !== 0) {
+      filterdDoctors = filterdDoctors.filter((doctor) => doctor.averageRating === minRating);
+    }
 
+
+   
    const indexOfLastDoctor = currentPage * doctorsPerPage;
    const indexOfFirstDoctor = indexOfLastDoctor - doctorsPerPage;
    const currentDoctors = filterdDoctors.slice(indexOfFirstDoctor, indexOfLastDoctor);
-   console.log(currentDoctors,"currentdoc");
+  
    
   return (
     <>
@@ -102,10 +113,10 @@ const Doctorss = () => {
             
 
         </div>
-        <SortAndFilter  setSortted={setSortted} setFilter={setFilter} />
+        <SortAndFilter  setSortted={setSortted} setFilter={setFilter} setMinRating={setMinRating} />
         <div>
         
-            <DoctorList doctors={currentDoctors} />
+            <DoctorList doctors={currentDoctors}  />
           
           
         </div>

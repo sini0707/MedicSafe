@@ -59,6 +59,15 @@ const DoctorSchema= new mongoose.Schema({
         type: Array 
       },
       reviews: [{ type: mongoose.Types.ObjectId, ref: "Review" }],
+
+      averageRating: {
+        type: Number,
+        default: 0,
+      },
+      totalRating: {
+        type: Number,
+        default: 0,
+      },
       bookings: [
         {
           date: {

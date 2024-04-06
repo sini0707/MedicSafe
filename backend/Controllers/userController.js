@@ -591,23 +591,10 @@ export const MakeVideoCall = async (req, res) => {
 
 
 
- export const getUserWallet =async (req, res) => {
- console.log("common");
-  // try {
-   
-  //    const user =req.userId;
-   
-  //   console.log("Finding user ID:",user);
-  //   //  console.log("Finding user wallet:");
-  //   //  const userWallet = await Wallet.findOne({ user }).select("-__v");
-  //   // console.log("User wallet:", userWallet);
-  //   //  res.status(200).json(userWallet);
-  // } catch (error) {
-  //   // console.error(error); 
-  //   // res.status(500).json({ message: "Internal server error" });
-  // }
+ export const getUserWallet =asyncHandler( async (req, res) => {
+    console.log("hello ")
 
- };
+ })
 
 
  /** checking user have any Booking */
@@ -639,6 +626,15 @@ export const MakeVideoCall = async (req, res) => {
      }
  })
 
+
+
+
+
+
+
+
+
+
 export {
   login,
   register,
@@ -652,6 +648,7 @@ export {
   updateUser,
   ChangePassword,
   getDoctors,
-   checkFeedback
+  checkFeedback,
+ 
   
 };

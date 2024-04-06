@@ -95,6 +95,7 @@ const AdminUsers = () => {
 
   return (
     <section className='container'>
+    
       <div className="relative mx-5 overflow-x-auto shadow-md sm:rounded-lg">
         <table className="w-full text-sm text-left text-gray-500">
           <thead  className="md:w-1/3 my-2 mx-4 p-5 text-center rounded-lg border-4 border-blue-500 bg-blue-200">
@@ -160,6 +161,8 @@ const AdminUsers = () => {
           </tbody>
         </table>
       </div>
+
+  
     </section>
   );
 }

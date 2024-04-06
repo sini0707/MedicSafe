@@ -14,6 +14,7 @@ const FeedbackForm = ({ details, setshowFeedbackForm }) => {
    
     const [hover, setHover] = useState(0);
     const [reviewText, setReviewText] = useState("");
+    // const [replyText, setReplyText] = useState('');
   
     const userInfo = useSelector(state => state.auth.userInfo);
   
@@ -61,11 +62,51 @@ const handleSubmitReview = async (e) => {
   }
 };
 
+
+
+    // const handleReply = async (reviewId) => {
+    //      console.log('Review ID:', reviewId);
+    //     try {
+    //         const res = await fetch(`${baseURL}/users/submitreply`, {
+    //             method: 'post',
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //                 Authorization: `Bearer ${token}`,
+    //             },
+    //             credentials: 'include',
+    //             body: JSON.stringify({ replyText, reviewId, userId }), 
+    //         });
+    //         console.log(res);
+    //     } catch (error) {
+    //         console.error('Error submitting reply:', error);
+    //     }
+    // };
+
+
     
         
 
 
     return (
+
+        // {reviews && reviews.map((review) => (
+        //     <div key={review._id}>
+        //         <p>{review.reviewText}</p>
+        //         {/* Display reply input for admin and doctor */}
+        //         {(userInfo.isAdmin || review.doctor === userId) && (
+        //             <input
+        //                 type="text"
+        //                 value={replyText}
+        //                 onChange={(e) => setReplyText(e.target.value)}
+        //                 placeholder="Write your reply"
+        //             />
+        //         )}
+        //         {/* Display submit reply button for admin and doctor */}
+        //         {(userInfo.isAdmin || review.doctor === userId) && (
+        //             <button onClick={() => handleReply(review._id)}>Submit Reply</button>
+        //         )}
+        //     </div>
+        // ))}
         <form action="">
             <div>
                 <h3 className='text-headingColor text-[16px] leading-6 font-semibold mb-4 mt-0'>
@@ -108,6 +149,8 @@ const handleSubmitReview = async (e) => {
                 <textarea
                     className='border border-solid border-[#0066ff34] focus:outline outline-primaryColor w-full px-4 py-3 rounded-md'
                     rows="5"
+                    // value={reviewText}
+                    //     onChange={(e) => setReviewText(e.target.value)}
                     placeholder="write your message"
                     onChange={(e) => setReviewText(e.target.value)}
                 />

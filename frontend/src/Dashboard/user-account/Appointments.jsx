@@ -24,7 +24,7 @@ const Appointments = ({ appointment }) => {
       confirmButtonText: "Yes, cancel it!",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        console.log(result);
+        
         try {
           const res = await fetch(`${baseURL}/users/cancelBooking/${id}`, {
             method: "PUT",
@@ -83,7 +83,7 @@ const Appointments = ({ appointment }) => {
   };
 
   appointment.map((value) => {
-    console.log(value.doctor.imagePath, "each appointm");
+   
   });
 
   return (

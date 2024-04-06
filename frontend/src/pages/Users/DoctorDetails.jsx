@@ -128,7 +128,9 @@ const DoctorDetails = () => {
 
   /** setting Time */
 
-  const handleTime = () => {};
+  const handleTime = () => {
+    setTime(time)
+  };
 
   
   return (
@@ -148,7 +150,8 @@ const DoctorDetails = () => {
               <h1 className="px-2 font-bold text-3xl">{details.name}</h1>
               <div className="flex items-center gap-[6px]">
                 <span className="flex items-center gap-[6px] text-[14px] leading-5 lg:text-[16px] lg:leading-7 font-semibold text-headingColor">
-                  {/* <img src={starIcon} alt=""/>{details.rating} */}
+                 {details.averageRating}
+                 <img src={starIcon} alt=""/>
                 </span>
                 <span className="text-[14px] leading-5 lg:text-[16px] lg:leading-7 font-[400] text-textColor">
                   {}
@@ -207,11 +210,13 @@ const DoctorDetails = () => {
           {availableTime.map((elem) => (
             <button
               key={elem}
-              onClick={() => setTime(elem)}
+             
+               onClick={() => setTime(elem)}
               className="mx-3 my-2 px-4 py-2 bg-blue-500 hover:bg-blue-700 text-white font-bold rounded"
             >
               {elem}
             </button>
+         
           ))}
 
           <button
@@ -220,6 +225,7 @@ const DoctorDetails = () => {
           >
             Book Now
           </button>
+           
         </div>
       </div>
       <div className="mt-[50px] border-b border-solid border-[#0066ff34]">

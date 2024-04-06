@@ -20,9 +20,10 @@ import {
   ChangePassword,
   getDoctorTimings,
   MakeVideoCall,
-  // userWallet,
-   getUserWallet,
-   checkFeedback
+  getUserWallet,
+   checkFeedback,
+  
+
   
 } from "../Controllers/userController.js";
 import { protect } from "../middleware/authMiddleware.js";
@@ -52,9 +53,13 @@ router.get("/", protect, getAllUser);
 router.put("/cancelBooking/:id", protect,CancelBooking);
  router.post("/createreviews",protect,createReview);
  router.get("/getallreviews/:id",protect,getAllReviews);
+//  router.post('/submitreply',protect,submitReply);
 
-  router.get('/getwallet',protect,getUserWallet)
-  router.get("/FeedbackCheck/:id",protect,checkFeedback)
+
+
+router.get("/getwallet",getUserWallet);
+
+router.get("/FeedbackCheck/:id",protect,checkFeedback)
 
 
 

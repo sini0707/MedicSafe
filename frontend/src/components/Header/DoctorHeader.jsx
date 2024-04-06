@@ -18,6 +18,7 @@ const navLinks = [
     path:'/doctors/home',
     display:'Home'
   },
+ 
   {
     path:'/doctors/appointments',
     display:'Appointments'

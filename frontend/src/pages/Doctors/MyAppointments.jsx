@@ -54,16 +54,26 @@ const MyAppointments = () => {
     fetchBookingDetails();
   }, [id, doctorInfo, docId, currentPage, appointmentsPerPage]);
 
-  const filterAppointmentsByDate = () => {
-    if (desiredDate === "") {
-      return bookingDetails;
-    } else {
-      return bookingDetails.filter(
-        (appointment) => appointment.date === desiredDate
+  const filterAppointmentsByDate = (filterType) => {
+    let filteredAppointments = [...bookingDetails];
+
+   
+    if (filterType === "latest") {
+      filteredAppointments.sort(
+        (a, b) =>
+          moment(b.date, "DD/MM/YYYY").valueOf() -
+          moment(a.date, "DD/MM/YYYY").valueOf()
+      );
+    } else if (filterType === "oldest") {
+      filteredAppointments.sort(
+        (a, b) =>
+          moment(a.date, "DD/MM/YYYY").valueOf() -
+          moment(b.date, "DD/MM/YYYY").valueOf()
       );
     }
-  };
 
+    setBookingDetails(filteredAppointments);
+  };
 
   const totalPageCount = Math.ceil(totalAppointments / appointmentsPerPage);
 
@@ -131,7 +141,10 @@ const MyAppointments = () => {
   return (
     <>
 
-
+<div>
+       
+       
+      </div>
       <table className="w-full border-collapse text-left text-sm text-gray-500">
         <thead className="text-xs text-gray-700 uppercase bg-gray-50">
           <tr>
@@ -148,11 +161,21 @@ const MyAppointments = () => {
             <th scope="col" className="px-6 py-3">
               Price
             </th>
-            <th scope="col" className="px-6 py-3">
+            <th scope="col" className="px-6 py-3 ">
               Booked on Date
+              <select
+          onChange={(e) => filterAppointmentsByDate(e.target.value)}
+          className="ml-3"
+        >
+          <option value="">filter</option>
+          <option value="latest">Latest</option>
+          <option value="oldest">Oldest</option>
+          </select>
             </th>
-            <th scope="col" className="px-6 py-3">
+
+            <th scope="col" className="px-5 py-3">
               Booked on Time
+              
             </th>
 
             <th scope="col" className="px-6 py-3">

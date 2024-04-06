@@ -11,13 +11,10 @@ const WalletComponent = () => {
       const fetchWallet = async () => {
        
         try {
-        const response = await fetch(`${baseURL}/users/getwallet`, {
+          const response = await fetch(`${baseURL}/users/getwallet`, {
             method: 'get',
-            headers: {
-              Authorization: `Bearer ${user.token}`,
-          
-            },
           });
+          
           console.log(response);
     
         } catch (error) {
@@ -28,8 +25,13 @@ const WalletComponent = () => {
     
   return (
     <div>
+       <div
+    className="font-regular relative block w-full max-w-screen-md rounded-lg bg-green-500 px-4 py-4 text-base text-white"
+    data-dismissible="alert"
+  >
       <p className='text-center  text-lg font-bold text-red-200 '>Wallet component</p>
       <button onClick={fetchWallet}>Click me</button>
+     </div>
 
       {/* {wallet && (
         <div>
@@ -47,5 +49,8 @@ const WalletComponent = () => {
     </div>
   )
 }
+
+
+
 
 export default WalletComponent

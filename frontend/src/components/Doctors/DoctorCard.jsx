@@ -3,13 +3,15 @@
 import  starIcon from '../../assets/images/Star.png';
 import { Link } from 'react-router-dom';
 import { BiSolidRightArrow } from "react-icons/bi";
+// import { useEffect,useState } from 'react';
 
 
 
 const DoctorCard = ({doctor}) => {
 
 
-    const{ name,imagePath,specialization,fees,qualification,rating}=doctor;
+    const{ name,imagePath,specialization,fees,qualification,averageRating}=doctor;
+    
    
     
     
@@ -49,7 +51,8 @@ const DoctorCard = ({doctor}) => {
           <div className="font-black flex flex-col">
             <span className="text-yellow-500 text-lg">Rating</span>
             <span className="text-lg flex gap-x-1 items-center group-hover:text-yellow-600">
-              {rating}
+              {averageRating}
+              
               <svg
                 width="18px"
                 height="18px"
