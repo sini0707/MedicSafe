@@ -2,6 +2,7 @@ import  { useState ,useEffect} from 'react';
 import { AiFillStar } from 'react-icons/ai';
 import { useSelector } from 'react-redux';
 import useFetchData from '../../hooks/useFetchData';
+import { toast } from "react-toastify";
 
 import { baseURL } from "../../../../backend/config/db";
 
@@ -31,7 +32,9 @@ const FeedbackForm = ({ details, setshowFeedbackForm }) => {
 
     
   
-    const { fetchData, data: reviews } = useFetchData(`${baseURL}/users/getallreviews`);
+//     const { fetchData, data: reviews } = useFetchData(`${baseURL}/users/getallreviews`);
+const { fetchData, data: reviews, refetch } = useFetchData(`${baseURL}/users/getallreviews`);
+
 
 useEffect(() => {
   fetchData();
@@ -41,27 +44,38 @@ useEffect(() => {
    
 
 const handleSubmitReview = async (e) => {
-  e.preventDefault();
-
-  try {
-    const res = await fetch(`${baseURL}/users/createreviews`, {
-      method: 'post',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`
-      },
-      credentials: 'include',
-      body: JSON.stringify({ review: reviewData })
-    });
-    
-
-    console.log(res);
-  } catch (error) {
-    console.error("Error submitting review:", error);
-   
-  }
-};
-
+    e.preventDefault();
+  
+    try {
+      const res = await fetch(`${baseURL}/users/createreviews`, {
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        credentials: 'include',
+        body: JSON.stringify({ review: reviewData })
+      });
+      
+      if (res.ok) {
+        toast.success('Feedback submitted successfully');
+        
+        // Fetch the updated list of reviews
+        fetchData();
+        
+        // Reset the form fields
+        setRating(0);
+        setReviewText("");
+      } else {
+        // Show error toast
+        toast.error('Failed to submit feedback');
+      }
+    } catch (error) {
+      console.error("Error submitting review:", error);
+      toast.error('An error occurred while submitting feedback');
+    }
+  };
+  
 
 
     // const handleReply = async (reviewId) => {

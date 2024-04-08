@@ -83,9 +83,13 @@ const Doctorss = () => {
       filterdDoctors = filterdDoctors.filter((item)=>item.specialization === filter)
 
     }
+    // if (minRating !== 0) {
+    //   filterdDoctors = filterdDoctors.filter((doctor) => doctor.averageRating === minRating);
+    // }
     if (minRating !== 0) {
-      filterdDoctors = filterdDoctors.filter((doctor) => doctor.averageRating === minRating);
+      filterdDoctors = filterdDoctors.filter((doctor) => doctor.averageRating >= minRating);
     }
+    
 
 
    

@@ -42,8 +42,7 @@ const sendOtpLink = (email, otp) => {
 const login = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
-  const userpwd=await user.matchPassword(password)
- 
+  const userpwd = await user.matchPassword(password);
 
   if (user && !user.blocked && (await user.matchPassword(password))) {
     const token = generateToken(res, user._id);
@@ -118,8 +117,6 @@ const forgotEmailCheck = asyncHandler(async (req, res) => {
   const userExists = await User.findOne({ email: email });
 
   if (userExists && !userExists.blocked) {
-
-    
     let newotp = Math.floor(1000 + Math.random() * 9000);
     userExists.otp = newotp;
     await userExists.save();
@@ -139,11 +136,11 @@ const forgotOtpVerify = asyncHandler(async (req, res) => {
   const { email, otp } = req.body;
   const userExists = await User.findOne({ email: email });
 
-if (userExists) {
-  if (userExists.otp !== Number(otp)) {
-    return res.status(400).json({ error: "Invalid OTP" });
-  }
-  
+  if (userExists) {
+    if (userExists.otp !== Number(otp)) {
+      return res.status(400).json({ error: "Invalid OTP" });
+    }
+
     userExists.verified = true;
     userExists = await userExists.save();
     generateToken(res, userExists._id);
@@ -156,7 +153,6 @@ if (userExists) {
   } else {
     res.status(404).json({ error: "User not found" });
   }
-
 });
 const resendEmailCheck = asyncHandler(async (req, res) => {
   const { email } = req.body;
@@ -262,35 +258,27 @@ const register = asyncHandler(async (req, res) => {
 export const otpVerify = asyncHandler(async (req, res) => {
   const { email, otp } = req.body;
 
-
-
   let userExists = await User.findOne({ email });
 
- 
   if (userExists) {
     if (userExists.otp !== Number(otp)) {
-   
-
-      return res.status(400).json({success: false,  message: "Invalid OTP" });
-    }else{
+      return res.status(400).json({ success: false, message: "Invalid OTP" });
+    } else {
       userExists.verified = true;
       userExists = await userExists.save();
       generateToken(res, userExists._id);
-      res.status(200).json({success:true,
+      res.status(200).json({
+        success: true,
         message: "OTP verified successfully",
         _id: userExists._id,
         name: userExists.name,
         email: userExists.email,
         blocked: userExists.blocked,
       });
-
     }
-    
-  
-    } else {
-      res.status(404).json({success:false, error: "User not found" });
-    }
-  
+  } else {
+    res.status(404).json({ success: false, error: "User not found" });
+  }
 });
 
 const logoutUser = (req, res) => {
@@ -303,8 +291,7 @@ const logoutUser = (req, res) => {
 
 const getUserProfile = asyncHandler(async (req, res) => {
   const userId = req.userId;
- 
-  
+
   try {
     const user = await User.findById(userId);
     if (!user) {
@@ -312,7 +299,6 @@ const getUserProfile = asyncHandler(async (req, res) => {
         .status(404)
         .json({ success: false, message: "User not found" });
     }
-  
 
     const { password, ...rest } = user._doc;
 
@@ -330,18 +316,19 @@ const getUserProfile = asyncHandler(async (req, res) => {
 });
 
 const getMyAppointments = async (req, res) => {
- 
-  const userId=req.userId
-  
+  const userId = req.userId;
+
   try {
     const userId = req.userId;
-   
-    const bookings = await Booking.find({ user: userId }).populate("doctor", "name specialization imagePath").sort({ createdAt: -1 });
-  
+
+    const bookings = await Booking.find({ user: userId })
+      .populate("doctor", "name specialization imagePath")
+      .sort({ createdAt: -1 });
+
     if (bookings.length === 0) {
       throw new Error("Oops! You don't have any appointments yet!");
     }
-  
+
     res.status(200).json({
       success: true,
       message: "Appointments are fetched successfully",
@@ -352,15 +339,11 @@ const getMyAppointments = async (req, res) => {
   }
 };
 
-
-
 const updateUser = async (req, res) => {
   try {
     const id = req.params.id;
-    const { name, email, mobile, gender, age, blood, role ,photo} =
-      req.body;
+    const { name, email, mobile, gender, age, blood, role, photo } = req.body;
 
-   
     const updatedUser = await User.findByIdAndUpdate(
       id,
       {
@@ -392,24 +375,20 @@ const updateUser = async (req, res) => {
 const ChangePassword = asyncHandler(async (req, res) => {
   const { email, newpassword } = req.body;
 
-
-
   const salt = await bcrypt.genSalt(10);
- 
+
   const hashPassword = await bcrypt.hash(newpassword, salt);
 
   const userExists = await User.findOne({ email: email });
 
   if (userExists) {
     userExists.password = hashPassword;
-  
-    let changePassword = await userExists.save();
-   
-    if (changePassword) {
 
+    let changePassword = await userExists.save();
+
+    if (changePassword) {
       res.status(200).json({ message: "Password Changed Successfully" });
     } else {
-    
       res.status(400).json({ error: "Failed to change the password" });
     }
   } else {
@@ -417,8 +396,7 @@ const ChangePassword = asyncHandler(async (req, res) => {
   }
 });
 
-
- const getDoctors = asyncHandler(async (req, res) => {
+const getDoctors = asyncHandler(async (req, res) => {
   const doctors = await Doctor.find({}, { password: 0 });
   if (doctors) {
     res.status(200).json({ doctorsData: doctors });
@@ -429,48 +407,37 @@ const ChangePassword = asyncHandler(async (req, res) => {
   }
 });
 
-
-
-
-
-
 export const getDoctorTimings = async (req, res) => {
- 
   const doctorId = req.params.doctorId;
-  
 
   try {
-   
     const doctor = await Doctor.findById(doctorId);
-    
+
     if (!doctor) {
-      return res.status(404).json({ message: 'Doctor not found' });
+      return res.status(404).json({ message: "Doctor not found" });
     }
 
-    const timings = doctor.timings; 
-   
+    const timings = doctor.timings;
+
     res.json({ timings });
   } catch (error) {
-    console.error('Error fetching doctor timings:', error);
-    res.status(500).json({ message: 'Internal server error' });
+    console.error("Error fetching doctor timings:", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
 // export const CancelBooking= async (req, res) => {
 
 //   const bookingId = req.params.id;
-  
+
 //   const booking = await Booking.findById(bookingId);
-  
+
 //   const doctor = await Doctor.findById(booking.doctor._id);
 
 //   try {
 //     const CancelBooking = await Booking.findByIdAndUpdate(
 //       bookingId,
 //       { $set: { isCancelled: true}});
-
-  
-
 
 //     res.status(200).json({
 //       sucess: true,
@@ -481,62 +448,54 @@ export const getDoctorTimings = async (req, res) => {
 //   }
 // };
 
-
-
 export const CancelBooking = async (req, res) => {
   const bookingId = req.params.id;
-  
-  try {
-   
-    const booking = await Booking.findById(bookingId);
-    console.log(booking,'booking got ittt')
 
+  try {
+    const booking = await Booking.findById(bookingId);
+    console.log(booking, "booking got ittt");
 
     if (!booking) {
-      return res.status(404).json({ success: false, message: "Booking not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Booking not found" });
     }
 
- 
     const paymentAmount = Number(booking.ticketPrice);
-    console.log(paymentAmount,'payment amount got it')
-    
-  
-    const doctor = await Doctor.findById(booking.doctor._id);
-    console.log(doctor,'doctor got it')
+    console.log(paymentAmount, "payment amount got it");
 
-  
+    const doctor = await Doctor.findById(booking.doctor._id);
+    console.log(doctor, "doctor got it");
+
     booking.isCancelled = true;
     await booking.save();
 
-   
-     let userWallet = await Wallet.findOne({ userId: booking.user });
+    let userWallet = await Wallet.findOne({ userId: booking.user });
 
     if (!userWallet) {
-  
       userWallet = new Wallet({ userId: booking.user });
     }
-    
-  
+
     userWallet.balance += paymentAmount;
 
-  
     userWallet.transactions.push({
-      type: 'credit',
+      type: "credit",
       amount: paymentAmount,
-      date: new Date()
+      date: new Date(),
     });
-    
 
     await userWallet.save();
-   
-    return res.status(200).json({ success: true, message: "Payment added to wallet successfully" });
 
+    return res
+      .status(200)
+      .json({ success: true, message: "Payment added to wallet successfully" });
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ success: false, message: "Failed to cancel booking" });
+    return res
+      .status(500)
+      .json({ success: false, message: "Failed to cancel booking" });
   }
-}
-
+};
 
 export const getSingleUser = async (req, res) => {
   const id = req.params.id;
@@ -567,20 +526,16 @@ export const getAllUser = async (req, res) => {
 
 export const MakeVideoCall = async (req, res) => {
   const userId = req.params.id;
-  
-  try {
-    
-    const user = await User.find({_id:userId});
-   
 
+  try {
+    const user = await User.find({ _id: userId });
 
     // if (!user.VideoCallApprove) {
     //   throw new Error("You are not approved for this Facility");
     // } else {
-      const roomId = `${uuidv4()}-${userId}`;
-    
+    const roomId = `${uuidv4()}-${userId}`;
 
-      res.status(200).json({ message: "Video Call", roomId });
+    res.status(200).json({ message: "Video Call", roomId });
     // }
   } catch (error) {
     console.log(error);
@@ -588,52 +543,49 @@ export const MakeVideoCall = async (req, res) => {
   }
 };
 
+export const getUserWallet = asyncHandler(async (req, res) => {
+  try {
+    const userId = req.query.id;
 
+    const walletDetails = await Wallet.findOne({ userId: userId });
 
+    if (!walletDetails) {
+      return res.status(404).json({ message: "Wallet details not found" });
+    }
 
- export const getUserWallet =asyncHandler( async (req, res) => {
-    console.log("hello ")
+    res.status(200).json({ success: true, walletDetails });
+  } catch (error) {
+    console.error("Error fetching wallet details:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
 
- })
+/** checking user have any Booking */
 
+const checkFeedback = asyncHandler(async (req, res) => {
+  try {
+    const docId = req.params.id;
 
- /** checking user have any Booking */
-
- const checkFeedback=asyncHandler(async(req,res)=>{
-     try {
-      const docId=req.params.id
-    
-      let userId=req.userId
-      let Bookings=await Booking.find({user:userId})
-      let found = false;
-      for (const booking of Bookings) {
-          if (booking.doctor.toString() === docId) {
-              found = true;
-              break; // No need to continue once found
-          }
+    let userId = req.userId;
+    let Bookings = await Booking.find({ user: userId });
+    let found = false;
+    for (const booking of Bookings) {
+      if (booking.doctor.toString() === docId) {
+        found = true;
+        break; // No need to continue once found
       }
-  
-      if (found) {
-         res.status(200).json({success:true,message:"Booking found"})
-         console.log("found")
-      } else {
-         res.status(404).json({success:false,message:"No Booking"})
-      }
-      
-     } catch (error) {
-      
-      console.log(error)
-     }
- })
+    }
 
-
-
-
-
-
-
-
-
+    if (found) {
+      res.status(200).json({ success: true, message: "Booking found" });
+      console.log("found");
+    } else {
+      res.status(404).json({ success: false, message: "No Booking" });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+});
 
 export {
   login,
@@ -649,6 +601,4 @@ export {
   ChangePassword,
   getDoctors,
   checkFeedback,
- 
-  
 };

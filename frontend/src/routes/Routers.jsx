@@ -5,7 +5,7 @@ import Signup from "../pages/Users/Signup";
 import Contact from "../pages/Users/Contact";
 import Doctors from "../pages/Doctors/DoctorsHome.jsx";
 import DoctorDetails from "../pages/Users/DoctorDetails.jsx";
-import MyAccount from "../Dashboard/user-account/MyAccount";
+import MyAccount from "../Dashboard/user-account/MyAccount.jsx";
 import { Routes, Route } from "react-router-dom";
 import Dashboard from "../Dashboard/user-account/doctor-account/Dashboard";
 import ProtectedRoute from "./ProtectedRoute";

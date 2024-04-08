@@ -10,8 +10,8 @@ import { logout } from "../../slices/authSlice";
 import { useNavigate } from "react-router-dom";
 import ChangePasswordForm from "../../pages/Users/ChangePassword.jsx";
 import { BsFillWalletFill } from "react-icons/bs";
- import WalletComponent from "../../pages/Users/WalletComponent.jsx";
- import { useSelector } from "react-redux";
+import WalletComponent from "../../pages/Users/WalletComponent.jsx";
+import { useSelector } from "react-redux";
 
 const MyAccount = () => {
   const dispatch = useDispatch();
@@ -19,7 +19,6 @@ const MyAccount = () => {
   const [tab, setTab] = useState("bookings");
   const [walletBalance, setWalletBalance] = useState(0);
   const user = useSelector((state) => state.auth.userInfo);
-
 
   const {
     data: userData,
@@ -32,30 +31,40 @@ const MyAccount = () => {
       console.log(error, "errr");
     }
   }, [error, userData, loading, userData]);
- 
- 
-  // useEffect(() => {
-  
 
-  //   fetchWalletBalance();
-  // }, []);
+  useEffect(() => {
+    const fetchWalletBalance = async () => {
+      try {
+        const token = `${user.token}`;
+        const response = await fetch(
+          `${baseURL}/users/get-wallet?id=${user._id}`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ id: user._id }),
+          }
+        );
 
-  // const handleWalletClick = () => {
-  //   navigate('/users/wallet');
-  // };
+        if (response.ok) {
+          const responseData = await response.json();
+          setWalletBalance(responseData.walletDetails.balance);
+        } else {
+          console.error("Error:", response);
+        }
+      } catch (error) {
+        console.error("Error fetching wallet balance:", error);
+      }
+    };
 
-  const handleCancellation = async () => {
-    try {
-       const response = await fetch(`${baseURL}/users/getwallet`,{
-        method:"GET"
-       })
-     
-     } catch (error) {
-       console.error("Error fetching wallet balance:");
-     }
+    fetchWalletBalance();
+  }, []);
+
+  const goToWalletPage = () => {
+    navigate("/users/wallet");
   };
-
-  
 
   return (
     <section>
@@ -91,11 +100,11 @@ const MyAccount = () => {
 
               <div className="mt-[50px] md:mt-[100px]">
                 <button
-                  onClick={handleCancellation}
                   className="w-full flex items-center justify-center bg-gradient-to-r from-cyan-400 via-cyan-500 to-cyan-600 hover:bg-gradient-to-br focus:ring-4 focus:ring-cyan-300 dark:focus:ring-cyan-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mb-2 leading-7 rounded-md text-white shadow-md"
+                  onClick={goToWalletPage}
                 >
-                  <BsFillWalletFill   className="w-6 h-6 mr-2" />
-                  <span>Wallet (${walletBalance})</span>
+                  <BsFillWalletFill className="w-6 h-6 mr-2" />
+                  <span>Wallet ($ {walletBalance})</span>
                 </button>
 
                 <button

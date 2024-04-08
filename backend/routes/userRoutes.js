@@ -53,14 +53,14 @@ router.get("/", protect, getAllUser);
 router.put("/cancelBooking/:id", protect,CancelBooking);
  router.post("/createreviews",protect,createReview);
  router.get("/getallreviews/:id",protect,getAllReviews);
-//  router.post('/submitreply',protect,submitReply);
 
 
 
-router.get("/getwallet",getUserWallet);
+router.post("/get-wallet",getUserWallet);
+
 
 router.get("/FeedbackCheck/:id",protect,checkFeedback)
-
+ 
 
 
 

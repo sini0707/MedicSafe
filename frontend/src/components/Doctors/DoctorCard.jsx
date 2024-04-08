@@ -51,7 +51,7 @@ const DoctorCard = ({doctor}) => {
           <div className="font-black flex flex-col">
             <span className="text-yellow-500 text-lg">Rating</span>
             <span className="text-lg flex gap-x-1 items-center group-hover:text-yellow-600">
-              {averageRating}
+              {averageRating.toFixed(1)}
               
               <svg
                 width="18px"

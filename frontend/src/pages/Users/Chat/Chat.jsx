@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import './Chat.css'
+
 import authSlice from '../../../slices/authSlice';
 import { useSelector } from 'react-redux';
 import { useState } from 'react';
