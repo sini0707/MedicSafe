@@ -22,13 +22,14 @@ import {
   MakeVideoCall,
   getUserWallet,
    checkFeedback,
+   
   
 
   
 } from "../Controllers/userController.js";
 import { protect } from "../middleware/authMiddleware.js";
  import { getCheckoutSession}  from "../Controllers/bookingController.js";
- import{createReview, getAllReviews} from "../Controllers/reviewController.js"
+ import{createReview, getAllReviews, submitReply} from "../Controllers/reviewController.js"
 
 const router = express.Router();
 
@@ -59,7 +60,10 @@ router.put("/cancelBooking/:id", protect,CancelBooking);
 router.post("/get-wallet",getUserWallet);
 
 
-router.get("/FeedbackCheck/:id",protect,checkFeedback)
+router.get("/FeedbackCheck/:id",protect,checkFeedback);
+// router.post("/submitreply",protect,submitReply);
+
+
  
 
 

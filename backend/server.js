@@ -12,13 +12,19 @@ import doctorRoute from "./routes/doctor.js";
 import adminRoutes from './routes/adminRoutes.js'
  import path from 'path';
   import ChatRoute from './routes/ChatRoute.js'
-import MessageRoute from "./routes/MessageRoute.js"
+import MessageRoute from "./routes/MessageRoute.js";
+import { Server } from 'socket.io'; 
+import { createServer } from 'http';
+
+
+
 
 
 
 
 
 const app = express();
+const server = createServer(app);
 
 const corsOptions={
     origin:true,
@@ -57,4 +63,24 @@ if (process.env.NODE_ENV === 'production') {
 }
 app.use(notFound);
 app.use(errorHandler);
-app.listen(port, () => console.log(`Server started on port ${port}`));
+//  const server=app.listen(port, () => console.log(`Server started on port ${port}`));
+
+
+//  const io = new Server(server, {
+//   pingTimeout: 60000,
+//   cors: {
+//     origin: "http://localhost:5173",
+//   },
+// });
+
+// io.on("connection", (socket) => {
+//   console.log("connected to socket.io");
+// });
+// socket.on("setup", (user) => {
+//   socket.join(user);
+//   console.log(user, "userId");
+//   socket.emit("connected");
+// });
+
+
+server.listen(port, () => console.log(`Server started on port ${port}`));

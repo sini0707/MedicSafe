@@ -1,14 +1,33 @@
 
 
 import  starIcon from '../../assets/images/Star.png';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { BiSolidRightArrow } from "react-icons/bi";
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useSelector } from "react-redux";
+import { baseURL } from '../../../../backend/config/db';
+import { useState } from 'react';
 // import { useEffect,useState } from 'react';
 
 
 
 const DoctorCard = ({doctor}) => {
 
+  const userInfo = useSelector((state) => state.auth.userInfo);
+  const urlSearchParams = new URLSearchParams(window.location.search);
+  const [user,setUser]=useState(null)
+ 
+  const navigate=useNavigate()
+  const location = useLocation();
+
+  const handleDetails = () => {
+    // Check if the current path includes "doctors"
+    if (location.pathname.includes("/doctors")) {
+      navigate(`/doctors/doctorDetails/${doctor._id}`);
+    } else {
+      navigate(`/users/doctorDetails/${doctor._id}`);
+    }
+  };
 
     const{ name,imagePath,specialization,fees,qualification,averageRating}=doctor;
     
@@ -16,7 +35,7 @@ const DoctorCard = ({doctor}) => {
     
     
 
-  return (
+ return (
 
 
 <>
@@ -81,12 +100,16 @@ const DoctorCard = ({doctor}) => {
               <span className="text-lg font-bold gap-x-2 text-300">Rs.{fees}</span>
               
             </div>
-            <Link
-                 to={`/users/doctorDetails/${doctor._id}`}
+            
+            {/* <Link
+                //  to={`/users/doctorDetails/${doctor._id}`}
                   className="w-[44px] h-[44px] rounded-full border border-solid border-[#181A1E] flex items-center justify-center group:hover:bg:primaryColor hover:border-none"
-                >
-                  <BiSolidRightArrow className="group-hover:text-white w-6 h-5" />
-                </Link>
+                > */}
+                <div  onClick={handleDetails}>
+                <BiSolidRightArrow  className="group-hover:text-white w-6 h-5" />
+                </div>
+                
+                {/* </Link> */}
           </div>
         </div>
       </div>

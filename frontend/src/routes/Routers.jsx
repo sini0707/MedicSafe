@@ -37,6 +37,7 @@ import DoctorVideoCallRoom from "../pages/Doctors/DoctorVideoCallRoom.jsx";
 import Specialization from "../pages/Admin/Specialization.jsx";
 import Chat from "../pages/Users/Chat/Chat.jsx";
 import WalletComponent from "../pages/Users/WalletComponent.jsx";
+import DoctorChat from "../pages/Doctors/DoctorChat.jsx";
 
 
 function Routers() {
@@ -71,9 +72,12 @@ function Routers() {
       <Route path="/checkout-success" element={<SuccessPayment />} />
 
       <Route path='/bookings' element={<MyBookings/>}/>
+      <Route path="/users/chat" element={<Chat />} />
 
+     {/*** **************Doctors Route start******************** */}
       <Route path="/doctors/profile/me" element={<Dashboard />} />
-
+      <Route path="/doctors/finddoctors" element={<Doctorss />} />
+      <Route path="/doctors/doctorDetails/:id" element={<DoctorDetails />} />
       <Route path="/doctors/signup" element={<DoctorRegister />} />
       <Route path="/doctors/otp" element={<DoctorOtpVerify />} />
       <Route path="/doctors/login" element={<DoctorLogin />} />
@@ -92,7 +96,7 @@ function Routers() {
       />
        <Route path="/doctors/room/:roomId" element={<DoctorVideoCallRoom />} />
      
-       <Route path="/chat" element={<Chat />} />
+       <Route path='/doctors/chat' element={<DoctorChat/>}/>
 
 
       <Route path="/admin" element={<AdminLogin />} />

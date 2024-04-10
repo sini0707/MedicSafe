@@ -1,29 +1,9 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 
-import authSlice from '../../../slices/authSlice';
-import { useSelector } from 'react-redux';
-import { useState } from 'react';
-// import { userChats } from '../../../../../backend/Controllers/ChatController';
-
-
-
-const Chat = () => {
-  // const {userInfo} = useSelector(state => state.auth.userInfo);
-  // console.log(userInfo,'chatttt userrr infooo')
-  // const [chats,setChats]=useState([]);
-
-  // useEffect(()=>{
-  //   const getChats=async()=>{
-  //     try{
-  //       const {data}=await userChats(user._id)
-
-  //     }catch(error){
-  //       console.log(error)
-  //     }
-  //   }
-  // })
+const DoctorChat = () => {
   return (
-   
+
+
 <div className="bg-gray-100 h-screen flex flex-col max-w-lg mx-auto">
   <div className="bg-blue-500 p-4 text-white flex justify-between items-center">
     <button id="login" className="hover:bg-blue-400 rounded-md p-1">
@@ -225,58 +205,58 @@ const Chat = () => {
       {/* Example Received Message */}
       <div className="flex">
         <div className="bg-gray-300 text-black p-2 rounded-lg max-w-xs">
+          
+        </div>
+      </div>
+      {/* Example Message */}
+      <div className="flex justify-end">
+        <div className="bg-blue-200 text-black p-2 rounded-lg max-w-xs">
+         
+        </div>
+      </div>
+      {/* Example Received Message */}
+      <div className="flex">
+        <div className="bg-gray-300 text-black p-2 rounded-lg max-w-xs">
+          
+        </div>
+      </div>
+      {/* Example Message */}
+      <div className="flex justify-end">
+        <div className="bg-blue-200 text-black p-2 rounded-lg max-w-xs">
+         
+        </div>
+      </div>
+      {/* Example Received Message */}
+      <div className="flex">
+        <div className="bg-gray-300 text-black p-2 rounded-lg max-w-xs">
+         
+        </div>
+      </div>
+      {/* Example Message */}
+      <div className="flex justify-end">
+        <div className="bg-blue-200 text-black p-2 rounded-lg max-w-xs">
+        
+        </div>
+      </div>
+      {/* Example Received Message */}
+      <div className="flex">
+        <div className="bg-gray-300 text-black p-2 rounded-lg max-w-xs">
         
         </div>
       </div>
       {/* Example Message */}
       <div className="flex justify-end">
         <div className="bg-blue-200 text-black p-2 rounded-lg max-w-xs">
-         
+        
         </div>
       </div>
-      {/* Example Received Message */}
-      <div className="flex">
-        <div className="bg-gray-300 text-black p-2 rounded-lg max-w-xs">
-         
-        </div>
-      </div>
-      {/* Example Message */}
-      <div className="flex justify-end">
-        <div className="bg-blue-200 text-black p-2 rounded-lg max-w-xs">
-         
-        </div>
-      </div>
-      {/* Example Received Message */}
-      <div className="flex">
-        <div className="bg-gray-300 text-black p-2 rounded-lg max-w-xs">
-         
-        </div>
-      </div>
-      {/* Example Message */}
       <div className="flex justify-end">
         <div className="bg-blue-200 text-black p-2 rounded-lg max-w-xs">
           
         </div>
       </div>
-      {/* Example Received Message */}
-      <div className="flex">
-        <div className="bg-gray-300 text-black p-2 rounded-lg max-w-xs">
-         
-        </div>
-      </div>
-      {/* Example Message */}
       <div className="flex justify-end">
-        <div className="bg-blue-200 text-black p-2 rounded-lg max-w-xs">
-        
-        </div>
-      </div>
-      <div className="flex justify-end">
-        <div className="bg-blue-200 text-black p-2 rounded-lg max-w-xs">
-          
-        </div>
-      </div>
-      <div className="flex justify-end">
-        <div className="bg-blue-200 text-black p-2 rounded-lg max-w-xs">😁</div>
+        <div className="bg-blue-200 text-black p-2 rounded-lg max-w-xs"></div>
       </div>
       {/* Example Message */}
       <div className="flex">
@@ -286,7 +266,7 @@ const Chat = () => {
       </div>
       {/* Example Received Message */}
       <div className="flex">
-        <div className="bg-gray-300 text-black p-2 rounded-lg max-w-xs">😄</div>
+        <div className="bg-gray-300 text-black p-2 rounded-lg max-w-xs"></div>
       </div>
     </div>
   </div>
@@ -326,8 +306,7 @@ const Chat = () => {
   </div>
 </div>
 
-
   )
 }
 
-export default Chat
+export default DoctorChat

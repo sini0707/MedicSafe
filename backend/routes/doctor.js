@@ -15,9 +15,11 @@ import {
   bookingDetails,
   approveVideoCall,
   
+  
 } from "../Controllers/DoctorController.js";
 
 import { protect } from "../middleware/DoctorAuthMiddleware.js";
+import {submitReply} from "../Controllers/reviewController.js";
 
 const router = express.Router();
 router.post("/register", register);
@@ -33,6 +35,7 @@ router.get("/get-timings/:id", getTimings);
 router.get("/getdoctor/:id", getSingleDoctor);
 router.get("/booking-details/:docId", bookingDetails);
 router.post("/approveVideoCall/:id", approveVideoCall);
+router.put("/submitreply/:id",submitReply);
 
 
 export default router;

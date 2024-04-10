@@ -54,3 +54,30 @@ try{
 };
 
 
+
+
+export const submitReply = async (req, res) => {
+
+  let reviewId=req.params.id
+  console.log(reviewId)
+
+  const { replyText } = req.body;
+  console.log("Reply Text:", replyText);
+  
+  try {
+    const review = await Review.findById(reviewId);
+    if (!review) {
+      return res.status(404).json({ message: "Review not found." });
+    }
+
+    // Update the review with the reply text
+    review.replyText = replyText;
+    await review.save();
+
+    res.status(200).json({ message: "Reply submitted successfully." });
+  } catch (error) {
+    console.error("Error submitting reply:", error);
+    res.status(500).json({ message: "Failed to submit reply." });
+  }
+  };
+
