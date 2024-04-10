@@ -366,7 +366,9 @@ import { baseURL } from "../../../../backend/config/db";
 import { doctoken } from "../../../config";
 
 const Feedback = ({ details }) => {
+  console.log(details,"details")
   const [reviews, setReview] = useState([]);
+  console.log(reviews,"reviews")
   const [showFeedbackForm, setShowFeedbackForm] = useState(false);
   const [replyText, setReplyText] = useState("");
   const [selectedReview, setSelectedReview] = useState(null);
@@ -398,7 +400,7 @@ const Feedback = ({ details }) => {
           }
         );
         const result = await res.json();
-        console.log(result,"result")
+      
         setReview(result.data);
       } catch (error) {
         console.log(error);
@@ -517,11 +519,13 @@ catch (error) {
         {reviews.map((review, index) => (
   <div key={index} className="flex justify-between items-start gap-10 mb-6">
     <div className="flex items-start gap-3">
-      <figure className="w-10 h-10 rounded-full overflow-hidden">
-        <img className="w-full h-full object-cover" src={review.user.photo} alt="" />
-      </figure>
+    {review.user && review.user.photo && (
+        <figure className="w-10 h-10 rounded-full overflow-hidden">
+          <img className="w-full h-full object-cover" src={review.user.photo} alt="" />
+        </figure>
+      )}
       <div>
-        <h5 className="text-lg font-semibold text-primaryColor">{review.user.name}</h5>
+        <h5 className="text-lg font-semibold text-primaryColor">{review.user ? review.user.name : "Unknown User"}</h5>
         <p className="text-sm text-gray-700 mb-2">{review.reviewText}</p>
         {review.replyText && (
           <div className="bg-gray-100 p-3 rounded-lg">
