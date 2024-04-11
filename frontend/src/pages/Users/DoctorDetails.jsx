@@ -11,7 +11,6 @@ import { token } from "../../../config";
 import { useSelector } from "react-redux";
 import DoctorAbout from "../Doctors/DoctorAbout.jsx";
 import Feedback from "../Doctors/Feedback.jsx";
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css"; 
 import formatDateToUTC from "../../utils/inputDateConvert";
 import slotMaker from "../../utils/slotMaker";
@@ -50,6 +49,7 @@ const DoctorDetails = () => {
       const res = await apiInstance.get(
         `${baseURL}/doctors/getdoctor/${doctorId}`
       );
+      console.log(res)
 
       setDetails(res.data.data);
       setAvailable(res.data.data.available);
