@@ -9,6 +9,7 @@ import checkForClash from '../../utils/timeClashChecker'
 import apiInstance from "../../axiosApi/axiosInstance";
 import { baseURL } from '../../../../backend/config/db';
 import DoctorDetails from '../Users/DoctorDetails';
+import Pagination from '../../components/Pagination/Pagination';
 
 
 const DoctorTimeManagement = () => {
@@ -16,7 +17,9 @@ const DoctorTimeManagement = () => {
     const [from,setFrom] = useState('')
     const [to,setTo] = useState('')
     const [timings,setTimings] = useState([])
-    console.log(timings,"doctortime management")
+    const [currentPage, setCurrentPage] = useState(1); 
+    const [postsPerPage] = useState(4); 
+   
     const { doctorInfo } = useSelector((state)=>state.docAuth);
     const handleSubmit = async () => {
         if(!date || !from || !to){
@@ -44,8 +47,8 @@ const DoctorTimeManagement = () => {
                 setDate('');
                 setFrom('');
                 setTo('');
-                // Assuming you want to refresh timings after adding a new one
-                fetchTimings(); // You should implement this function to fetch timings again
+                
+                fetchTimings(); 
             }
         } catch (error) {
             console.error("Error while adding time:", error);
@@ -55,18 +58,18 @@ const DoctorTimeManagement = () => {
 
     const fetchTimings = async () => {
         try {
-            // Fetch timings from the backend using API call
+            
             const response = await apiInstance.get(`${baseURL}/doctors/get-timings/${doctorInfo._id}`);
-            const { data: { timings } } = response; // Extract timings from the response
-            setTimings(timings); // Update timings state
+            const { data: { timings } } = response; 
+            setTimings(timings); 
         } catch (error) {
             console.error("Error while fetching timings:", error);
         }
     };
 
-    // useEffect(() => {
-    //     fetchTimings(); // Fetch timings when component mounts
-    // },[]); 
+    useEffect(() => {
+        fetchTimings(); 
+    },[]); 
  
 
     const handleDelete = async (id) => {
@@ -74,7 +77,7 @@ const DoctorTimeManagement = () => {
             const res = await apiInstance.get(`${baseURL}/doctors/delete-timing/${doctorInfo._id}/${id}`);
             if (res) {
                 toast.success("Deleted Successfully");
-                // Filter out the deleted timing from the state
+                
                 setTimings(prevTimings => prevTimings.filter(time => time._id !== id));
             } else {
                 toast.error("Failed to Delete");
@@ -84,6 +87,10 @@ const DoctorTimeManagement = () => {
             toast.error("Failed to delete time");
         }
     };
+
+    const indexOfLastTiming = currentPage * postsPerPage;
+    const indexOfFirstTiming = indexOfLastTiming - postsPerPage;
+    const currentTimings = timings.slice(indexOfFirstTiming, indexOfLastTiming);
     
    
   return (
@@ -132,12 +139,10 @@ const DoctorTimeManagement = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {
-                        (timings)?(
-                            timings.map((time,index)=>(
+                {currentTimings.map((time, index) => (
                                 <tr key={time._id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600">
                                     <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                        {index+1}
+                                        {indexOfFirstTiming + index + 1}
                                     </th>
                                     <td className="px-6 py-4">
                                         {formatDate(time.date)}
@@ -149,18 +154,22 @@ const DoctorTimeManagement = () => {
                                         {convertTo12HourFormat(time.toTime)}
                                     </td>
                                     <td className="px-12 py-4">
-                                        <FaTrash onClick={()=>{handleDelete(time._id)}} className='cursor-pointer'/>
+                                        <FaTrash onClick={() => handleDelete(time._id)} className='cursor-pointer' />
                                     </td>
                                 </tr>
-                            ))
-                        ):(
-                            <h3 className='font-bold text-blue-500'>NO SPECIAL TIMINGS</h3>
-                        )
-                    }
-                </tbody>
-            </table>
-        </div>
-    </div>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            {/* Pagination */}
+            <Pagination
+                totalPosts={timings.length}
+                postPerPage={postsPerPage}
+                currentPage={currentPage}
+                setCurrentPage={setCurrentPage}
+            />
 
 </section>
   )

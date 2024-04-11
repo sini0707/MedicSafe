@@ -7,11 +7,11 @@ import DoctorCard from "../../components/Doctors/DoctorCard";
 import Appointments from "./Appointments";
 import { useState, useEffect } from "react";
 
-import Pagination from "../../components/Pagination/Pagination";
+import Pagination from "../../components/Pagination/Pagination.jsx";
 
 const MyBookings = () => {
   const [currentPage, setCurrentPage] = useState(1);
-  const [appointmentsPerPage] = useState(4);
+  const [appointmentsPerPage] = useState(3);
   const [MyAppointments, setAppointments] = useState([]);
 
   const {
@@ -26,19 +26,29 @@ const MyBookings = () => {
     setAppointments(appointments);
   }, [appointments]);
 
-  const totalAppointments = appointments.length;
+  // const totalAppointments = appointments.length;
 
-  let totalPagess = Math.ceil(totalAppointments / appointmentsPerPage);
+  // let totalPagess = Math.ceil(totalAppointments / appointmentsPerPage);
+  const totalAppointments = appointments.length;
+let totalPages = Math.ceil(totalAppointments / appointmentsPerPage);
+
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
 
-  const indexOfLastDoctor = currentPage * appointmentsPerPage;
-  const indexOfFirstDoctor = indexOfLastDoctor - appointmentsPerPage;
-  const currentDoctors = MyAppointments.slice(
-    indexOfFirstDoctor,
-    indexOfLastDoctor
-  );
+  // const indexOfLastDoctor = currentPage * appointmentsPerPage;
+  // const indexOfFirstDoctor = indexOfLastDoctor - appointmentsPerPage;
+  // const currentDoctors = MyAppointments.slice(
+  //   indexOfFirstDoctor,
+  //   indexOfLastDoctor
+  // );
+  const indexOfLastAppointment = currentPage * appointmentsPerPage;
+const indexOfFirstAppointment = indexOfLastAppointment - appointmentsPerPage;
+const currentAppointments = MyAppointments.slice(
+  indexOfFirstAppointment,
+  indexOfLastAppointment
+);
+
 
   return (
     <div>
@@ -47,15 +57,17 @@ const MyBookings = () => {
       {!loading && !error && (
         <>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-            <Appointments appointment={currentDoctors} />
+            <Appointments appointment={currentAppointments} />
           </div>
           {totalAppointments > appointmentsPerPage && (
+           
             <Pagination
-              totalPosts={totalAppointments}
-              postPerPage={appointmentsPerPage}
-              setCurrentPage={setCurrentPage}
-              currentPage={currentPage}
-            />
+  totalPosts={totalAppointments}
+  postPerPage={appointmentsPerPage}
+  setCurrentPage={setCurrentPage}
+  currentPage={currentPage}
+/>
+
           )}
         </>
       )}
