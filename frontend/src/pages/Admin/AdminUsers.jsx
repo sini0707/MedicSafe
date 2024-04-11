@@ -3,9 +3,17 @@ import { toast } from 'react-toastify';
 import { baseURL } from '../../../../backend/config/db';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
+import Pagination from '../../components/Pagination/Pagination.jsx';
 
 const AdminUsers = () => {
   const [users, setUsers] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [postsPerPage] = useState(3); 
+  console.log('Current Page:', currentPage);
+console.log('Posts Per Page:', postsPerPage);
+
+console.log(users,'users pagination found')
+
   const navigate=useNavigate();
 
   const fetchUserData = async () => {
@@ -93,6 +101,23 @@ const AdminUsers = () => {
     fetchUserData();
   },[]);
 
+
+  const nextPage = () => setCurrentPage(currentPage + 1);
+  const prevPage = () => setCurrentPage(currentPage - 1);
+ 
+
+  const indexOfLastUser = currentPage * postsPerPage;
+  const indexOfFirstUser = indexOfLastUser - postsPerPage;
+  const currentUsers = users.slice(indexOfFirstUser, indexOfLastUser);
+  console.log('Index of Last User:', indexOfLastUser);
+  console.log('Index of First User:', indexOfFirstUser);
+   console.log('Current Users:', currentUsers);
+
+  // const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  // console.log('Paginate Function:', paginate);
+
+
+
   return (
     <section className='container'>
     
@@ -122,11 +147,11 @@ const AdminUsers = () => {
             </tr>
           </thead>
           <tbody className='border-2'>
-             {users.map((user, index) => (
+          {currentUsers.map((user, index) => (
               <tr className="bg-white border-b hover:bg-gray-200" key={index}>
                 <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
                
-                  {index + 1}
+                {(currentPage - 1) * postsPerPage + index + 1}
                 </th>
                 <td className="px-6 py-4">{user.name}</td>
                 <td className="px-6 py-4">{user.email}</td>
@@ -161,7 +186,15 @@ const AdminUsers = () => {
           </tbody>
         </table>
       </div>
-
+      <Pagination
+        totalPosts={users.length}
+        postPerPage={postsPerPage}
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
+        nextPage={nextPage}
+        prevPage={prevPage}
+        
+      />
   
     </section>
   );

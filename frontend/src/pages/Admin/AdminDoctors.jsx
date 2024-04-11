@@ -1,21 +1,29 @@
 import  { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import { baseURL } from '../../../../backend/config/db';
+import Pagination from '../../components/Pagination/Pagination.jsx'
+
 
 
 const AdminDoctors = () => {
   const [doctors, setDoctors] = useState([]);
-  console.log(doctors, "userState");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [postsPerPage] = useState(3); 
+ 
+
+
+
+ 
 
   const fetchDoctorsData = async () => {
     try {
-      console.log("Fetching doctor data...");
+   
       const res = await fetch(`${baseURL}/admin/doctordata`, {
         method: "GET",
       });
-      console.log("Response received:", res);
+      
       const result = await res.json();
-      console.log("Parsed result:", result);
+      
       setDoctors(result.doctorsData);
     } catch (error) {
       console.error("Error fetching doctor data:", error);
@@ -25,7 +33,7 @@ const AdminDoctors = () => {
 
   const handleApprove = async (docId) => {
     try {
-      console.log("Approving doctor with ID:", docId);
+     
       const res = await fetch(`${baseURL}/admin/approve/${docId}`, {
         method: "PUT",
       });
@@ -42,7 +50,7 @@ const AdminDoctors = () => {
   };
   useEffect(() => {
     fetchDoctorsData();
-  }, []);
+  }, [currentPage]);
 
 
   const handleReject = async (docId) => {
@@ -51,7 +59,7 @@ const AdminDoctors = () => {
         method: "PUT",
       });
       if (res.ok) {
-        fetchDoctorsData(); // Refresh doctor data after rejection
+        fetchDoctorsData(); 
         toast.success("Doctor Rejected Successfully");
       } else {
         toast.error("Failed to Reject Doctor");
@@ -61,22 +69,16 @@ const AdminDoctors = () => {
       toast.error("Failed to reject doctor");
     }
   };
-  // const handleBlock = async (docId) => {
-  //   try {
-  //     const res = await fetch(`${baseURL}/block-doctor/${docId}`, {
-  //       method: "PUT",
-  //     });
-  //     if (res.ok) {
-  //       toast.success("Updated Successfully");
-  //     } else {
-  //       toast.error("Failed to Update");
-  //     }
-  //   } catch (error) {
-  //     console.error("Error updating doctor:", error);
-  //     toast.error("Failed to update doctor");
-  //   }
-  // };
-  // console.log(handleBlock);
+  
+  const nextPage = () => setCurrentPage(currentPage + 1);
+  const prevPage = () => setCurrentPage(currentPage - 1);
+ 
+
+
+  const indexOfLastPost = currentPage * postsPerPage;
+  const indexOfFirstPost = indexOfLastPost - postsPerPage;
+  const currentPosts = doctors.slice(indexOfFirstPost, indexOfLastPost);
+ 
   
 
   return (
@@ -112,8 +114,9 @@ const AdminDoctors = () => {
             </tr>
           </thead>
           <tbody className="border-2">
-            {doctors && doctors.length > 0 ? (
-              doctors.map((doctor, index) => (
+         
+          {currentPosts && currentPosts.length > 0 ? (
+              currentPosts.map((doctor, index) => (
                 <tr
                   className="bg-white border-b hover:bg-gray-100"
                   key={doctor._id}
@@ -174,6 +177,14 @@ const AdminDoctors = () => {
           </tbody>
         </table>
       </div>
+      <Pagination
+       totalPosts={doctors.length}
+        postPerPage={postsPerPage}
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
+        nextPage={nextPage}
+        prevPage={prevPage}
+      />
     </section>
   );
 };

@@ -33,7 +33,7 @@ const Header = () => {
   
    
 
-  console.log(user, "user");
+  
   const headerRef = useRef(null);
   const menuRef = useRef(null);
   const dispatch = useDispatch();
@@ -62,7 +62,7 @@ const Header = () => {
     }
   };
   const navigate = useNavigate();
-  // const{ dispatch} = useDispatch(authContext);
+ 
 
   const logoutHandler = async () => {
     try {

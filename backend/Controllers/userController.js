@@ -530,9 +530,7 @@ export const MakeVideoCall = async (req, res) => {
   try {
     const user = await User.find({ _id: userId });
 
-    // if (!user.VideoCallApprove) {
-    //   throw new Error("You are not approved for this Facility");
-    // } else {
+    
     const roomId = `${uuidv4()}-${userId}`;
 
     res.status(200).json({ message: "Video Call", roomId });
@@ -572,7 +570,7 @@ const checkFeedback = asyncHandler(async (req, res) => {
     for (const booking of Bookings) {
       if (booking.doctor.toString() === docId) {
         found = true;
-        break; // No need to continue once found
+        break; 
       }
     }
 

@@ -38,6 +38,9 @@ import Specialization from "../pages/Admin/Specialization.jsx";
 import Chat from "../pages/Users/Chat/Chat.jsx";
 import WalletComponent from "../pages/Users/WalletComponent.jsx";
 import DoctorChat from "../pages/Doctors/DoctorChat.jsx";
+import ErrorPage from "../components/ErrorPage/ErrorPage.jsx";
+
+
 
 
 function Routers() {
@@ -105,6 +108,7 @@ function Routers() {
       <Route path="/admin/doctorslist" element={<AdminDoctors />} />
       <Route path="/admin/bookings" element={<AdminBookings />} />
       <Route path="/admin/specializations" element={<Specialization />} />
+      <Route path="*" element={<ErrorPage />} />
      
     </Routes>
   );

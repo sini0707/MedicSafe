@@ -4,8 +4,7 @@ import asyncHandler from "express-async-handler";
 import User from "../models/userModel.js";
 import bcrypt from "bcryptjs";
 import Doctor from "../models/DoctorSchema.js";
-import Specialization from "../models/SpecializationModel.js"
-
+import Specialization from "../models/SpecializationModel.js";
 
 const adminLogin = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
@@ -25,7 +24,6 @@ const adminLogin = asyncHandler(async (req, res) => {
           token: token,
         },
       });
-     
     } else {
       res.status(400);
       throw new Error("Invalid email or password");
@@ -40,8 +38,7 @@ const adminLogin = asyncHandler(async (req, res) => {
 });
 
 const getUsers = asyncHandler(async (req, res) => {
- 
-  let users = await User.find({}, { password: 0 });
+  const users = await User.find({}, { password: 0 });
 
   if (users) {
     res.status(200).json({ userData: users });
@@ -52,7 +49,7 @@ const getUsers = asyncHandler(async (req, res) => {
 
 const blockUsers = asyncHandler(async (req, res) => {
   try {
-    let userId = req.params.id;
+    const userId = req.params.id;
 
     let user = await User.findById(userId);
 
@@ -76,7 +73,7 @@ const blockUsers = asyncHandler(async (req, res) => {
 });
 const unblockUser = asyncHandler(async (req, res) => {
   try {
-    let userId = req.params.id;
+    const userId = req.params.id;
     let user = await User.findById(userId);
 
     if (!user) {
@@ -100,7 +97,7 @@ const unblockUser = asyncHandler(async (req, res) => {
 
 const approveDoctors = asyncHandler(async (req, res) => {
   try {
-    let docId = req.params.id;
+    const docId = req.params.id;
     let doctor = await Doctor.findById(docId);
 
     if (!doctor) {
@@ -118,8 +115,8 @@ const approveDoctors = asyncHandler(async (req, res) => {
 });
 
 const rejectDoctors = asyncHandler(async (req, res) => {
-  let docId = req.params.id;
-  let doctor = await Doctor.findById(docId);
+  const  docId = req.params.id;
+  let  doctor = await Doctor.findById(docId);
 
   if (!doctor) {
     return res.status(400).json({ error: "Invalid doctor ID" });
@@ -132,51 +129,61 @@ const rejectDoctors = asyncHandler(async (req, res) => {
 });
 
 const getDoctors = asyncHandler(async (req, res) => {
-  let doctors = await Doctor.find({}, { password: 0 });
+  const doctors = await Doctor.find({}, { password: 0 });
   if (doctors) {
     res.status(200).json({ doctorsData: doctors });
   } else {
-   
     res.status(400).json("Error in Fetching");
   }
 });
 
 
 const addSpecialization = asyncHandler(async (req, res) => {
-  const { name, description } = req.body;
-  console.log("Name:", name);
-  console.log("Description:", description);
+  try {
+    const { name, description } = req.body;
 
-  let specializationRegx = new RegExp(name, "i");
-  console.log("Regular Expression:", specializationRegx);
+    let specializationRegx = new RegExp(name, "i");
 
-  const specialization = await Specialization.findOne({
-    name: specializationRegx,
-  });
-  console.log("Specialization found:", specialization);
+    const specialization = await Specialization.findOne({
+      name: specializationRegx,
+    });
 
-  if (specialization) {
-    res.status(409);
-    throw new Error("Specialization already existing");
+    if (specialization) {
+      res.status(409).json({ error: "Specialization already exists" });
+      return; 
+    }
+
+    const newSpecialization = await Specialization.create({
+      name,
+      description,
+    });
+
+    res.status(200).json({
+      message: "Specialization created...",
+      data: newSpecialization,
+    });
+  } catch (error) {
+    console.error("Error adding specialization:", error);
+    res.status(500).json({ error: "Internal server error" });
   }
-
-  const newSpecialization = await Specialization.create({
-    name,
-    description,
-  });
-  console.log("New Specialization created:", newSpecialization);
-
-  res.status(200).json({
-    message: "Specialization created...",
-    data: newSpecialization,
-  });
 });
+
 
 const getAllSpecialization = asyncHandler(async (req, res) => {
   const specializations = await Specialization.find();
-  console.log("Specializations:", specializations);
+
   res.status(200).json(specializations);
 });
+
+const adminLogoutUser = (req, res) => {
+  console.log("Clearing adminJwt cookie...");
+  res.cookie("adminJwt", "", {
+    httpOnly: true,
+    expires: new Date(0),
+  });
+  console.log("Sending logout response...");
+  res.status(200).json({ message: "Logged out successfully" });
+};
 
 export {
   adminLogin,
@@ -188,4 +195,5 @@ export {
   rejectDoctors,
   addSpecialization,
   getAllSpecialization,
+  adminLogoutUser,
 };

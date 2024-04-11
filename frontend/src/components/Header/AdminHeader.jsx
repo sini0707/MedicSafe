@@ -3,9 +3,12 @@ import { useRef, useEffect, useContext } from 'react';
 import { NavLink } from 'react-router-dom';
 import { BiMenu } from 'react-icons/bi';
 import { authContext } from '../../context/AuthContext'; 
-import logo from '../../assets/images/logo.png'; // Import the correct path for your logo
+import logo from '../../assets/images/logo.png'; 
 import { baseURL } from '../../../../backend/config/db';
 import { logout } from '../../slices/adminSlices/adminAuthSlice';
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 const navlinks = [
   {
     path: '/admin/home',
@@ -19,10 +22,7 @@ const navlinks = [
     path: '/admin/doctorslist',
     display: 'Doctors',
   },
-  // {
-  //   path: '/admin/bookings',
-  //   display: 'Bookings',
-  // },
+  
   {
      path: '/admin/specializations',
      display: 'Departments',
@@ -31,9 +31,16 @@ const navlinks = [
 ];
 
 const AdminHeader = () => {
+  const admin=useSelector((state)=>state.adminAuth.adminInfo);
+  
   const headerRef = useRef(null);
   const menuRef = useRef(null);
   const { user, role, token } = useContext(authContext);
+  console.log("User:", user);
+console.log("Role:", role);
+console.log("Token:", token);
+
+  const dispatch = useDispatch();
 
   const handleStickyHeader = () => {
     window.addEventListener('scroll', () => {
@@ -51,7 +58,35 @@ const AdminHeader = () => {
   }, []);
 
   const toggleMenu = () => menuRef.current.classList.toggle('show_menu');
+  const navigate = useNavigate();
 
+
+  const logoutHandler = async () => {
+    try {
+      const response = await fetch(`${baseURL}/admin/adminlogout`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Logout failed");
+      }
+
+      await response.json();
+      console.log("Logout response:", response); 
+      dispatch(logout());
+
+      
+
+      navigate("/admin");
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+ 
   
 
   return (
@@ -88,13 +123,14 @@ const AdminHeader = () => {
           <img src={user?.photo} className="w-full rounded-full" alt=""/>
         </figure>
         <h2>Welcome  Admin </h2>
+        <h2>Welcome {role === "admin" ? "Admin" : "User"} </h2>
         <button onClick={logoutHandler} className='bg-primaryColor py-2 px-6 text-white font [600] h-[44px] flex items-center rounded-[50px]'>
                  Logout
           </button>
       </NavLink>
     </div>
   ) : (
-    <NavLink to="/a">
+    <NavLink to="/admin">
               <button className='bg-primaryColor py-2 px-6 text-white font [600] h-[44px] flex items-center rounded-[50px]'>
                 Logout
               </button>
@@ -103,14 +139,7 @@ const AdminHeader = () => {
     
   )}
 
-  {/* This line renders the user's name regardless of the authentication state */}
-  {/* <h1>{user?.name}</h1> */}
-{/* 
-  <NavLink to="/login">
-    <button className='bg-primaryColor py-2 px-6 text-white font [600] h-[44px] flex items-center rounded-[50px]'>
-      Login
-    </button>
-  </NavLink> */}
+ 
 
   <span className='md:hidden' onClick={toggleMenu}>
     <BiMenu className='w-6 h-6 cursor-pointer'/>

@@ -24,7 +24,7 @@ const Specialization = () => {
                 description,
               });
              
-            toast.success(res.message);
+            toast.success("Specialization created successfully");
             navigate("/admin/specializations");
           } catch (err) {
             toast.error(err?.data?.message || err?.error);
