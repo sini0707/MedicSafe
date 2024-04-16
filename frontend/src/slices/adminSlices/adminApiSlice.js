@@ -1,10 +1,10 @@
 import { baseURL } from "../../../../backend/config/db.js"
 import { apiSlice } from "./apiSlice";
 
-console.log("Start exporting doctorsApiSlice");
-export const doctorsApiSlice = apiSlice.injectEndpoints({
+
+export const adminApiSlice = apiSlice.injectEndpoints({
     endpoints:(builder)=>({
-        logout:builder.mutation({
+        adminlogout:builder.mutation({
             query:()=>({
                 url:`${baseURL}/adminlogout`,
                 method:'POST'
@@ -17,4 +17,9 @@ export const doctorsApiSlice = apiSlice.injectEndpoints({
 
 })
 })
-console.log("End exporting doctorsApiSlice");
+
+
+export const {
+    useAdminlogoutMutation,
+
+}=adminApiSlice

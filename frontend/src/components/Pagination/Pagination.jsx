@@ -2,10 +2,10 @@ import React from 'react';
 import { IoIosArrowRoundBack, IoIosArrowRoundForward } from "react-icons/io";
 
 function Pagination({ totalPosts, postPerPage, setCurrentPage, currentPage }) {
-  console.log(totalPosts,"Tpo")
-  console.log(postPerPage,"PoP")
+
+
   let pages = [];
-  console.log(pages,"page")
+
  
 
   for (let i = 1; i <= Math.ceil(totalPosts / postPerPage); i++) {

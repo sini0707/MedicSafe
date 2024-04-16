@@ -9,10 +9,7 @@ const AdminUsers = () => {
   const [users, setUsers] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [postsPerPage] = useState(3); 
-  console.log('Current Page:', currentPage);
-console.log('Posts Per Page:', postsPerPage);
-
-console.log(users,'users pagination found')
+ 
 
   const navigate=useNavigate();
 
@@ -39,12 +36,11 @@ console.log(users,'users pagination found')
       const res = await fetch(`${baseURL}/admin/block-user/${userId}`, {
         method: "PUT"
       });
-      console.log("Block user response:", res);
+     
     
       if (res.ok) {
         const updatedUser = await res.json();
-        console.log("User blocked successfully");
-    
+      
         toast.success("User blocked successfully");
         setUsers(users.map(user => {
           if (user._id === userId) {
@@ -76,7 +72,7 @@ console.log(users,'users pagination found')
       });
       if (res.ok) {
         toast.success("User unblocked successfully");
-        console.log("User unblocked successfully");
+       
         setUsers(users.map(user => {
           if (user._id === userId) {
             return { ...user, blocked: false };
@@ -109,13 +105,9 @@ console.log(users,'users pagination found')
   const indexOfLastUser = currentPage * postsPerPage;
   const indexOfFirstUser = indexOfLastUser - postsPerPage;
   const currentUsers = users.slice(indexOfFirstUser, indexOfLastUser);
-  console.log('Index of Last User:', indexOfLastUser);
-  console.log('Index of First User:', indexOfFirstUser);
-   console.log('Current Users:', currentUsers);
+ 
 
-  // const paginate = (pageNumber) => setCurrentPage(pageNumber);
-  // console.log('Paginate Function:', paginate);
-
+  
 
 
   return (

@@ -12,6 +12,7 @@ import { doctoken } from "../../../config";
 import { useNavigate } from "react-router-dom";
 import Pagination from "../../components/Pagination/Pagination";
 
+
 const MyAppointments = () => {
   const navigate = useNavigate();
 
@@ -137,9 +138,9 @@ const MyAppointments = () => {
     indexOfFirstAppointment,
     indexOfLastAppointment
   );
-  const handleChatClick = () => {
-    navigate("/doctors/chat"); 
-  };
+  // const handleChatClick = () => {
+  //   navigate("/doctors/chat"); 
+  // };
   // const reviewsResponse = await fetch(`${baseURL}/users/getallreviews?doctorId=${docId}`);
   //       const reviewsData = await reviewsResponse.json();
 
@@ -151,12 +152,10 @@ const MyAppointments = () => {
   return (
     <>
 
-<div>
-       
-       
-      </div>
-      <table className="w-full border-collapse text-left text-sm text-gray-500">
-        <thead className="text-xs text-gray-700 uppercase bg-gray-50">
+
+{/* <div className="overflow-x-auto"> */}
+      <table className="table-auto w-full border-collapse text-left text-sm text-gray-500">
+        <thead className="bg-gray-100">
           <tr>
             <th scope="col" className="px-6 py-3">
               Name
@@ -178,8 +177,8 @@ const MyAppointments = () => {
           className="ml-3"
         >
           <option value="">filter</option>
-          <option value="latest">Latest</option>
           <option value="oldest">Oldest</option>
+          <option value="latest">Latest</option>
           </select>
             </th>
 
@@ -196,10 +195,10 @@ const MyAppointments = () => {
         </thead>
         <tbody>
           {currentAppointments.map((item) => (
-            <tr key={item._id}>
-              <td className="px-6 py-4">{item.name}</td>
-              <td className="px-6 py-4">{item.blood}</td>
-              <td className="px-6 py-4">
+            <tr key={item._id} className="hover:bg-gray-50">
+              <td className="px-4 py-2 border-b border-b-2">{item.name}</td>
+              <td className="px-4 py-2 border-b border-b-2">{item.blood}</td>
+              <td className="px-4 py-2 border-b border-b-2">
                 {item.isPaid ? (
                   <div className="flex items-center">
                     <div className="h-2.5 w-2.5 rounded-full bg-green-500 mr-2"></div>
@@ -213,11 +212,10 @@ const MyAppointments = () => {
                 )}
               </td>
 
-              <td className="px-6 py-4">{item.ticketPrice}</td>
-              <td className="px-6 py-4">{item.date}</td>
-              <td className="px-6 py-4">{item.time}</td>
-
-              <td className="px-6 py-4">
+              <td className="px-4 py-2 border-b border-b-2">{item.ticketPrice}</td>
+              <td className="px-4 py-2 border-b border-b-2">{item.date}</td>
+              <td className="px-4 py-2 border-b border-b-2">{item.time}</td>
+              <td className="px-4 py-2 border-b border-b-2">
                 {console.log(item.date, "slot Date")}
 
                 {moment().isAfter(
@@ -255,29 +253,8 @@ const MyAppointments = () => {
           ))}
         </tbody>
       </table>
-      <div className="relative">
-        <button
-          className="z-20 text-white flex flex-col shrink-0 grow-0 justify-around 
-            fixed bottom-0 right-0 right-5 rounded-lg
-            mr-1 mb-5 lg:mr-5 lg:mb-5 xl:mr-10 xl:mb-10"
-           onClick={handleChatClick}
-        >
-          <div className="p-3 rounded-full border-3 border-white bg-green-400">
-            <svg
-              className="w-10 h-10 lg:w-12 lg:h-12 xl:w-16 xl:h-16"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                fillRule="evenodd"
-                d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z"
-                clipRule="evenodd"
-              />
-            </svg>
-          </div>
-        </button>
-      </div>
+      
+    
 
       <Pagination
         totalPosts={bookingDetails.length}
@@ -285,6 +262,8 @@ const MyAppointments = () => {
         currentPage={currentPage}
         setCurrentPage={setCurrentPage}
       />
+    
+
     </>
   );
 };

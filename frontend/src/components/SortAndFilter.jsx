@@ -12,14 +12,12 @@ const SortAndFilter = ({setSortted,setFilter,setMinRating  }) => {
    
     setFilter(filtered)
   };
-  // const handleRatingFilter = (ratingValue) => {
-  //   setMinRating(parseInt(ratingValue));
-  // };
+  
   const handleRatingFilter = (ratingValue) => {
-    // Convert the selected rating value to an integer
+   
     const selectedRating = parseInt(ratingValue);
     
-    // Set the minimum rating state
+   
     setMinRating(selectedRating);
   };
   

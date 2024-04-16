@@ -3,6 +3,7 @@ import User from "../models/userModel.js";
 import Doctor from "../models/DoctorSchema.js";
 import Booking from "../models/BookingSchema.js";
 import Stripe from "stripe";
+// import moment from "moment";
 
 const stripe=new Stripe(`sk_test_51Oom7QSFYJijlikWHxn3w46LTvEB79JVPRxR8KS6D6ipNaZDb5z68AjAnU9GAdZFSEImK5ikxnDfQZ1vs2MSzLSJ00nTkcWu9k`)
 
@@ -21,16 +22,25 @@ var customer = await stripe.customers.create({
 
     const indianDate=req.body.date
     const indianTime=req.body.time
+    // const indianDateFormat = moment(indianDate, "DD/MM/YYYY").toISOString();
+    
 
- 
-   
-
+    
     try{
        
         const doctor=await Doctor.findById(doctorId);
        
          const user=await User.findById(req.userId);
-    
+
+        
+        //  const isDateAvailable = doctor.available.some(
+            // (availableSlot) => console.log(availableSlot.date.toISOString() )
+        //   );
+        // const availableSlot = doctor.available.find(
+        //     (slot) => console.log(slot.date.toISOString() )
+        //   );
+
+        //   console.log(availableSlot,"available")
        
         const session=await stripe.checkout.sessions.create({
             payment_method_types:['card'],
@@ -65,7 +75,9 @@ var customer = await stripe.customers.create({
             slotDate:indianDate
         });
 
-        console.log(booking,"new Booking")
+      
+
+       
         await booking.save();
         res.status(200).json({success:true,message:"Successfully paid",session})
     }catch(err){

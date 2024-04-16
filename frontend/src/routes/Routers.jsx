@@ -35,10 +35,10 @@ import MyBookings from "../Dashboard/user-account/MyBookings.jsx";
 import UserVideoCallRoom from "../pages/Users/UserVideoCallRoom.jsx";
 import DoctorVideoCallRoom from "../pages/Doctors/DoctorVideoCallRoom.jsx";
 import Specialization from "../pages/Admin/Specialization.jsx";
-import Chat from "../pages/Users/Chat/Chat.jsx";
+
 import WalletComponent from "../pages/Users/WalletComponent.jsx";
 import DoctorChat from "../pages/Doctors/DoctorChat.jsx";
-import ErrorPage from "../components/ErrorPage/ErrorPage.jsx";
+// import ErrorPage from "../components/ErrorPage/ErrorPage.jsx";
 
 
 
@@ -72,10 +72,20 @@ function Routers() {
 
 <Route path="/users/room/:roomId" element={<UserVideoCallRoom  />} />
 
-      <Route path="/checkout-success" element={<SuccessPayment />} />
+      
+      <Route path="/checkout-success" element={
+          <ProtectedRoute allowedRoles={["patient"]}>
+            <SuccessPayment />
+          </ProtectedRoute>
+        }/> 
 
-      <Route path='/bookings' element={<MyBookings/>}/>
-      <Route path="/users/chat" element={<Chat />} />
+      
+      <Route path='/bookings'  element={
+          <ProtectedRoute allowedRoles={["patient"]}>
+            <MyBookings />
+          </ProtectedRoute>
+        }/>
+     
 
      {/*** **************Doctors Route start******************** */}
       <Route path="/doctors/profile/me" element={<Dashboard />} />
@@ -100,6 +110,7 @@ function Routers() {
        <Route path="/doctors/room/:roomId" element={<DoctorVideoCallRoom />} />
      
        <Route path='/doctors/chat' element={<DoctorChat/>}/>
+      
 
 
       <Route path="/admin" element={<AdminLogin />} />
@@ -108,7 +119,7 @@ function Routers() {
       <Route path="/admin/doctorslist" element={<AdminDoctors />} />
       <Route path="/admin/bookings" element={<AdminBookings />} />
       <Route path="/admin/specializations" element={<Specialization />} />
-      <Route path="*" element={<ErrorPage />} />
+      {/* <Route path="*" element={<ErrorPage />} /> */}
      
     </Routes>
   );

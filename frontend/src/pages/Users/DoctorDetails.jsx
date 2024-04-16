@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import starIcon from "../../../src/assets/images/Star.png";
 import moment from "moment-timezone";
-import { useNavigate,useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import apiInstance from "../../axiosApi/axiosInstance";
 import { baseURL } from "../../../../backend/config/db";
 import convertTo12HourFormat from "../../utils/convertTime";
@@ -11,9 +11,13 @@ import { token } from "../../../config";
 import { useSelector } from "react-redux";
 import DoctorAbout from "../Doctors/DoctorAbout.jsx";
 import Feedback from "../Doctors/Feedback.jsx";
-import "react-datepicker/dist/react-datepicker.css"; 
+import "react-datepicker/dist/react-datepicker.css";
 import formatDateToUTC from "../../utils/inputDateConvert";
 import slotMaker from "../../utils/slotMaker";
+import ChatUser from "../../components/chat/ChatUser.jsx";
+
+
+
 
 
 
@@ -21,40 +25,31 @@ const DoctorDetails = () => {
   const [tab, setTab] = useState("about");
   const [details, setDetails] = useState({});
   const [slot, setSlot] = useState("");
-
   const [bookings, setBookings] = useState([]);
   const [available, setAvailable] = useState([]);
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
-
-  const [selectedDateSlots, setSelectedDateSlots] = useState([]);
-
   const [availableTime, setAvailableTime] = useState([]);
-
   const [slotBooked, setSlotBooked] = useState(false);
-  const [bookedTimes, setBookedTimes] = useState([]);
-  
-  
+ 
+  const [isLoading, setIsLoading] = useState(false);
 
   let { id } = useParams();
   const doctorId = id;
 
   const userInfo = useSelector((state) => state.auth.userInfo);
   const userId = userInfo._id;
+  // const userId = userInfo ? userInfo._id : null;
   const navigate = useNavigate();
-
 
   const fetchDoctor = async () => {
     try {
       const res = await apiInstance.get(
         `${baseURL}/doctors/getdoctor/${doctorId}`
       );
-      console.log(res)
-
       setDetails(res.data.data);
       setAvailable(res.data.data.available);
     } catch (error) {
-      console.log(error);
       console.error("Error fetching doctor details:", error);
     }
   };
@@ -63,29 +58,38 @@ const DoctorDetails = () => {
     fetchDoctor();
   }, []);
 
+ 
+
+
+
   const bookHandler = async (date, time) => {
-    
+    // if (!userId) {
+      
+    //   toast.error('You need to login/register to book an appointment.');
+    //   return;
+    // }
     if (!date || !time) {
       toast.error("Please select both date and time");
       return;
     }
-    if (bookedTimes.includes(time)) {
+   
+
+    const existingBooking = available.find(item => {
+      // item.date === date && item.fromTime === time;
+    
+    });
+  
+    if (existingBooking) {
       toast.error("This time slot is already booked");
       return;
     }
-
-    const newBookedTimes = [...bookedTimes, time];
-  setBookedTimes(newBookedTimes);
-
- 
-  const updatedAvailableTime = availableTime.filter(elem => elem !== time);
-  setAvailableTime(updatedAvailableTime);
-
-
+  
+  
     const indianDate = moment(date).tz("Asia/Kolkata").format("DD/MM/YYYY");
     const indianTime = moment
       .tz(time, "HH:mm", "Asia/Kolkata")
       .format("hh:mm A");
+ 
 
     try {
       const res = await apiInstance.post(
@@ -115,10 +119,9 @@ const DoctorDetails = () => {
     setSlot("");
     let selectedDate = e.target.value;
     let formattedDate = formatDateToUTC(selectedDate);
-  
 
     let availavleTimings = available.filter(
-      (item) => item.date === formattedDate
+      (item) => item.date === formattedDate    
     );
     const timings = availavleTimings.map((elem) => {
       return elem.fromTime;
@@ -131,7 +134,7 @@ const DoctorDetails = () => {
       (booking) => booking.date === formattedDate
     );
 
-    if (existingBookingIndex == -1) {
+    if (existingBookingIndex === -1) {
       slotCount = 0;
     } else {
       slotCount = bookings[existingBookingIndex].slots.length;
@@ -145,20 +148,48 @@ const DoctorDetails = () => {
     setDate(selectedDate);
   };
 
-  /** setting Time */
-
-  const handleTime = () => {
-    setTime(time);
+  const handleTime = (selectedTime) => {
+    setTime(selectedTime);
   };
 
-  const formattedRating = details && details.averageRating ? details.averageRating.toFixed(1) : '';
+  const formattedRating =
+    details && details.averageRating ? details.averageRating.toFixed(1) : "";
 
-  const handleChatButtonClick = () => {
-    // Navigate to the chat page or open the chat modal
-    navigate("/users/chat"); // Replace "/chat" with the actual URL of your chat page
-  };
+    //////////////////////////chat   Create Rooom //////////////////////
 
+    const handleCreateRoom = async () => {
+      console.log("here ...")
+      // setIsLoading(true);
   
+      // try {
+      //   const response = await fetch(`${baseURL}/users/createRoom/${details._id}/${userId}`, {
+      //     method: "POST",
+      //     headers: {
+      //       "Content-Type": "application/json",
+      //       "Authorization": `Bearer ${token}`
+      //     },
+        
+     
+      //   });
+  
+      //   if (!response.ok) {
+      //     throw new Error("Failed to create chat room");
+      //   }
+  
+      // //   const data = await response.json(); 
+      // //  console.log("Chat room created successfully:", data);
+        
+      // } catch (error) {
+      //   console.error("Error creating chat room:", error);
+        
+      // } finally {
+      //   setIsLoading(false);
+      // }
+    };
+    
+
+
+
   return (
     <section className="container flex-col h-5/6">
       <div className="flex flex-col lg:flex-row md:justify-start items-center">
@@ -176,7 +207,7 @@ const DoctorDetails = () => {
               <h1 className="px-2 font-bold text-3xl">{details.name}</h1>
               <div className="flex items-center gap-[6px]">
                 <span className="flex items-center gap-[6px] text-[14px] leading-5 lg:text-[16px] lg:leading-7 font-semibold text-headingColor">
-                {formattedRating}
+                  {formattedRating}
                   <img src={starIcon} alt="" />
                 </span>
                 <span className="text-[14px] leading-5 lg:text-[16px] lg:leading-7 font-[400] text-textColor">
@@ -224,9 +255,7 @@ const DoctorDetails = () => {
                 />
               </div>
             </div>
-            {/* {slot && (
-              <p className="mx-2 text-red-500">{slot} slots available</p>
-            )} */}
+            
           </div>
         </div>
 
@@ -234,17 +263,16 @@ const DoctorDetails = () => {
           <h3 className="text-blue-500 font-bold my-2">Special Timings</h3>
 
           {availableTime
-          // .filter(time => !bookedTimes.includes(time))
-          
-          .map((elem) => (
-            <button
-              key={elem}
-              onClick={() => setTime(elem)}
-              className="mx-3 my-2 px-4 py-2 bg-blue-500 hover:bg-blue-700 text-white font-bold rounded"
-            >
-              {elem}
-            </button>
-          ))}
+           
+            .map((elem) => (
+              <button
+                key={elem}
+                onClick={() => setTime(elem)}
+                className="mx-3 my-2 px-4 py-2 bg-blue-500 hover:bg-blue-700 text-white font-bold rounded"
+              >
+                {elem}
+              </button>
+            ))}
 
           <button
             className="focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900"
@@ -252,35 +280,10 @@ const DoctorDetails = () => {
           >
             Book Now
           </button>
-          <div className="relative">
-        <button
-          className="z-20 text-white flex flex-col shrink-0 grow-0 justify-around 
-            fixed bottom-0 right-0 right-5 rounded-lg
-            mr-1 mb-5 lg:mr-5 lg:mb-5 xl:mr-10 xl:mb-10"
-          onClick={handleChatButtonClick}
-        >
-          <div className="p-3 rounded-full border-4 border-white bg-green-600">
-            <svg
-              className="w-10 h-10 lg:w-12 lg:h-12 xl:w-16 xl:h-16"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                fillRule="evenodd"
-                d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z"
-                clipRule="evenodd"
-              />
-            </svg>
-          </div>
-        </button>
-      </div>
-
+          
         </div>
-        
       </div>
 
-      
       <div className="mt-[50px] border-b border-solid border-[#0066ff34]">
         <button
           onClick={() => setTab("about")}
@@ -304,6 +307,16 @@ const DoctorDetails = () => {
         {tab === "about" && <DoctorAbout details={details} />}
         {tab === "feedback" && <Feedback details={details} />}
       </div>
+
+      <div className="fixed bottom-10 right-6">
+      <button onClick={handleCreateRoom} disabled={isLoading}>
+      {isLoading ? "Creating Room..." : "Create Chat Room"}
+    </button>
+  </div>
+
+      <ChatUser 
+      doctor={doctorId}
+      user={ userId}/>
     </section>
   );
 };

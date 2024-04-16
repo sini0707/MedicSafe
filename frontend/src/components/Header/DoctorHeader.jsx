@@ -31,7 +31,7 @@ const navLinks = [
     display:'Time Management'
   },
   {
-    path:'/doctors/chats',
+    path:'/doctors/chat',
     display:'Chats'
   }
 
@@ -39,7 +39,7 @@ const navLinks = [
 
 const DoctorHeader = () => {
   
-  const doctor=useSelector((state)=>state.docAuth.doctorInfo)
+  const doctor=useSelector((state)=>state.docAuth.doctorInfo);
  
 
   const headerRef=useRef(null)
@@ -159,17 +159,7 @@ const DoctorHeader = () => {
 
 export default DoctorHeader
  
-// import React from 'react'
 
-// const DoctorHeader = () => {
-//   return (
-//     <div>
-      
-//     </div>
-//   )
-// }
-
-// export default DoctorHeader
 
 
 

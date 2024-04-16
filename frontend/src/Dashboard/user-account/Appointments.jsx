@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 import { FcVideoCall } from "react-icons/fc";
 import { useNavigate } from "react-router-dom";
 
+
 const Appointments = ({ appointment }) => {
   const navigate = useNavigate();
   const user = useSelector((state) => state.auth.userInfo);
@@ -135,6 +136,7 @@ const Appointments = ({ appointment }) => {
           </div>
         </div>
       ))}
+     
     </div>
   );
 };

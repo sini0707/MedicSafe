@@ -5,10 +5,10 @@ const DoctorgenToken = (res, doctorId) => {
     expiresIn: "30d",
   });
 
-  console.log("Generated Token:", token); 
+ 
 
  
-  console.log("NODE_ENV value:", process.env.NODE_ENV);
+
 
   res.cookie("docjwt", token, {
     httpOnly: true,
@@ -17,8 +17,7 @@ const DoctorgenToken = (res, doctorId) => {
     maxAge: 30 * 24 * 60 * 60 * 1000, 
   });
 
-  console.log("Cookie Set:", res.getHeaders()['set-cookie']); // Log the set-cookie header
-
+ 
   return token;
 };
 

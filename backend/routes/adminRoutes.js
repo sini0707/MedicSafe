@@ -1,6 +1,7 @@
 import express from 'express';
 import { adminLogin,getUsers,getDoctors,blockUsers,approveDoctors,unblockUser,rejectDoctors ,addSpecialization,getAllSpecialization, adminLogoutUser} from '../Controllers/adminController.js'
-import { protect } from '../middleware/authMiddleware.js';
+
+import { protect } from '../middleware/AdminMiddleware.js';
 
 const router = express.Router();
 
@@ -17,7 +18,7 @@ router.get('/doctordata',getDoctors);
 router.post("/specialization", addSpecialization);
 router.get("/getspecialization",getAllSpecialization);
 
-router.post("/adminlogout", adminLogoutUser);
+router.post("/adminlogout",adminLogoutUser);
 
 
 export default router;

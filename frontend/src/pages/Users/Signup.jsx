@@ -33,6 +33,7 @@ const Signup = () => {
     const file=event.target.files[0];
 
     const data=await uploadImageCloudinary(file)
+    
     setPreviewURL(data.url);
     setSelectedFile(data.url);
     setFormData({...formData,photo:data.url});

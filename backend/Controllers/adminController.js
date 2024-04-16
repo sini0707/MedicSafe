@@ -10,8 +10,11 @@ const adminLogin = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
   try {
     const admin = await Admin.findOne({ email: email.trim() });
+  
+   
     if (admin && (await admin.matchPassword(password))) {
-      const token = adminGenToken(res, admin._id);
+       const token = adminGenToken(res, admin._id);
+    
 
       res.status(201).json({
         success: true,
@@ -24,6 +27,7 @@ const adminLogin = asyncHandler(async (req, res) => {
           token: token,
         },
       });
+    
     } else {
       res.status(400);
       throw new Error("Invalid email or password");
@@ -176,12 +180,12 @@ const getAllSpecialization = asyncHandler(async (req, res) => {
 });
 
 const adminLogoutUser = (req, res) => {
-  console.log("Clearing adminJwt cookie...");
+
   res.cookie("adminJwt", "", {
     httpOnly: true,
     expires: new Date(0),
   });
-  console.log("Sending logout response...");
+
   res.status(200).json({ message: "Logged out successfully" });
 };
 

@@ -31,6 +31,7 @@ const navLinks = [
 const Header = () => {
    const user = useSelector((state) => state.auth.userInfo);
   
+  
    
 
   
@@ -81,7 +82,6 @@ const Header = () => {
 
       dispatch(logout());
 
-      // Clearing local storage here directly for debugging
 
       navigate("/");
     } catch (err) {
@@ -115,7 +115,7 @@ const Header = () => {
             </ul>
           </div>
           <div className="flex items-center gap-4">
-            {user && user.token ? ( // Check if user and token exist
+            {user && user.token ? ( 
               <div>
                 <NavLink to="/users/profile/me" className="flex items-center">
                   <figure className="w-[35px] h-[35px] rounded-full cursor-pointer">
@@ -141,13 +141,7 @@ const Header = () => {
                 </button>
               </NavLink>
             )}
-            {/* <NavLink to="/wallet" className="flex items-center">
-              <span className="text-[16px] leading-7 font-[500] hover:text-primaryColor">
-                Wallet
-              </span> */}
-              {/* <span className="ml-1">{wallet.balance}</span> */}
-              {/* <img src="" alt="Wallet" className="ml-1 w-6 h-6" />
-            </NavLink> */}
+           
             <span className="md:hidden" onClick={toggleMenu}>
               <BiMenu className="w-6 h-6 cursor-pointer" />
             </span>

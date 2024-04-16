@@ -1,360 +1,4 @@
-// import  { useState } from "react";
 
-// import {toast} from "react-toastify";
-
-// import { formatDate } from "../../utils/formateDate";
-// import {AiFillStar} from "react-icons/ai";
-// import FeedbackForm from "./FeedbackForm";
-// import { useSelector } from "react-redux";
-// import { useEffect } from "react";
-// import { baseURL } from "../../../../backend/config/db";
-// import Modal from "../../components/Modal/Modal";
-
-// const Feedback = ({details}) => {
-
-//   const [reviews, setReview] = useState([]);
-//   // const [consultationOccurred, setConsultationOccurred] = useState(false);
-//   // const [slotBooked, setSlotBooked] = useState(false); 
-  
-
-//  const [showFeedbackForm, setShowFeedbackForm]=useState(false);
-//  const [replyText, setReplyText] = useState("");
-//   const [selectedReview, setSelectedReview] = useState(null);
-
-
-
-//  const [formattedUpdatedAt, setFormattedUpdatedAt] = useState("");
-//  const userInfo = useSelector(state => state.auth.userInfo);
-//   const userId = userInfo._id;
-
-  
- 
- 
-
-//  useEffect(() => {
-//   if (userInfo && userInfo.updatedAt) {
-//     const formattedDate = formatDate(userInfo.updatedAt);
-//     setFormattedUpdatedAt(formattedDate);
-//   }
-// }, [userInfo]);
-
-
-// useEffect(() => {
-//   const fetchReviews = async (req, res) => {
-//     try {
-//       const res = await fetch(
-//         `${baseURL}/users/getallreviews/${details._id}`,
-//         {
-//           method: "get",
-//           headers: {
-//             Authorization: `Bearer ${userInfo.token}`,
-//             "Content-Type": "application/json",
-//           },
-//         }
-//       );
-//       const result = await res.json();
-//       setReview(result.data);
-
-    
-//     } catch (error) {
-//       console.log(error);
-//     }
-//   };
-//   fetchReviews();
-// }, [ ]);
-
-// reviews.map((el,index)=>{
-
-
-// })
-// const handleFeedbackButtonClick = async(doctorId) => {
-  
-//    console.log(doctorId,"doctor Id");
-
-//    try {
-//     const res = await fetch(
-//       `${baseURL}/users/FeedbackCheck/${doctorId}`,
-//       {
-//         method: "get",
-//         headers: {
-//           Authorization: `Bearer ${userInfo.token}`,
-//           "Content-Type": "application/json",
-//         },
-//       }
-//     );
-
-//     if(res.ok){
-//       setShowFeedbackForm(true);
-//     }
-//     else{
-      
-//       toast.error("There is no booking for this doctor.")
-//     }
-
-//    } catch (error) {
-//     console.log(console.log("error"));
-//    }
-
-// };
-
-
-//   // Function to handle opening the modal and set the selected review
-//   const handleReplyButtonClick = (review) => {
-//     setSelectedReview(review);
-//     setShowFeedbackForm(true);
-//   };
-
-
-//  // Function to handle submitting the reply
-//  const handleReplySubmit = async () => {
-//   try {
-//     // Send the replyText and selectedReview to your backend to submit the reply
-//     // Reset the replyText state
-//     setReplyText("");
-//     // Close the modal
-//     setShowFeedbackForm(false);
-//   } catch (error) {
-//     console.error("Error submitting reply:", error);
-//   }
-// };
-
-
-
-
-
-
-//   return (
-//     <div>
-//      <div className="mb-[50px]">
-//     <h4 className="text-[20px] leading-[30px] font-bold text-headingColor mb-[30px]">
-//         All reviews ({reviews.length})
-//     </h4>
-//     {reviews.map((review, index) => (
-//         <div key={index} className="flex justify-between gap-10 mb-[30px]">
-//             <div className="flex gap-3">
-//                 <figure className="w-10 h-10 rounded-full">
-//                     <img className="w-full" src={review.user.photo} alt="" />
-//                 </figure>
-//                 <div>
-//                     <h5 className="text-[16px] leading-6 text-primaryColor font-bold">
-//                         {review.user.name}
-//                     </h5>
-//                     {/* <p className="text-[14px] leading-6 text-textColor">
-//                     Created At: {review.createdAt}
-//                     </p> */}
-//                     <p className="text_para mt-3 font-medium text-[15px]">
-//                         {review.reviewText}
-//                     </p>
-//                     <button onClick={() => handleReplyButtonClick(review)}>Reply</button>
-//                 </div>
-             
-//             </div>
-//             <div className="flex gap-1">
-//                 {[...Array(review.rating).keys()].map((_, index) => (
-//                     <AiFillStar key={index} color="#FFAD01" />
-//                 ))}
-//             </div>
-//         </div>
-//     ))}
-//       {/* Modal for replying to reviews */}
-//       <Modal show={showFeedbackForm} onClose={() => setShowFeedbackForm(false)}>
-//         <h2>Reply to Review</h2>
-//         <textarea
-//           value={replyText}
-//           onChange={(e) => setReplyText(e.target.value)}
-//           rows={4}
-//           cols={50}
-//           placeholder="Enter your reply"
-//         />
-//         <button onClick={handleReplySubmit}>Submit Reply</button>
-//       </Modal>
-// </div>
-
-// {!showFeedbackForm && (
-//         <div className="text-center">
-//           <button
-//             className="btn"
-//             onClick={()=>handleFeedbackButtonClick(details._id)}
-//           >
-//             Give Feedback
-//           </button>
-//         </div>
-//       )}
-
-
-
-    
-//       {showFeedbackForm && (
-//       <FeedbackForm
-//       details={details}
-//       setShowFeedbackForm={setShowFeedbackForm}
-      
-//       />)}
-//     </div>
-//   );
-// };
-
-// // export default Feedback;
-// import { useState } from "react";
-// import { toast } from "react-toastify";
-// import { formatDate } from "../../utils/formateDate";
-// import { AiFillStar } from "react-icons/ai";
-// import FeedbackForm from "./FeedbackForm";
-// import { useSelector } from "react-redux";
-// import { useEffect } from "react";
-// import { baseURL } from "../../../../backend/config/db";
-// import Modal from "../../components/Modal/Modal";
-
-// const Feedback = ({ details }) => {
-//   const [reviews, setReview] = useState([]);
-//   const [showFeedbackForm, setShowFeedbackForm] = useState(false);
-//   const [replyText, setReplyText] = useState("");
-//   const [selectedReview, setSelectedReview] = useState(null);
-//   const [formattedUpdatedAt, setFormattedUpdatedAt] = useState("");
-//   const userInfo = useSelector((state) => state.auth.userInfo);
-//   const userId = userInfo._id;
-
-//   useEffect(() => {
-//     if (userInfo && userInfo.updatedAt) {
-//       const formattedDate = formatDate(userInfo.updatedAt);
-//       setFormattedUpdatedAt(formattedDate);
-//     }
-//   }, [userInfo]);
-
-//   useEffect(() => {
-//     const fetchReviews = async (req, res) => {
-//       try {
-//         const res = await fetch(
-//           `${baseURL}/users/getallreviews/${details._id}`,
-//           {
-//             method: "get",
-//             headers: {
-//               Authorization: `Bearer ${userInfo.token}`,
-//               "Content-Type": "application/json",
-//             },
-//           }
-//         );
-//         const result = await res.json();
-//         setReview(result.data);
-//       } catch (error) {
-//         console.log(error);
-//       }
-//     };
-//     fetchReviews();
-//   }, []);
-
-//   const handleFeedbackButtonClick = async (doctorId) => {
-//     try {
-//       const res = await fetch(
-//         `${baseURL}/users/FeedbackCheck/${doctorId}`,
-//         {
-//           method: "get",
-//           headers: {
-//             Authorization: `Bearer ${userInfo.token}`,
-//             "Content-Type": "application/json",
-//           },
-//         }
-//       );
-
-//       if (res.ok) {
-//         setShowFeedbackForm(true);
-//       } else {
-//         toast.error("There is no booking for this doctor.");
-//       }
-//     } catch (error) {
-//       console.log(console.log("error"));
-//     }
-//   };
-
-//   // Function to handle opening the modal and set the selected review
-//   const handleReplyButtonClick = (review) => {
-//     setSelectedReview(review);
-//     setShowFeedbackForm(true);
-//   };
-
-//   // Function to handle submitting the reply
-//   const handleReplySubmit = async () => {
-//     try {
-//       // Send the replyText and selectedReview to your backend to submit the reply
-//       // Reset the replyText state
-//       setReplyText("");
-//       // Close the modal
-//       setShowFeedbackForm(false);
-//     } catch (error) {
-//       console.error("Error submitting reply:", error);
-//     }
-//   };
-
-//   return (
-//     <div>
-//       <div className="mb-[50px]">
-//         <h4 className="text-[20px] leading-[30px] font-bold text-headingColor mb-[30px]">
-//           All reviews ({reviews.length})
-//         </h4>
-//         {reviews.map((review, index) => (
-//           <div key={index} className="flex justify-between gap-10 mb-[30px]">
-//             <div className="flex gap-3">
-//               <figure className="w-10 h-10 rounded-full">
-//                 <img className="w-full" src={review.user.photo} alt="" />
-//               </figure>
-//               <div>
-//                 <h5 className="text-[16px] leading-6 text-primaryColor font-bold">
-//                   {review.user.name}
-//                 </h5>
-//                 <p className="text_para mt-3 font-medium text-[15px]">
-//                   {review.reviewText}
-//                 </p>
-//                 <button onClick={() => handleReplyButtonClick(review)}>
-//                   Reply
-//                 </button>
-//               </div>
-//             </div>
-//             <div className="flex gap-1">
-//               {[...Array(review.rating).keys()].map((_, index) => (
-//                 <AiFillStar key={index} color="#FFAD01" />
-//               ))}
-//             </div>
-//           </div>
-//         ))}
-//         {/* Modal for replying to reviews */}
-//         <Modal
-//           show={showFeedbackForm}
-//           onClose={() => setShowFeedbackForm(false)}
-//         >
-//           <h2>Reply to Review</h2>
-//           <textarea
-//             value={replyText}
-//             onChange={(e) => setReplyText(e.target.value)}
-//             rows={4}
-//             cols={50}
-//             placeholder="Enter your reply"
-//           />
-//           <button onClick={handleReplySubmit}>Submit Reply</button>
-//         </Modal>
-//       </div>
-
-//       {!showFeedbackForm && (
-//         <div className="text-center">
-//           <button
-//             className="btn"
-//             onClick={() => handleFeedbackButtonClick(details._id)}
-//           >
-//             Give Feedback
-//           </button>
-//         </div>
-//       )}
-
-//       {showFeedbackForm && (
-//         <FeedbackForm
-//           details={details}
-//           setShowFeedbackForm={setShowFeedbackForm}
-//         />
-//       )}
-//     </div>
-//   );
-// };
-
-// export default Feedback;
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { formatDate } from "../../utils/formateDate";
@@ -365,6 +9,8 @@ import { useEffect } from "react";
 import { baseURL } from "../../../../backend/config/db";
 import { doctoken } from "../../../config";
 
+import { useLocation, useNavigate } from 'react-router-dom';
+
 const Feedback = ({ details }) => {
   console.log(details,"details")
   const [reviews, setReview] = useState([]);
@@ -374,8 +20,9 @@ const Feedback = ({ details }) => {
   const [selectedReview, setSelectedReview] = useState(null);
   const [formattedUpdatedAt, setFormattedUpdatedAt] = useState("");
   const userInfo = useSelector((state) => state.auth.userInfo);
+  const [user,setUser]=useState(null)
+  console.log(user)
   
- 
 
   const userId = userInfo._id;
 
@@ -385,6 +32,18 @@ const Feedback = ({ details }) => {
       setFormattedUpdatedAt(formattedDate);
     }
   }, [userInfo]);
+
+  const location = useLocation();
+ 
+  useEffect(()=>{
+    if (location.pathname.includes("/doctors")) {
+      setUser("doctor")
+     } else {
+       setUser("user")
+     }
+  
+  },[])
+
 
   useEffect(() => {
     const fetchReviews = async () => {
@@ -425,7 +84,7 @@ const Feedback = ({ details }) => {
       if (res.ok) {
         setShowFeedbackForm(true);
       } else {
-        toast.error("There is no booking for this doctor.");
+        toast.error("There is no booking for this doctor. Please leave your feedback after the appointment.");
       }
     } catch (error) {
       console.log(error);
@@ -444,10 +103,7 @@ const Feedback = ({ details }) => {
    
     try {
 
-      // if (userInfo.role !== "doctor") {
-      //   toast.error("Only doctors can reply to reviews.");
-      //   return;
-      // }
+    
       
       const response = await fetch(`${baseURL}/doctors/submitreply/${reviewid}`, {
         method: "PUT",
@@ -455,9 +111,9 @@ const Feedback = ({ details }) => {
           Authorization: `Bearer ${doctoken}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ replyText }),
+        body: JSON.stringify({ replyText}),
       });
-      console.log("Response from API:", response);
+      
   
       if (response.ok) {
         toast.success("Reply submitted successfully.");
@@ -533,7 +189,14 @@ catch (error) {
             <p className="text-sm text-gray-700">{review.replyText}</p>
           </div>
         )}
-        <button onClick={() => handleReplyButtonClick(review)} className="text-sm text-primaryColor font-semibold mt-2">Reply</button>
+       {user&&user==="doctor"? <button
+          onClick={() => handleReplyButtonClick(review)}
+          className="text-sm text-primaryColor font-semibold mt-2 focus:outline-none text-white bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow-300 font-medium rounded-lg px-5 py-2.5 me-2 mb-2 dark:focus:ring-yellow-900"
+        >
+          Reply
+        </button>:""}
+      
+        
       </div>
     </div>
     <div className="flex gap-1">

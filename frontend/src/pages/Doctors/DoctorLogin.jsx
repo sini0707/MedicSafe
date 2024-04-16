@@ -1,21 +1,32 @@
-import { useState } from "react";
+import { useState ,useEffect} from "react";
  import { Link, useNavigate } from 'react-router-dom';
  import { toast } from "react-toastify";
  import { baseURL } from "../../../../backend/config/db";
  import apiInstance from "../../axiosApi/axiosInstance";
  import HashLoader from "react-spinners/HashLoader";
 import { setDoctorCredentials } from "../../slices/doctorSlices/doctorAuthSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch,useSelector } from "react-redux";
 
 
 
 
 const DoctorLogin = () => {
+
+const doctor=useSelector((state) => state.docAuth.doctorInfo);
+  
   const [formData, setFormData] = useState({
          email: '',
         password: ''
        });
        const [loading, setLoading] = useState(false);
+
+
+       useEffect(() => {
+        if (doctor) {
+          navigate("/doctors/home");
+        }
+      });
+    
           const navigate = useNavigate();
           const dispatch = useDispatch();
      

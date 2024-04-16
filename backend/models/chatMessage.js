@@ -1,22 +1,37 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const chatMessageSchema = new mongoose.Schema({
   room: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'chatRoom',
+    ref: "chatRoom",
   },
   sender: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
-    refPath: 'senderType', // Use dynamic reference based on senderType
+    refPath: "senderType",
+  },
+  receiver: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
   },
   senderType: {
     type: String,
-    enum: ['User', 'Doctor'],
+    required: true,
+  },
+  senderName: {
+    type: String,
     required: true,
   },
   content: {
     type: String,
+  },
+  notificationSeen: {
+    type: Boolean,
+    default: false,
+  },
+  read:{
+    type:Boolean,
+    default:false
   },
   createdAt: {
     type: Date,
@@ -24,6 +39,5 @@ const chatMessageSchema = new mongoose.Schema({
   },
 });
 
-const ChatMessage = mongoose.model('ChatMessage', chatMessageSchema);
-
+const ChatMessage = mongoose.model("ChatMessage", chatMessageSchema);
 export default ChatMessage;

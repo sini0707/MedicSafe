@@ -11,8 +11,8 @@ import userRoutes from './routes/userRoutes.js';
 import doctorRoute from "./routes/doctor.js";
 import adminRoutes from './routes/adminRoutes.js'
  import path from 'path';
-  import ChatRoute from './routes/ChatRoute.js'
-import MessageRoute from "./routes/MessageRoute.js";
+
+
 import { Server } from 'socket.io'; 
 import { createServer } from 'http';
 
@@ -24,7 +24,7 @@ import { createServer } from 'http';
 
 
 const app = express();
-const server = createServer(app);
+// const server = createServer(app);
 
 const corsOptions={
     origin:true,
@@ -36,16 +36,16 @@ app.use(cors(corsOptions))
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-// app.use(cors(corsOptions));
+
 app.use(cors({
-    origin: 'http://localhost:5173', // Replace with your frontend domain
+    origin: 'http://localhost:5173', 
     credentials: true,
   }));
 app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/doctors', doctorRoute);
 app.use("/api/v1/admin",adminRoutes);
- app.use("/chat",ChatRoute);
- app.use('/message',MessageRoute)
+//  app.use("/chat",ChatRoute);
+//  app.use('/message',MessageRoute)
 
 
 // app.get('/', (req, res) => res.send('API running'));
@@ -65,22 +65,56 @@ app.use(notFound);
 app.use(errorHandler);
 //  const server=app.listen(port, () => console.log(`Server started on port ${port}`));
 
+const server = app.listen(port, () => {
+  try {
+    connectDB();
+    console.log("Server is running on port", port);
+  } catch (error) {
+    console.log(error);
+  }
+});
 
-//  const io = new Server(server, {
-//   pingTimeout: 60000,
-//   cors: {
-//     origin: "http://localhost:5173",
-//   },
-// });
+ const io = new Server(server, {
+  pingTimeout: 60000,
+  cors: {
+    origin: "http://localhost:5173",
+  },
+});
 
-// io.on("connection", (socket) => {
-//   console.log("connected to socket.io");
-// });
-// socket.on("setup", (user) => {
-//   socket.join(user);
-//   console.log(user, "userId");
-//   socket.emit("connected");
-// });
+io.on("connection", (socket) => {
 
 
-server.listen(port, () => console.log(`Server started on port ${port}`));
+  socket.on("setup", (user) => {
+    socket.join(user);
+ 
+    socket.emit("connected");
+  });
+  socket.on("join_chat", (room) => {
+    socket.join(room);
+
+  });
+
+  socket.on("new Message", (newMessageRecived) => {
+
+
+    var chat = newMessageRecived.room;
+
+    if (!chat.user || !chat.doctor) {
+      return console.log("chat.users  not defined  ");
+
+      chat.users.forEach(user=>{
+        if(user._Id==newMessageRecived.sender._id)
+      return;
+    socket.in(user._id).emit("message received",newMessageRecived)
+      })
+      
+    }
+
+
+    
+  });
+  
+});
+
+
+// server.listen(port, () => console.log(`Server started on port ${port}`));

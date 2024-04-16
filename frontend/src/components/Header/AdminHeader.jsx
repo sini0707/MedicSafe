@@ -2,7 +2,7 @@
 import { useRef, useEffect, useContext } from 'react';
 import { NavLink } from 'react-router-dom';
 import { BiMenu } from 'react-icons/bi';
-import { authContext } from '../../context/AuthContext'; 
+ import { authContext } from '../../context/AuthContext'; 
 import logo from '../../assets/images/logo.png'; 
 import { baseURL } from '../../../../backend/config/db';
 import { logout } from '../../slices/adminSlices/adminAuthSlice';
@@ -31,14 +31,14 @@ const navlinks = [
 ];
 
 const AdminHeader = () => {
-  const admin=useSelector((state)=>state.adminAuth.adminInfo);
+  const adminInfo=useSelector((state)=>state.adminAuth.adminInfo);
+ 
+ 
   
   const headerRef = useRef(null);
   const menuRef = useRef(null);
   const { user, role, token } = useContext(authContext);
-  console.log("User:", user);
-console.log("Role:", role);
-console.log("Token:", token);
+  
 
   const dispatch = useDispatch();
 
@@ -57,6 +57,12 @@ console.log("Token:", token);
     return () => window.removeEventListener('scroll', handleStickyHeader);
   }, []);
 
+  // const logoutHandler = () => {
+  //   localStorage.removeItem("adminInfo");
+  //   navigate("/admin/login");
+  // };
+
+
   const toggleMenu = () => menuRef.current.classList.toggle('show_menu');
   const navigate = useNavigate();
 
@@ -69,18 +75,19 @@ console.log("Token:", token);
           "Content-Type": "application/json",
         },
       });
+    
 
       if (!response.ok) {
         throw new Error("Logout failed");
       }
 
       await response.json();
-      console.log("Logout response:", response); 
+  
       dispatch(logout());
 
       
 
-      navigate("/admin");
+      navigate("/admin/home");
     } catch (err) {
       console.log(err);
     }
@@ -90,12 +97,14 @@ console.log("Token:", token);
   
 
   return (
-    <header className='header flex items-center' ref={headerRef}>
-      <div className='container'>
-        <div className='flex items-center justify-between'>
-          <div>
-            <img src={logo} alt='' style={{ width: '200px', height: 'auto' }} />
-          </div>
+<header className='header flex items-center' ref={headerRef}>
+  <div className='container'>
+    <div className='flex items-center justify-between'>
+      <div>
+        <img src={logo} alt='' style={{ width: '200px', height: 'auto' }} />
+      </div>
+      {adminInfo && (
+        <>
           <div className='navigation' ref={menuRef} onClick={toggleMenu}>
             <ul className='menu flex items-center gap-[2.7rem]'>
               {navlinks.map((link, index) => (
@@ -115,42 +124,29 @@ console.log("Token:", token);
             </ul>
           </div>
 
-          <div className='flex items-center gap-4'>
-  {token && user ? (
-    <div>
-      <NavLink to={`${role == "doctor" ? "/doctors/profile/me" : "/users/profile/me"}`}>
-        <figure className='w-[35px] h-[35px] rounded-full cursor-pointer'>
-          <img src={user?.photo} className="w-full rounded-full" alt=""/>
-        </figure>
-        <h2>Welcome  Admin </h2>
-        <h2>Welcome {role === "admin" ? "Admin" : "User"} </h2>
-        <button onClick={logoutHandler} className='bg-primaryColor py-2 px-6 text-white font [600] h-[44px] flex items-center rounded-[50px]'>
-                 Logout
+
+          <button onClick={logoutHandler} className='bg-primaryColor py-2 px-6 text-white font [600] h-[44px] flex items-center rounded-[50px]'>
+            Logout
           </button>
-      </NavLink>
+          </>
+      )}
+
+{!adminInfo && (
+          <NavLink to="/admin">
+            <button className='bg-primaryColor py-2 px-6 text-white font [600] h-[44px] flex items-center rounded-[50px]'>
+              Login
+            </button>
+          </NavLink>
+        )}
+
+          <span className='md:hidden' onClick={toggleMenu}>
+            <BiMenu className='w-6 h-6 cursor-pointer'/>
+          </span>
+      
     </div>
-  ) : (
-    <NavLink to="/admin">
-              <button className='bg-primaryColor py-2 px-6 text-white font [600] h-[44px] flex items-center rounded-[50px]'>
-                Logout
-              </button>
-            </NavLink>
+  </div>
+</header>
 
-    
-  )}
-
- 
-
-  <span className='md:hidden' onClick={toggleMenu}>
-    <BiMenu className='w-6 h-6 cursor-pointer'/>
-  </span>
-</div>
-
-
-
-        </div>
-      </div>
-    </header>
   );
 };
 

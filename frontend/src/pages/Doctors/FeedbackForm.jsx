@@ -11,7 +11,7 @@ const FeedbackForm = ({ details, setshowFeedbackForm }) => {
 
   const [hover, setHover] = useState(0);
   const [reviewText, setReviewText] = useState("");
-  // const [replyText, setReplyText] = useState('');
+ 
 
   const userInfo = useSelector((state) => state.auth.userInfo);
 
@@ -24,9 +24,9 @@ const FeedbackForm = ({ details, setshowFeedbackForm }) => {
     user: userId,
     doctor: details._id,
   };
-  console.log(reviewData, "we want review data");
+  
 
-  //     const { fetchData, data: reviews } = useFetchData(`${baseURL}/users/getallreviews`);
+  
   const {
     fetchData,
     data: reviews,
@@ -115,8 +115,7 @@ const FeedbackForm = ({ details, setshowFeedbackForm }) => {
         <textarea
           className="border border-solid border-[#0066ff34] focus:outline outline-primaryColor w-full px-4 py-3 rounded-md"
           rows="5"
-          // value={reviewText}
-          //     onChange={(e) => setReviewText(e.target.value)}
+         
           placeholder="write your message"
           onChange={(e) => setReviewText(e.target.value)}
         />

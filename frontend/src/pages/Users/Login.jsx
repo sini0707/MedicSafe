@@ -10,13 +10,13 @@ import OAuth from "../../components/OAuth.jsx";
 
 const Login = () => {
 const navigate=useNavigate()
-//  const user=useSelector((state)=>state.auth.userInfo)
+ const user=useSelector((state)=>state.auth.userInfo)
 
-// useEffect(()=>{
-//   if(user){
-//     navigate("/home")
-//   }
-// },[user])
+useEffect(()=>{
+  if(user){
+    navigate("/home")
+  }
+},[user])
 
   const [formData,setFormData]=useState({
       email:'',
