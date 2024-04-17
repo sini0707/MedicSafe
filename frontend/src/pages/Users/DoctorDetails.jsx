@@ -15,6 +15,8 @@ import "react-datepicker/dist/react-datepicker.css";
 import formatDateToUTC from "../../utils/inputDateConvert";
 import slotMaker from "../../utils/slotMaker";
 import ChatUser from "../../components/chat/ChatUser.jsx";
+import { FaCommentDots } from "react-icons/fa6";
+
 
 
 
@@ -31,15 +33,17 @@ const DoctorDetails = () => {
   const [time, setTime] = useState("");
   const [availableTime, setAvailableTime] = useState([]);
   const [slotBooked, setSlotBooked] = useState(false);
+  const [isChatOpen, setIsChatOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
  
-  const [isLoading, setIsLoading] = useState(false);
+ 
 
   let { id } = useParams();
   const doctorId = id;
 
   const userInfo = useSelector((state) => state.auth.userInfo);
   const userId = userInfo._id;
-  // const userId = userInfo ? userInfo._id : null;
+ 
   const navigate = useNavigate();
 
   const fetchDoctor = async () => {
@@ -155,39 +159,31 @@ const DoctorDetails = () => {
   const formattedRating =
     details && details.averageRating ? details.averageRating.toFixed(1) : "";
 
-    //////////////////////////chat   Create Rooom //////////////////////
+    const chatHandler = async () => {
+      setIsChatOpen(true);
+      
+    try {
+      const res = await fetch(
+        `${baseURL}/users/createRoom/${details._id}/${userId}`,
 
-    const handleCreateRoom = async () => {
-      console.log("here ...")
-      // setIsLoading(true);
-  
-      // try {
-      //   const response = await fetch(`${baseURL}/users/createRoom/${details._id}/${userId}`, {
-      //     method: "POST",
-      //     headers: {
-      //       "Content-Type": "application/json",
-      //       "Authorization": `Bearer ${token}`
-      //     },
-        
-     
-      //   });
-  
-      //   if (!response.ok) {
-      //     throw new Error("Failed to create chat room");
-      //   }
-  
-      // //   const data = await response.json(); 
-      // //  console.log("Chat room created successfully:", data);
-        
-      // } catch (error) {
-      //   console.error("Error creating chat room:", error);
-        
-      // } finally {
-      //   setIsLoading(false);
-      // }
-    };
-    
+        {
+          method: "post",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
+      let result = await res.json();
+      console.log(result);
+
+      if (!res.ok) {
+        throw new Error(result.message);
+      }
+    } catch (error) {
+      console.log("error", error);
+    }
+    }
 
 
   return (
@@ -308,15 +304,39 @@ const DoctorDetails = () => {
         {tab === "feedback" && <Feedback details={details} />}
       </div>
 
-      <div className="fixed bottom-10 right-6">
-      <button onClick={handleCreateRoom} disabled={isLoading}>
-      {isLoading ? "Creating Room..." : "Create Chat Room"}
-    </button>
-  </div>
+      {/* {isScrolled && ( */}
+              <div className="fixed bottom-10 right-6">
+                <button
+                  onClick={() => chatHandler()}
+                  className="bg-blue-500 text-white p-4 rounded-full shadow-lg focus:outline-none"
+                >
+                  <FaCommentDots size={24} />
+                </button>
+              </div>
+            {/* // )} */}
 
-      <ChatUser 
-      doctor={doctorId}
-      user={ userId}/>
+
+      {isChatOpen && (
+              <>
+                {/* Overlay to dim other elements */}
+                <div
+                  className="fixed inset-0 bg-black opacity-50"
+                  onClick={() => setIsChatOpen(false)}
+                ></div>
+
+                {/* Chat Popup */}
+                <div className="fixed bottom-0 right-[100px] w-96">
+                  <ChatUser
+                   doctor={details._id}
+                   user={userId}
+                   photo={userInfo.photo}
+                   doctorPic={details.photo}
+                   userName={userInfo.name}
+                    //  onClose={() => setIsChatOpen(false)}
+                  />
+                </div>
+              </>
+            )}
     </section>
   );
 };

@@ -73,8 +73,14 @@ router.get("/get-timings/:doctorId", getDoctorTimings);
 router.post("/checkout-session/:doctorId/:userId", getCheckoutSession);
 
 router.get("/makeVideoCall/:id", MakeVideoCall);
-router.get("/getRoomMessage/:roomId",protect,getRoomMessages);
-router.get("/getRoom/:doctorId/:userId",protect,getRoom);
-router.post("/createRoom/:details._id/:userId",createRoom);
-router.post("/sendChat/:sender/:roomId/:type/:Id/:senderName",protect,sendChat);
+router.get("/getRoomMessage/:roomId",getRoomMessages);
+router.get("/getRoom/:doctorId/:userId",getRoom);
+router.post(
+  "/createRoom/:doctorId/:userId",
+  createRoom
+);
+router.post(
+  "/sendChat/:sender/:roomId/:type/:Id/:senderName",
+  sendChat
+);
 export default router;

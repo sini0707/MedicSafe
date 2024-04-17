@@ -1,4 +1,5 @@
 
+import Chart from 'chart.js/auto';
 
 
 const AdminHome = () => {
@@ -663,6 +664,7 @@ const AdminHome = () => {
         </div> */}
       </div>
       <div className="text-blue-gray-600">
+        
        
       </div>
     </div>

@@ -1,12 +1,18 @@
 import { useState,useEffect } from "react";
 import { useSelector } from "react-redux";
 import io from "socket.io-client";
+import { baseURL } from "../../../../backend/config/db";
+import { doctoken } from "../../../config";
 
 const ENDPOINT = "http://localhost:8000";
 var socket, selectedChatCompare;
 
 const DoctorChat = () => {
   const [socketConnected, setSocketConnected] = useState(false);
+  const [typedMessage, setTypedMessage] = useState('');
+  const [chatMessages, setChatMessages] = useState([]); 
+  const [rooms, setRooms] = useState("");
+  const [error, setError] = useState("");
 
 
 
@@ -17,11 +23,56 @@ const DoctorChat = () => {
     socket.on("connection", () => setSocketConnected(true));
   }, []);
 
-  
+  useEffect(() => {
+    const fetchRoom = async () => {
+      try {
+        const res = await fetch(
+          `${baseURL}/doctors/get-doctor-rooms/${doctorInfo._id}`,
+          {
+            method: "get",
+            headers: {
+              Authorization: `Bearer ${doctoken}`,
+            },
+          }
+        );
+
+        let result = await res.json();
+
+        if (!res.ok) {
+          throw new Error(result.message);
+        }
+
+        // Sort the rooms based on the latestMessageTimestamp
+        const sortedRooms = result.sort((a, b) => {
+          return (
+            new Date(b.latestMessageTimestamp) -
+            new Date(a.latestMessageTimestamp)
+          );
+        });
+
+        setRooms(sortedRooms);
+      } catch (error) {
+        setError(error);
+        console.log("error", error);
+      }
+    };
+    fetchRoom();
+  }, [doctorInfo._id]);
+
+  const handleSend = () => {
+    if (typedMessage.trim() !== '') {
+      
+      setChatMessages([...chatMessages, { type: 'doctor', text: typedMessage }]);
+     
+      setTypedMessage('');
+    }
+
+  } 
+ 
 
    
   return (
-<div className="pt-20 font-semibold"> {/* Add padding top here */}
+<div className=" font-semibold">
         <div className="flex h-screen overflow-hidden">
           {/* Sidebar */}
           <div className="w-1/4 bg-white border-r border-gray-300">
@@ -62,15 +113,31 @@ const DoctorChat = () => {
 
             {/* Chat Messages */}
             <div className="h-screen overflow-y-auto p-4 pb-36">
-              {/* Chat messages */}
-              {/* You can map through messages here */}
+            {chatMessages.map((message, index) => (
+              <div key={index} className={`mb-2 ${message.type === 'doctor' ? 'text-right' : ''}`}>
+                <p className={`bg-${message.type === 'doctor' ? 'indigo-500 text-white' : 'gray-200 text-gray-700'} rounded-lg py-2 px-4 inline-block`}>
+                  {message.text}
+                </p>
+              </div>
+            ))}
             </div>
 
             {/* Chat Input */}
             <footer className="bg-white border-t border-gray-300 p-4 absolute bottom-0 w-3/4">
               <div className="flex items-center">
-                <input type="text" placeholder="Type a message..." className="w-full p-2 rounded-md border border-gray-400 focus:outline-none focus:border-blue-500" />
-                <button className="bg-indigo-500 text-white px-4 py-2 rounded-md ml-2">Send</button>
+              <input
+            type="text"
+            placeholder="Type a message..."
+            className="w-full p-2 rounded-md border border-gray-400 focus:outline-none focus:border-blue-500"
+            value={typedMessage}
+            onChange={(e) => setTypedMessage(e.target.value)} 
+          />
+          <button
+            className="bg-indigo-500 text-white px-4 py-2 rounded-md ml-2"
+            onClick={handleSend} 
+          >
+            Send
+          </button>
               </div>
             </footer>
           </div>

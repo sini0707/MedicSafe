@@ -3,21 +3,30 @@ import io from "socket.io-client";
 import { toast } from 'react-toastify';
 import { baseURL } from "../../../../backend/config/db";
 import { token } from "../../../config";
+import { RiCheckDoubleFill } from "react-icons/ri";
+import { IoCheckmark } from "react-icons/io5";
+import { GrSend } from "react-icons/gr";
+import mongoose from 'mongoose';
+
 
 
 
 const ENDPOINT = "http://localhost:8000";
 let socket, selectedChatCompare;
 
-const ChatUser = ({ user,doctor }) => {
+const ChatUser = ({onClose,doctor, user, photo, doctorPic, userName}) => {
   const [isChatboxOpen, setIsChatboxOpen] = useState(true);
   const [userInput, setUserInput] = useState('');
   const [messages, setMessages] = useState([]);
   const [socketConnected, setSocketConnected] = useState(false);
   const [room, setRoom] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
+  const [chats, setChats] = useState([]);
+  const [content, setContent] = useState("");
+  const [messageSent, setMessageSent] = useState(false);
 
 
-  
+  console.log(room._id,"roooooom")
   useEffect(() => {
     if (user) {
   
@@ -26,36 +35,31 @@ const ChatUser = ({ user,doctor }) => {
       socket.on("connection", () => setSocketConnected(true));
     }
   }, [ENDPOINT, user]);
- 
- 
 
   useEffect(() => {
     if (doctor && user) {
       const fetchRoom = async () => {
-         try {
+        try {
           const res = await fetch(
             `${baseURL}/users/getRoom/${doctor}/${user}`,
             {
-              method: "GET",
+              method: "get",
               headers: {
                 Authorization: `Bearer ${token}`,
               },
             }
           );
-          // console.log(res,"getroom dataaaa")
-          if (res.ok) {
-           
-            const data = await res.json();
-           
-          
-          } else {
-          
-            console.error("Failed to fetch room data:", res.statusText);
-          }
+          // console.log(res,"here is the room id")
 
+          let result = await res.json();
+        console.log(result.data,'room data got it!')
+          if (!res.ok) {
+            throw new Error(result.message);
+          }
           
+          setRoom(result.data);
         } catch (error) {
-          console.error("Error fetching room data:", error);
+          console.log(error);
         }
       };
       fetchRoom();
@@ -63,127 +67,181 @@ const ChatUser = ({ user,doctor }) => {
   }, [user, doctor]);
 
 
+  ///fetch all messages
 
+  useEffect(() => {
+    const fetchMessage = async () => {
+      try {
+        const res = await fetch(
+          `${baseURL}/users/getRoomMessage/${room._id}`,
+          {
+            method: "get",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        let result = await res.json();
+        console.log(result, "RESULT FETCH MESSAGE");
+
+        if (!res.ok) {
+          throw new Error(result.message);
+        }
+
+        setChats(result);
+        setMessageSent(false);
+        socket.emit("join_chat", room._id);
+        selectedChatCompare = chats;
+      } catch (error) {
+        console.log("error", error);
+      }
+    };
+    fetchMessage();
+  }, [room._id, messageSent]);
   
 
-  const toggleChatbox = () => {
-    setIsChatboxOpen(!isChatboxOpen);
-  };
-
-  const handleSend = () => {
-    if (userInput.trim() !== '') {
-      setMessages([...messages, { type: 'user', text: userInput }]);
-      respondToUser(userInput);
-      setUserInput('');
+  const sendHandler = async () => {
+    if (content === "") {
+      toast.error("message cannot be empty");
+      return;
     }
-  };
 
-  const handleKeyPress = (event) => {
-    if (event.key === 'Enter') {
-      handleSend();
-    }
-  };
+    const sendChat = async () => {
+      try {
+        if (!room._id) {
+          console.error("Room ID is undefined");
+          return;
+        }
 
-  const addUserMessage = (message) => {
-    setMessages([...messages, { type: 'user', text: message }]);
-  };
+        const res = await fetch(
+          `${baseURL}/users/sendChat/${user}/${room._id}/User/${doctor}/${userName}`,
+          {
+            method: "post",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ content: content, read: false }),
+          }
+        );
 
-  const addBotMessage = (message) => {
-    setMessages([...messages, { type: 'bot', text: message }]);
-  };
+        let result = await res.json();
+        if (!res.ok) {
+          throw new Error(result.message);
+        }
 
-  const respondToUser = (userMessage) => {
-    // Replace this with your chatbot logic
-    setTimeout(() => {
-      addBotMessage('This is a response from the chatbot.');
-    }, 500);
+        setContent("");
+        setMessageSent(true);
+        socket.emit("new Message", result);
+      } catch (error) {
+        console.log("error", error);
+      }
+    };
+    sendChat();
   };
-
+ 
   return (
-    <>
-      <div className="fixed bottom-0 right-0 mb-4 mr-4">
+    
+    <div className="flex flex-col items-center justify-center w-[500px] min-h-[540px] text-gray-800 p-10">
+    <div className="flex flex-col flex-grow w-full max-w-xl bg-white shadow-xl rounded-lg overflow-hidden">
+      <div className="flex flex-col flex-grow h-0 p-4 overflow-auto">
+        {chats && chats.length > 0 ? (
+          chats.map((chat, index) => (
+            <div
+              key={index}
+              className={`flex w-full mt-2 space-x-3 max-w-xs ${
+                chat.senderType === "User" ? "ml-auto justify-end" : ""
+              }`}
+            >
+              {chat.senderType === "User" ? (
+                <div className="flex w-full mt-2 space-x-3 max-w-xl ml-auto justify-end">
+                  <div>
+                    <div className="bg-blue-600 text-white p-3 rounded-l-lg rounded-br-lg relative ">
+                      <p className="text-sm whitespace-normal">
+                        {chat.content}
+                        {chat.read ? (
+                          <RiCheckDoubleFill className="absolute ml-10 top-1 right-1 text-sm text-black-500" />
+                        ) : (
+                          <IoCheckmark className="absolute ml-10 top-1 right-1 text-lg text-black-500" />
+                        )}
+                      </p>
+                    </div>
+
+                    <span className="text-xs text-gray-500 leading-none">
+                      {/* {formatChatTime(chat.createdAt)} */}
+                    </span>
+                  </div>
+                  <div className="flex-shrink-0 h-10 w-10 rounded-full bg-gray-300 ">
+                    <img
+                      src={photo}
+                      alt=""
+                      className=" rounded-full h-full w-full object-cover"
+                    />
+                  </div>
+                </div>
+              ) : (
+                <div className={`flex w-full mt-2 space-x-3 max-w-xs`}>
+                  <div className="flex-shrink-0 h-10 w-10 rounded-full bg-gray-300">
+                    <img
+                      src="#"
+                      alt=""
+                      className=" rounded-full h-full w-full object-cover"
+                    />
+                  </div>
+                  <div>
+                    <div className="bg-gray-300 p-3 rounded-r-lg rounded-bl-lg">
+                      <p className="text-sm">{chat.content}</p>
+                    </div>
+                    <span className="text-xs text-gray-500 leading-none">
+                      {/* {formatChatTime(chat.createdAt)} */}
+                    </span>
+                  </div>
+                </div>
+              )}
+            </div>
+          ))
+        ) : (
+          <p>No messages</p>
+        )}
+      </div>
+
+      <div className="bg-blue-500 p-4 flex">
+        <input
+          onChange={(e) => setContent(e.target.value)}
+          value={content}
+          className="flex items-center h-10 w-4/5 rounded px-3 text-sm"
+          type="text"
+          placeholder="Type your message…"
+        />
         <button
-          id="open-chat"
-          className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-300 flex items-center"
-          onClick={toggleChatbox}
+          onClick={() => sendHandler()}
+          className="rounded-full flex items-center ml-2 hover:scale-105 transition duration-100 ease-in-out cursor-pointer justify-center w-1/5 bg-[#8b5cf6]"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="w-6 h-6 mr-2"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-            />
-          </svg>
-          Chat with Doctor
+          {/* Include your send icon component or SVG here */}
+          <GrSend className="text-[22px]" />
         </button>
       </div>
-      <div
-        id="chat-container"
-        className={`fixed bottom-16 right-4 w-96 ${isChatboxOpen ? '' : 'hidden'}`}
+    </div>
+
+    <div className="absolute top-2 left-5 cursor-pointer">
+      <svg
+        // onClick={onClose}
+        xmlns="http://www.w3.org/2000/svg"
+        className="h-6 w-6"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
       >
-        <div className="bg-white shadow-md rounded-lg max-w-lg w-full">
-          <div className="p-4 border-b bg-blue-500 text-white rounded-t-lg flex justify-between items-center">
-            <p className="text-lg font-semibold">Chat</p>
-            <button
-              id="close-chat"
-              className="text-gray-300 hover:text-gray-400 focus:outline-none focus:text-gray-400"
-              onClick={toggleChatbox}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="w-6 h-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            </button>
-          </div>
-          <div id="chatbox" className="p-4 h-80 overflow-y-auto">
-            {messages.map((message, index) => (
-              <div key={index} className={`mb-2 ${message.type === 'user' ? 'text-right' : ''}`}>
-                <p
-                  className={`bg-${message.type === 'user' ? 'blue-500 text-white' : 'gray-200 text-gray-700'} rounded-lg py-2 px-4 inline-block`}
-                >
-                  {message.text}
-                </p>
-              </div>
-            ))}
-          </div>
-          <div className="p-4 border-t flex">
-            <input
-              id="user-input"
-              type="text"
-              placeholder="Type a message"
-              className="w-full px-3 py-2 border rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              value={userInput}
-              onChange={(e) => setUserInput(e.target.value)}
-              onKeyPress={handleKeyPress}
-            />
-            <button
-              id="send-button"
-              className="bg-blue-500 text-white px-4 py-2 rounded-r-md hover:bg-blue-600 transition duration-300"
-              onClick={handleSend}
-            >
-              Send
-            </button>
-          </div>
-        </div>
-      </div>
-    </>
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="2"
+          d="M6 18L18 6M6 6l12 12"
+        />
+      </svg>
+    </div>
+  </div>
   );
 
 }
