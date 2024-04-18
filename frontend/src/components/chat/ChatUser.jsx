@@ -49,7 +49,7 @@ const ChatUser = ({onClose,doctor, user, photo, doctorPic, userName}) => {
               },
             }
           );
-          // console.log(res,"here is the room id")
+          
 
           let result = await res.json();
         console.log(result.data,'room data got it!')

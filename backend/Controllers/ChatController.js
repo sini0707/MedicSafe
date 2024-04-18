@@ -6,14 +6,17 @@ import ChatMessage from "../models/chatMessage.js";
 
 export const getRoomMessages = async (req, res) => {
     const { roomId } = req.params;
+     console.log("Room ID:", roomId); 
     try {
       const messages = await ChatMessage.find({ room: roomId }).sort({
         createdAt: 1,
       });
-  console.log(messages)
+
       if (messages) {
+        console.log("Messages found:", messages);
         res.status(200).json(messages);
       } else {
+        console.log("No messages found for the given room");
         res.status(404).json({ message: "No message found for the given room " });
       }
     } catch (error) {
@@ -21,6 +24,8 @@ export const getRoomMessages = async (req, res) => {
     }
 
 }
+
+
 
 
 export const getRoom = async (req, res) => {
@@ -94,10 +99,10 @@ export const createRoom = async (req, res) => {
 
 export const sendChat = async (req, res) => {
     const { content, read } = req.body;
-    console.log(read, "readddd");
+    
   
     const { sender, roomId, type, Id, senderName } = req.params;
-    console.log(roomId, "params");
+ 
   
     const newMessage = new ChatMessage({
       room: roomId,
@@ -140,5 +145,28 @@ export const sendChat = async (req, res) => {
 
 
   export const getDoctorRooms = async (req, res) => {
+    try {
+        const docId = req.params.id;
+        
+    
+        const rooms = await ChatRoom.find({ doctor: docId }).populate({
+          path: "user",
+          select: "_id name email",
+        });
+    
+     
+    
+        if (rooms.length > 0) {
+          res.status(200).json(rooms);
+        } else {
+          res
+            .status(404)
+            .json({ message: "No rooms found for the specified doctor" });
+        }
+      } catch (error) {
+        console.error("Error fetching doctor rooms:", error);
+        res.status(500).json({ message: "Internal Server Error" });
+      }
+    };
 
-  }
+  

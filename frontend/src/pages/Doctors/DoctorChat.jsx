@@ -13,10 +13,18 @@ const DoctorChat = () => {
   const [chatMessages, setChatMessages] = useState([]); 
   const [rooms, setRooms] = useState("");
   const [error, setError] = useState("");
+  const [chats, setChats] = useState([]);
+  const [messageSent, setMessageSent] = useState(false);
+  const [chatId, setChatId] = useState("");
+  const [userContacts, setUserContacts] = useState([]);
+  const [patient, setPatient] = useState(null);
+  const [doctor, setDoctor] = useState(null);
+
 
 
 
   const doctorInfo = useSelector((state) => state.docAuth.doctorInfo);
+ 
   useEffect(() => {
     socket = io(ENDPOINT);
     socket.emit("setup", doctorInfo);
@@ -26,8 +34,75 @@ const DoctorChat = () => {
   useEffect(() => {
     const fetchRoom = async () => {
       try {
+        console.log("Fetching doctor rooms...");
+        console.log(doctoken,'token is got')
+        console.log(doctorInfo._id,'doctor info  id gott ittt')
         const res = await fetch(
           `${baseURL}/doctors/get-doctor-rooms/${doctorInfo._id}`,
+          {
+            method: "get",
+            headers: {
+              Authorization: `Bearer ${doctoken}`,
+            },
+          }
+        );
+       let result = await res.json();
+        console.log("JSON data received:",result);
+
+
+        if (!res.ok) {
+          throw new Error(result.message);
+        }
+      
+       
+        const sortedRooms = result.sort((a, b) => {
+          return (
+            new Date(b.latestMessageTimestamp) -
+            new Date(a.latestMessageTimestamp)
+          );
+        });
+
+         setRooms(sortedRooms);
+      } catch (error) {
+        setError(error);
+        console.log("error", error);
+      }
+    };
+    fetchRoom();
+  }, [doctorInfo._id]);
+
+
+
+
+  const handleRoomClick = (chatId, patient) => {
+   
+    setChatId(chatId);
+    setPatient(patient);
+  
+  };
+
+
+
+  const handleStartChatWithDoctor = (chatId, patient, doctor) => {
+    // Set the chat ID, patient information, and doctor information
+    setChatId(chatId);
+    setPatient(patient);
+    setDoctor(doctor);
+    // Additional logic to start a chat with the doctor
+  };
+
+
+
+
+
+  
+
+  useEffect(() => {
+    const fetchMessage = async () => {
+      try {
+        
+        const res = await fetch(
+          `${baseURL}/doctors/get-rooms-messages/${chatId}`,
           {
             method: "get",
             headers: {
@@ -41,23 +116,17 @@ const DoctorChat = () => {
         if (!res.ok) {
           throw new Error(result.message);
         }
-
-        // Sort the rooms based on the latestMessageTimestamp
-        const sortedRooms = result.sort((a, b) => {
-          return (
-            new Date(b.latestMessageTimestamp) -
-            new Date(a.latestMessageTimestamp)
-          );
-        });
-
-        setRooms(sortedRooms);
+        setChats(result);
+        setMessageSent(false);
+        selectedChatCompare = chats;
+        socket.emit("join_chat", chatId);
       } catch (error) {
-        setError(error);
         console.log("error", error);
       }
     };
-    fetchRoom();
-  }, [doctorInfo._id]);
+    fetchMessage();
+  }, [chatId, messageSent]);
+
 
   const handleSend = () => {
     if (typedMessage.trim() !== '') {
@@ -78,7 +147,7 @@ const DoctorChat = () => {
           <div className="w-1/4 bg-white border-r border-gray-300">
             {/* Sidebar Header */}
             <header className="p-4 border-b border-gray-300 flex justify-between items-center bg-indigo-600 text-white">
-              <h1 className="text-2xl font-semibold">Chat Web</h1>
+            <span className="font-bold">Active Conversations</span>
               <div className="relative">
                 <button id="menuButton" className="focus:outline-none">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-100" viewBox="0 0 20 20" fill="currentColor">
@@ -99,10 +168,37 @@ const DoctorChat = () => {
 
             {/* Contact List */}
             <div className="overflow-y-auto h-screen p-3 mb-9 pb-20">
-              {/* Contact items */}
-              {/* You can map through contacts here */}
+            {rooms.length > 0 ? (
+          rooms.map((chat) => (
+            <div
+              key={chat._id}
+              className="flex flex-col space-y-1 mt-4 -mx-2 overflow-y-auto"
+            >
+              <button
+                    className="flex flex-row items-center hover:bg-gray-100 rounded-xl p-2"
+                    onClick={() => handleStartChatWithDoctor(chat._id, chat.user, chat.doctor)}
+                  >
+                  
+                    <div className="flex items-center justify-center h-8 w-8 bg-gray-200 rounded-full">
+                     
+                      {/* <img src={chat.user.photo} alt="User" className="h-full w-full rounded-full" /> */}
+                    </div>
+                    <div className="ml-2 text-sm font-semibold">{chat.user.name}</div>
+                  </button>
             </div>
+          ))
+        ) : (
+          <div className="flex flex-col space-y-1 mt-4 -mx-2 overflow-y-auto">
+            <button className="flex flex-row items-center hover:bg-gray-100 rounded-xl p-2">
+              <div className="flex items-center justify-center h-8 w-8 bg-gray-200 rounded-full">U</div>
+              <div className="ml-2 text-sm font-semibold">No chats</div>
+            </button>
           </div>
+        )}
+      </div>
+    </div>
+  
+           
 
           {/* Main Chat Area */}
           <div className="w-4/5">

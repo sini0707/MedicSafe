@@ -21,7 +21,8 @@ import {
 import {
   getDoctorRooms,
   getRoomMessages,
-  sendChat
+  sendChat,
+  // userContacts
   
 } from "../Controllers/ChatController.js"
 
@@ -46,8 +47,9 @@ router.put("/submitreply/:id",submitReply);
 
 router.get("/get-doctor-rooms/:id", getDoctorRooms);
 router.get("/get-rooms-messages/:roomId", getRoomMessages);
-router.post(
-  "/sendChat/:roomId/:sender/:type/:Id/:senderName",sendChat);
+router.post("/sendChat/:roomId/:sender/:type/:Id/:senderName",sendChat);
+// router.get("/user-contacts/:doctorId",userContacts)
+
 
 
 export default router;
