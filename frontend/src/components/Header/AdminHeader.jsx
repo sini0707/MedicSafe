@@ -27,6 +27,11 @@ const navlinks = [
      path: '/admin/specializations',
      display: 'Departments',
   },
+  {
+    path: '/admin/bookings',
+    display: 'Payment Management',
+ },
+
 
 ];
 

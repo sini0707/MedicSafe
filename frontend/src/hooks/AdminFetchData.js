@@ -9,6 +9,7 @@ function AdminFetchData(url) {
     const fetchData = async () => {
       setLoading(true);
       try {
+        console.log(adminToken,'admin side token')
         console.log("Fetching data from:", url);
         const res = await fetch(url, {
           headers: { Authorization: `Bearer ${adminToken}` },

@@ -9,9 +9,7 @@ const Specialization = () => {
     const [specializationList, setSpecializationList] = useState([])
        
 
-    const handleInputClick = () => {
-        
-    };
+    
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
@@ -28,6 +26,7 @@ const Specialization = () => {
             navigate("/admin/specializations");
           } catch (err) {
             toast.error(err?.data?.message || err?.error);
+            toast.error("It is Duplicate")
           }
     
        

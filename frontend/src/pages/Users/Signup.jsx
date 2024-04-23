@@ -71,7 +71,7 @@ const Signup = () => {
           setLoading(false);
           
           navigate('/otpVerify', { state: { email } });
-          toast.success('Registration successful');
+          toast.success('OTP is Verifiy here!!!');
   
         } catch (err) {
           console.log(err);

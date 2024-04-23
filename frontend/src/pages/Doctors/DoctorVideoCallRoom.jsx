@@ -7,8 +7,8 @@ function DoctorVideoCallRoom() {
   const { roomId } = useParams();
   const user = useSelector((state) => state.docAuth.doctorInfo);
   const myMeeting = async (element) => {
-    const appID =  418625036;
-    const serverSecret = "70f3ee0edfae01a2a24e8c34feb2c174";
+    const appID = 112231611;
+    const serverSecret = "a1806e931f243b655c5b1ba966aba829";
     const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(
       appID,
       serverSecret,

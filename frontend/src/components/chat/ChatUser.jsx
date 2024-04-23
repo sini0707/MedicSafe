@@ -6,7 +6,7 @@ import { token } from "../../../config";
 import { RiCheckDoubleFill } from "react-icons/ri";
 import { IoCheckmark } from "react-icons/io5";
 import { GrSend } from "react-icons/gr";
-import mongoose from 'mongoose';
+
 
 
 
@@ -15,12 +15,9 @@ const ENDPOINT = "http://localhost:8000";
 let socket, selectedChatCompare;
 
 const ChatUser = ({onClose,doctor, user, photo, doctorPic, userName}) => {
-  const [isChatboxOpen, setIsChatboxOpen] = useState(true);
-  const [userInput, setUserInput] = useState('');
-  const [messages, setMessages] = useState([]);
-  const [socketConnected, setSocketConnected] = useState(false);
+ const [socketConnected, setSocketConnected] = useState(false);
   const [room, setRoom] = useState({});
-  const [isLoading, setIsLoading] = useState(false);
+  
   const [chats, setChats] = useState([]);
   const [content, setContent] = useState("");
   const [messageSent, setMessageSent] = useState(false);
@@ -34,6 +31,7 @@ const ChatUser = ({onClose,doctor, user, photo, doctorPic, userName}) => {
       socket.emit("setup", user);
       socket.on("connection", () => setSocketConnected(true));
     }
+    
   }, [ENDPOINT, user]);
 
   useEffect(() => {
@@ -93,6 +91,7 @@ const ChatUser = ({onClose,doctor, user, photo, doctorPic, userName}) => {
         setMessageSent(false);
         socket.emit("join_chat", room._id);
         selectedChatCompare = chats;
+        
       } catch (error) {
         console.log("error", error);
       }
@@ -133,7 +132,7 @@ const ChatUser = ({onClose,doctor, user, photo, doctorPic, userName}) => {
 
         setContent("");
         setMessageSent(true);
-        socket.emit("new Message", result);
+        socket.emit("newUserMessage", { content: content, roomId: room._id });
       } catch (error) {
         console.log("error", error);
       }
@@ -141,6 +140,13 @@ const ChatUser = ({onClose,doctor, user, photo, doctorPic, userName}) => {
     sendChat();
   };
  
+  useEffect(() => {
+    socket.on("message received", (newMessageReceived) => {
+      if (selectedChatCompare && room._id === newMessageReceived.room._id) {
+        setChats([...chats, newMessageReceived]);
+      }
+    });
+  });
   return (
     
     <div className="flex flex-col items-center justify-center w-[500px] min-h-[540px] text-gray-800 p-10">
@@ -183,11 +189,11 @@ const ChatUser = ({onClose,doctor, user, photo, doctorPic, userName}) => {
               ) : (
                 <div className={`flex w-full mt-2 space-x-3 max-w-xs`}>
                   <div className="flex-shrink-0 h-10 w-10 rounded-full bg-gray-300">
-                    <img
+                    {/* <img
                       src="#"
                       alt=""
                       className=" rounded-full h-full w-full object-cover"
-                    />
+                    /> */}
                   </div>
                   <div>
                     <div className="bg-gray-300 p-3 rounded-r-lg rounded-bl-lg">

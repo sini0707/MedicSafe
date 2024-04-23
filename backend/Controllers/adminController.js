@@ -5,6 +5,7 @@ import User from "../models/userModel.js";
 import bcrypt from "bcryptjs";
 import Doctor from "../models/DoctorSchema.js";
 import Specialization from "../models/SpecializationModel.js";
+import Booking from "../models/BookingSchema.js"
 
 const adminLogin = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
@@ -132,14 +133,26 @@ const rejectDoctors = asyncHandler(async (req, res) => {
   res.status(200).json(doctor);
 });
 
+
 const getDoctors = asyncHandler(async (req, res) => {
-  const doctors = await Doctor.find({}, { password: 0 });
-  if (doctors) {
-    res.status(200).json({ doctorsData: doctors });
-  } else {
-    res.status(400).json("Error in Fetching");
+  try {
+   
+    const doctors = await Doctor.find({}, { password: 0 });
+ 
+
+    if (doctors) {
+    
+      res.status(200).json({ doctorsData: doctors });
+    } else {
+   
+      res.status(400).json("Error in Fetching");
+    }
+  } catch (error) {
+    console.error("Error fetching doctors:", error.message);
+    res.status(500).json({ error: "Server Error" });
   }
 });
+
 
 
 const addSpecialization = asyncHandler(async (req, res) => {
@@ -188,6 +201,121 @@ const adminLogoutUser = (req, res) => {
 
   res.status(200).json({ message: "Logged out successfully" });
 };
+
+
+export const getBooking = async (req, res) => {
+  try {
+    const bookings = await Booking.find(
+      {},
+      {
+        "patient.name": 1,
+        "doctor.name": 1,
+        paymentStatus: 1,
+        IndianDate: 1,
+        slot: 1,
+        isCancelled: 1,
+      }
+    );
+
+    if (bookings.length === 0) {
+      throw new Error("Not have any Bookings");
+    }
+
+    res
+      .status(200)
+      .json({ status: true, message: "getting the users", data: bookings });
+  } catch (error) {
+    console.log(error); 
+    res
+      .status(404)
+      .json({ status: false, message: "Unable to retrieve doctors" });
+  }
+};
+
+
+
+
+export const getMonthlyBooking = async (req, res) => {
+  try {
+    const montlyData = await Booking.aggregate([
+      {
+        $group: {
+          _id: { $month: { $toDate: "$createdAt" } },
+          totalBookings: { $sum: 1 },
+          totalAmount: { $sum: "$fee" },
+        },
+      },
+    ]);
+
+    res.status(200).json({ data: montlyData });
+  } catch (error) {
+    res.status(404).json({ message: "Data not found" });
+  }
+};
+
+//// getting yearly Data   /////
+
+export const YearlyBooking = async (req, res) => {
+  try {
+    const yearlyData = await Booking.aggregate([
+      {
+        $project: {
+          year: {
+            $year: {
+              $dateFromString: {
+                dateString: "$IndianDate",
+                format: "%d/%m/%Y",
+              },
+            },
+          },
+
+          fee: 1,
+        },
+      },
+      {
+        $group: {
+          _id: "$year",
+          totalBookings: { $sum: 1 },
+          totalAmount: { $sum: "$fee" },
+        },
+      },
+    ]);
+
+    res.status(200).json({ data: yearlyData });
+  } catch (error) {
+    res.status(404).json({ message: "Data not found" });
+  }
+};
+
+// ///// getting the user Data
+
+
+////Cancel Booking ////////
+
+export const cancelBooking = async (req, res) => {
+  try {
+    const bookingId = req.params.id;
+    const cancel = await Booking.findByIdAndUpdate(
+      bookingId,
+      { $set: { isCancelled: true } },
+      { new: true }
+    );
+
+    if (!cancel) {
+      return res.status(404).json({ message: "Booking not found" });
+    } else {
+      res
+        .status(200)
+        .json({ status: true, message: "Booking cancelled successfullly" });
+    }
+  } catch (error) {
+    console.log(error);
+    res
+      .status(500)
+      .json({ status: false, message: "Booking cancellation failed" });
+  }
+};
+
 
 export {
   adminLogin,

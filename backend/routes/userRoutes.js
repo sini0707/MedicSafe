@@ -22,6 +22,7 @@ import {
   MakeVideoCall,
   getUserWallet,
   checkFeedback,
+  
 } from "../Controllers/userController.js";
 import { protect } from "../middleware/authMiddleware.js";
 import { getCheckoutSession } from "../Controllers/bookingController.js";
@@ -37,6 +38,8 @@ import {
   getRoom,
   createRoom,
   sendChat,
+  getNotification,
+  clearNotification
   
 } from "../Controllers/ChatController.js";
 
@@ -83,4 +86,8 @@ router.post(
   "/sendChat/:sender/:roomId/:type/:Id/:senderName",
   sendChat
 );
+
+router.get("/getUserNotifications",protect, getNotification);
+router.post("/clearNotification", clearNotification);
+
 export default router;

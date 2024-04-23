@@ -13,7 +13,7 @@ import AdminLogin from "../pages/Admin/adminLogin.jsx";
 import AdminHome from "../pages/Admin/AdminHome.jsx";
 import AdminUsers from "../pages/Admin/AdminUsers.jsx";
 import AdminDoctors from "../pages/Admin/AdminDoctors.jsx";
-import AdminBookings from "../pages/Admin/AdminBookings.jsx";
+import PaymentBooking from "../pages/Admin/PaymentBooking.jsx";
 import EmailVerify from "../pages/Users/EmailVerify.jsx";
 import ForgotVerify from "../pages/Users/ForgotVerify.jsx";
 import { ResetPassword } from "../pages/Users/ResetPassword.jsx";
@@ -117,7 +117,7 @@ function Routers() {
       <Route path="/admin/home" element={<AdminHome />} />
       <Route path="/admin/userlist" element={<AdminUsers />} />
       <Route path="/admin/doctorslist" element={<AdminDoctors />} />
-      <Route path="/admin/bookings" element={<AdminBookings />} />
+      <Route path="/admin/bookings" element={<PaymentBooking />} />
       <Route path="/admin/specializations" element={<Specialization />} />
       {/* <Route path="*" element={<ErrorPage />} /> */}
      

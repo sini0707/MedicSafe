@@ -1,5 +1,6 @@
 import express from 'express';
-import { adminLogin,getUsers,getDoctors,blockUsers,approveDoctors,unblockUser,rejectDoctors ,addSpecialization,getAllSpecialization, adminLogoutUser} from '../Controllers/adminController.js'
+import { adminLogin,getUsers,getDoctors,blockUsers,approveDoctors,unblockUser,rejectDoctors ,
+    addSpecialization,getAllSpecialization, adminLogoutUser,getBooking,getMonthlyBooking,YearlyBooking,cancelBooking} from '../Controllers/AdminController.js'
 
 import { protect } from '../middleware/AdminMiddleware.js';
 
@@ -19,6 +20,13 @@ router.post("/specialization", addSpecialization);
 router.get("/getspecialization",getAllSpecialization);
 
 router.post("/adminlogout",adminLogoutUser);
+ router.get("/MonthlyBooking",getMonthlyBooking)
+ router.get("/getBooking",getBooking)
+ router.put("/cancelBooking/:id",cancelBooking)
+ router.get("/YearlyBooking",YearlyBooking);
+
+
+
 
 
 export default router;

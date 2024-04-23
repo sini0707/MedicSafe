@@ -64,7 +64,7 @@ const EmailVerify = () => {
         toast.success('OTP resent successfully');
         setOtp('');
         setMinutes(0);
-        setSeconds(10);
+        setSeconds(30);
       } catch (err) {
         console.log(err, 'errr');
       }

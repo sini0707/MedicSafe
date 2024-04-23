@@ -49,8 +49,8 @@ const Doctorss = () => {
     navigate("/doctors");
   };
 
-  const totalDoctors = doctors.length;
-  const totalPages = Math.ceil(totalDoctors / doctorsPerPage);
+  // const totalDoctors = doctors.length;
+  
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -62,7 +62,7 @@ const Doctorss = () => {
       (doctor.name.toLowerCase().includes(search.toLowerCase()) ||
         doctor.specialization.toLowerCase().includes(search.toLowerCase()))
   );
-
+  
   if (sortted !== "") {
     filterdDoctors = filterdDoctors.sort((a, b) => a.fees - b.fees);
   }
@@ -72,10 +72,14 @@ const Doctorss = () => {
   if (minRating !== 0) {
     filterdDoctors = filterdDoctors.filter((doctor) => doctor.averageRating >= minRating);
   }
-
+  
   const indexOfLastDoctor = currentPage * doctorsPerPage;
   const indexOfFirstDoctor = indexOfLastDoctor - doctorsPerPage;
   const currentDoctors = filterdDoctors.slice(indexOfFirstDoctor, indexOfLastDoctor);
+  
+  const totalDoctors = filterdDoctors.length;
+  const totalPages = Math.ceil(totalDoctors / doctorsPerPage);
+  
 
   return (
     <>

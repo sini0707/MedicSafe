@@ -8,6 +8,8 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { baseURL } from "../../../../backend/config/db";
 import { logout } from "../../slices/authSlice";
+import { IoIosNotifications } from "react-icons/io";
+import UserNotification from "../Notification/UserNotification";
 
 const navLinks = [
   {
@@ -29,7 +31,12 @@ const navLinks = [
 ];
 
 const Header = () => {
+
+ 
    const user = useSelector((state) => state.auth.userInfo);
+   console.log(user,'user got it')
+   
+   const [notification, setNotification] = useState(false);
   
   
    
@@ -116,7 +123,13 @@ const Header = () => {
           </div>
           <div className="flex items-center gap-4">
             {user && user.token ? ( 
-              <div>
+              <div className="flex">
+                <div 
+                onClick={()=>setNotification(true)}
+                className="flex items-center mr-6 cursor-pointer"
+                >
+                  <IoIosNotifications className="text-[20px]" />
+                </div>
                 <NavLink to="/users/profile/me" className="flex items-center">
                   <figure className="w-[35px] h-[35px] rounded-full cursor-pointer">
                     <img
@@ -133,6 +146,9 @@ const Header = () => {
                     Logout
                   </button>
                 </NavLink>
+                {notification&&(
+                  <UserNotification setNotification={setNotification} />
+                )}
               </div>
             ) : (
               <NavLink to="/login">
