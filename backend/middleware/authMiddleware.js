@@ -13,6 +13,7 @@ const protect = asyncHandler(async (req, res, next) => {
       const token = Authtoken.split(" ")[1];
     
        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+       console.log(decoded)
       
 
       
@@ -31,7 +32,6 @@ const protect = asyncHandler(async (req, res, next) => {
               next();
       }
  
-    
     } catch (error) {
       console.error(error,'errrrrorrrr');
       res.status(401);

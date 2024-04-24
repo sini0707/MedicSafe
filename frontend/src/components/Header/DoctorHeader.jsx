@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect,useState } from "react";
 import logo from '../../assets/images/logo.png';
 import { NavLink } from 'react-router-dom';
  import { BiMenu } from 'react-icons/bi';
@@ -8,6 +8,9 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { baseURL } from '../../../../backend/config/db';
 import {logout} from '../../slices/doctorSlices/doctorAuthSlice';
+import { IoIosNotifications } from "react-icons/io";
+// import DoctorNotification from "../Notification/DoctorNotification.jsx"
+
 
 
 
@@ -39,8 +42,10 @@ const navLinks = [
 
 const DoctorHeader = () => {
   
+  
   const doctor=useSelector((state)=>state.docAuth.doctorInfo);
- 
+  console.log(doctor,'header doctor details')
+  const [notification, setNotification] = useState(false);
 
   const headerRef=useRef(null)
   const menuRef=useRef(null)
@@ -129,9 +134,15 @@ const DoctorHeader = () => {
         <div className='flex items-center gap-4'>
           {doctor && doctor.token ? ( // Check if user and token exist
             <div>
+               <div
+                  onClick={() => setNotification(true)}
+                  className="flex items-center mr-6 cursor-pointer"
+                >
+                  <IoIosNotifications className="text-[20px]" />
+                </div>
               <NavLink to= "/doctors/profile/me" >
                 <figure className='w-[35px] h-[35px] rounded-full cursor-pointer'>
-                  <img src={doctor?.photo} className="w-full rounded-full" alt="" />
+                  <img src={doctor?.imagePath} className="w-full rounded-full" alt="" />
                 </figure>
                 <h2>Welcome {doctor.name}</h2>
               </NavLink>

@@ -35,9 +35,9 @@ const DoctorChat = () => {
   useEffect(() => {
     const fetchRoom = async () => {
       try {
-        console.log("Fetching doctor rooms...");
-        console.log(doctoken, "token is got");
-        console.log(doctorInfo._id, "doctor info  id gott ittt");
+        
+       
+      
         const res = await fetch(
           `${baseURL}/doctors/get-doctor-rooms/${doctorInfo._id}`,
           {
@@ -48,7 +48,7 @@ const DoctorChat = () => {
           }
         );
         let result = await res.json();
-        console.log("JSON data received:", result);
+       
 
         if (!res.ok) {
           throw new Error(result.message);
@@ -112,7 +112,7 @@ const DoctorChat = () => {
   };
 
   const markMessageAsRead = async (roomId) => {
-    console.log(roomId, "rooomId");
+    
     try {
       const res = await fetch(
         `${baseURL}/doctors/mark-room-message-read/${roomId}`,
@@ -155,7 +155,7 @@ const DoctorChat = () => {
         );
 
         let result = await res.json();
-        console.log(result,'❤️❤️❤️❤️');
+       
         if (!res.ok) {
           throw new Error(result.message);
         }
@@ -171,7 +171,7 @@ const DoctorChat = () => {
 
   useEffect(() => {
     socket.on("message recevied", (newMessageReceived) => {
-      console.log("newMessageReceived", newMessageReceived);
+    
 
       if (!selectedChatCompare || chatId !== newMessageReceived.room._id) {
         //empty

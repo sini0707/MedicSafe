@@ -32,7 +32,7 @@ const navLinks = [
 
 const Header = () => {
   const user = useSelector((state) => state.auth.userInfo);
-  console.log(user, "user got it");
+
 
   const [notification, setNotification] = useState(false);
 

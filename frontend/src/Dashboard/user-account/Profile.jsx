@@ -72,7 +72,7 @@ console.log(file,'file');
     
    
       const res = await fetch(`${baseURL}/users/updateUser/${userId}`, {
-        method: 'post',
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
@@ -82,20 +82,30 @@ console.log(file,'file');
       });
 
       const responseData = await res.json(); 
-      console.log('Response:', responseData);
-
+      console.log(responseData,"response data")
+     
   
       if (!res.ok) {
         throw new Error(responseData.message || 'Failed to update profile');
       }
       
         const { message,data } = responseData;
-        console.log('Updated Data:', data); 
-       
-        data.token = user.user.token;
+    
         dispatch(setCredentials(data));
         toast.success(message || 'Profile successfully updated'); 
-        navigate('/profile');
+        // navigate('/profile');
+  setLoading(false);
+  // setFormData({
+  //   ...formData,
+  //   name: data.name,
+  //   email: data.email,
+  //   photo: data.photo || '',
+  //   gender: data.gender || '',
+  //   age: data.age,
+  //   blood: data.blood || '', 
+  // });
+
+  toast.success(message || 'Profile successfully updated'); 
   setLoading(false);
 
     } catch (err) {

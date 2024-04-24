@@ -22,7 +22,10 @@ import {
   getDoctorRooms,
   getRoomMessages,
   sendChat,
-  MarkMessageAsRead
+  MarkMessageAsRead,
+  getNotification,
+  clearNotification,
+  
   
 } from "../Controllers/ChatController.js"
 
@@ -49,6 +52,8 @@ router.get("/get-doctor-rooms/:id", getDoctorRooms);
 router.get("/get-rooms-messages/:roomId", getRoomMessages);
 router.post("/sendChat/:roomId/:sender/:type/:Id/:senderName",sendChat);
 router.put("/mark-room-message-read/:id",MarkMessageAsRead);
+router.get("/getDoctorNotifications", getNotification);
+router.post("/clearDoctorNotification", clearNotification);
 
 
 

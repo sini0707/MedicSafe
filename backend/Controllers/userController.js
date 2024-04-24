@@ -342,6 +342,7 @@ const getMyAppointments = async (req, res) => {
 const updateUser = async (req, res) => {
   try {
     const id = req.params.id;
+    console.log("User ID:", id);
     const { name, email, mobile, gender, age, blood, role, photo } = req.body;
   
     const updatedUser = await User.findByIdAndUpdate(
@@ -360,12 +361,24 @@ const updateUser = async (req, res) => {
       },
       { new: true }
     );
+const { password,  ...rest } = updatedUser._doc;
+const existingToken = req.headers.authorization.split(" ")[1];
+console.log(existingToken,"exis");
 
     res.status(200).json({
       success: true,
       message: "Successfully updated",
-      data: updatedUser,
+      data: {...rest,token:existingToken},
     });
+    
+  
+   
+
+    // res.status(200).json({
+    //   status: true,
+    //   message: "successfully updated",
+    //   data: { ...rest, token: existingToken },
+    // });
   } catch (err) {
     console.error(err);
     res.status(500).json({ success: false, message: "Failed to update" });

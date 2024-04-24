@@ -115,7 +115,7 @@ console.log(file,'file');
         
   return (
     <section className="p-4 px-5 lg:px-0">
-      <div className="faded-blue-div text-center md:text-left w-full max-w-[1000px] mx-auto rounded-lg shadow-md p-5">
+      <div className="gray-div text-center md:text-left w-full max-w-[1000px] mx-auto rounded-lg shadow-md p-5">
         <h3 className="text-headingColor text-[22px] leading-9 font-bold">
           Doctor <span className="text-primaryColor">Profile</span>
         </h3>

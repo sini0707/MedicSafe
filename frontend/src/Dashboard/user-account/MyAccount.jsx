@@ -37,7 +37,7 @@ const MyAccount = () => {
     const fetchWalletBalance = async () => {
       try {
         const token = `${user.token}`;
-        console.log(token,'user token');
+      
         const response = await fetch(
           `${baseURL}/users/get-wallet?id=${user._id}`,
           {
@@ -111,7 +111,7 @@ const MyAccount = () => {
 
                 <button
                   onClick={() => setTab("changePassword")}
-                  className="w-full bg-red-600 mt-4 p-3 text-[16px] leading-7 rounded-md text-white"
+                  className="w-full bg-blue-600 mt-4 p-3 text-[16px] leading-7 rounded-md text-white"
                 >
                   Change Password
                 </button>
