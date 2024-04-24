@@ -4,7 +4,7 @@ import moment from "moment-timezone";
 import { useNavigate, useParams } from "react-router-dom";
 import apiInstance from "../../axiosApi/axiosInstance";
 import { baseURL } from "../../../../backend/config/db";
-import convertTo12HourFormat from "../../utils/convertTime";
+// import convertTo12HourFormat from "../../utils/convertTime";
 import formatDate from "../../utils/convertDate";
 import { toast } from "react-toastify";
 import { token } from "../../../config";
@@ -17,12 +17,6 @@ import slotMaker from "../../utils/slotMaker";
 import ChatUser from "../../components/chat/ChatUser.jsx";
 import { FaCommentDots } from "react-icons/fa6";
 
-
-
-
-
-
-
 const DoctorDetails = () => {
   const [tab, setTab] = useState("about");
   const [details, setDetails] = useState({});
@@ -34,16 +28,16 @@ const DoctorDetails = () => {
   const [availableTime, setAvailableTime] = useState([]);
   const [slotBooked, setSlotBooked] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
  
- 
+  const [bookedSlots, setBookedSlots] = useState([]);
+
 
   let { id } = useParams();
   const doctorId = id;
 
   const userInfo = useSelector((state) => state.auth.userInfo);
   const userId = userInfo._id;
- 
+
   const navigate = useNavigate();
 
   const fetchDoctor = async () => {
@@ -62,40 +56,51 @@ const DoctorDetails = () => {
     fetchDoctor();
   }, []);
 
- 
+  const fetchUserBookings = async () => {
+    try {
+      const res = await apiInstance.get(`${baseURL}/users/bookings/${userId}`);
+      const userBookedSlots = res.data.bookings.map((booking) => ({
+        date: booking.slotDate,
+        time: booking.slotTime,
+      }));
+      setBookedSlots(userBookedSlots);
+    } catch (error) {
+      console.error("Error fetching user bookings:", error);
+    }
+  };
+  
+  useEffect(() => {
+    if (userId) {
+      fetchUserBookings();
+    }
+  }, [userId]);
+
+
 
 
 
   const bookHandler = async (date, time) => {
-    // if (!userId) {
-      
-    //   toast.error('You need to login/register to book an appointment.');
-    //   return;
-    // }
     if (!date || !time) {
       toast.error("Please select both date and time");
       return;
     }
-   
 
-    const existingBooking = available.find(item => {
-      // item.date === date && item.fromTime === time;
-    
-    });
-  
-    if (existingBooking) {
-      toast.error("This time slot is already booked");
-      return;
-    }
-  
-  
     const indianDate = moment(date).tz("Asia/Kolkata").format("DD/MM/YYYY");
     const indianTime = moment
       .tz(time, "HH:mm", "Asia/Kolkata")
       .format("hh:mm A");
- 
 
     try {
+
+
+      const isAlreadyBooked = bookedSlots.some(
+        (slot) => slot.date === indianDate && slot.time === indianTime
+      );
+  
+      if (isAlreadyBooked) {
+        toast.error("This slot is already booked. Please select another slot.");
+        return;
+      }
       const res = await apiInstance.post(
         `${baseURL}/users/checkout-session/${details._id}/${userId}`,
         {
@@ -120,12 +125,12 @@ const DoctorDetails = () => {
       toast.error("select a future date");
       return;
     }
-    setSlot("");
+ 
     let selectedDate = e.target.value;
     let formattedDate = formatDateToUTC(selectedDate);
 
     let availavleTimings = available.filter(
-      (item) => item.date === formattedDate    
+      (item) => item.date === formattedDate
     );
     const timings = availavleTimings.map((elem) => {
       return elem.fromTime;
@@ -133,35 +138,25 @@ const DoctorDetails = () => {
 
     setAvailableTime(timings);
 
-    let slotCount = 0;
-    const existingBookingIndex = bookings.findIndex(
-      (booking) => booking.date === formattedDate
-    );
-
-    if (existingBookingIndex === -1) {
-      slotCount = 0;
-    } else {
-      slotCount = bookings[existingBookingIndex].slots.length;
-    }
-
-    let check = details.available.filter((temp) => temp.date === formattedDate);
-    if (check.length > 0) {
-      let slots = slotMaker(check, slotCount);
-      setSlot(slots);
-    }
     setDate(selectedDate);
+    setTime(""); 
   };
 
   const handleTime = (selectedTime) => {
+   
+    if (bookedSlots.some((slot) => slot.date === date && slot.time === selectedTime)) {
+      toast.error("This time slot is already booked by you");
+      return;
+    }
+
     setTime(selectedTime);
   };
-
   const formattedRating =
     details && details.averageRating ? details.averageRating.toFixed(1) : "";
 
-    const chatHandler = async () => {
-      setIsChatOpen(true);
-      
+  const chatHandler = async () => {
+    setIsChatOpen(true);
+
     try {
       const res = await fetch(
         `${baseURL}/users/createRoom/${details._id}/${userId}`,
@@ -175,7 +170,7 @@ const DoctorDetails = () => {
       );
 
       let result = await res.json();
-      console.log(result);
+    
 
       if (!res.ok) {
         throw new Error(result.message);
@@ -183,8 +178,13 @@ const DoctorDetails = () => {
     } catch (error) {
       console.log("error", error);
     }
-    }
+  };
 
+
+  const isSlotBooked = (timeSlot) => {
+    return bookedSlots.some((slot) => slot.time === timeSlot);
+  };
+  
 
   return (
     <section className="container flex-col h-5/6">
@@ -251,32 +251,31 @@ const DoctorDetails = () => {
                 />
               </div>
             </div>
-            
           </div>
         </div>
 
         <div className="h-60 w-full lg:w-2/5">
           <h3 className="text-blue-500 font-bold my-2">Special Timings</h3>
 
-          {availableTime
-           
-            .map((elem) => (
-              <button
-                key={elem}
-                onClick={() => setTime(elem)}
-                className="mx-3 my-2 px-4 py-2 bg-blue-500 hover:bg-blue-700 text-white font-bold rounded"
-              >
-                {elem}
-              </button>
-            ))}
-
-          <button
-            className="focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900"
-            onClick={() => bookHandler(date, time)}
-          >
-            Book Now
-          </button>
-          
+          {availableTime.map((timeSlot) => (
+  <button
+    key={timeSlot}
+    onClick={() => handleTime(timeSlot)}
+    className={`${
+      timeSlot === time && "bg-blue-500 text-white"
+    } mx-3 my-2 px-4 py-2 bg-gray-200 hover:bg-gray-300 text-blue-500 font-bold rounded`}
+    disabled={isSlotBooked(timeSlot)}
+  >
+   {timeSlot}
+  </button>
+))}
+<button
+          className="focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900"
+          onClick={() => bookHandler(date, time)}
+          disabled={!time || bookedSlots.some((slot) => slot.date === date && slot.time === time)}
+        >
+          Book Now
+        </button>
         </div>
       </div>
 
@@ -305,38 +304,37 @@ const DoctorDetails = () => {
       </div>
 
       {/* {isScrolled && ( */}
-              <div className="fixed bottom-10 right-6">
-                <button
-                  onClick={() => chatHandler()}
-                  className="bg-blue-500 text-white p-4 rounded-full shadow-lg focus:outline-none"
-                >
-                  <FaCommentDots size={24} />
-                </button>
-              </div>
-            {/* // )} */}
-
+      <div className="fixed bottom-10 right-6">
+        <button
+          onClick={() => chatHandler()}
+          className="bg-blue-500 text-white p-4 rounded-full shadow-lg focus:outline-none"
+        >
+          <FaCommentDots size={24} />
+        </button>
+      </div>
+      {/* // )} */}
 
       {isChatOpen && (
-              <>
-                {/* Overlay to dim other elements */}
-                <div
-                  className="fixed inset-0 bg-black opacity-50"
-                  onClick={() => setIsChatOpen(false)}
-                ></div>
+        <>
+          {/* Overlay to dim other elements */}
+          <div
+            className="fixed inset-0 bg-black opacity-50"
+            onClick={() => setIsChatOpen(false)}
+          ></div>
 
-                {/* Chat Popup */}
-                <div className="fixed bottom-0 right-[100px] w-96">
-                  <ChatUser
-                   doctor={details._id}
-                   user={userId}
-                   photo={userInfo.photo}
-                   doctorPic={details.photo}
-                   userName={userInfo.name}
-                    //  onClose={() => setIsChatOpen(false)}
-                  />
-                </div>
-              </>
-            )}
+          {/* Chat Popup */}
+          <div className="fixed bottom-0 right-[100px] w-96">
+            <ChatUser
+              doctor={details._id}
+              user={userId}
+              photo={userInfo.photo}
+              doctorPic={details.photo}
+              userName={userInfo.name}
+              //  onClose={() => setIsChatOpen(false)}
+            />
+          </div>
+        </>
+      )}
     </section>
   );
 };

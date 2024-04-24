@@ -205,17 +205,26 @@ const adminLogoutUser = (req, res) => {
 
 export const getBooking = async (req, res) => {
   try {
-    const bookings = await Booking.find(
-      {},
-      {
-        "patient.name": 1,
-        "doctor.name": 1,
-        paymentStatus: 1,
-        IndianDate: 1,
-        slot: 1,
-        isCancelled: 1,
-      }
-    );
+    // const bookings = await Booking.find(
+    //   {},
+    //   {
+    //     user: 1,
+    //     doctor: 1,
+    //     paymentStatus: 1,
+    //     IndianDate: 1,
+    //     slotDate: 1,
+    //     slotTime:1,
+    //     ticketPrice:1,
+    //     status:1,
+       
+    //   }
+    // );
+    const bookings = await Booking.find({})
+  .populate('user', 'name') 
+  .populate('doctor', 'name')
+  .select('user doctor paymentStatus IndianDate slotDate slotTime ticketPrice status isPaid isCancelled createdAt updatedAt');
+
+
 
     if (bookings.length === 0) {
       throw new Error("Not have any Bookings");

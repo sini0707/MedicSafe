@@ -20,7 +20,7 @@ const Dashboard = () => {
     error,
    
   } = doctorGetProfile(`${baseURL}/doctors/profile/me`);
-  
+  console.log(doctorData,'doctordataa' )
 
   useEffect(() => {
     if (error) {
@@ -64,10 +64,18 @@ const Dashboard = () => {
               </p>
               <p className="text-textColor text-[15px] leading-6 font-medium">
                
-                <span className="ml-2 text-headingColor text-[22px] leading-8">
-                 {doctorData.education}
+                <span className="ml-2 text-black-500 headingColor text-[22px] leading-8">
+                 {doctorData.specialization}
                 </span>
               </p>
+
+              <p className="text-textColor text-[15px] leading-6 font-medium">
+               
+               <span className="ml-2 text-black-400 headingColor text-[22px] leading-8">
+                {doctorData.qualification}
+               </span>
+             </p>
+              
             </div>
 
             <div className="mt-[50px] md:mt-[100px]">

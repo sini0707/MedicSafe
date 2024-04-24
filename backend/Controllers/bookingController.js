@@ -86,4 +86,8 @@ var customer = await stripe.customers.create({
     }
 }
 
+
+
+
+
 export {getCheckoutSession}

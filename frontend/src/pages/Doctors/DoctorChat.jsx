@@ -28,8 +28,8 @@ const DoctorChat = () => {
 
   useEffect(() => {
     socket = io(ENDPOINT);
-    socket.emit("setup", doctorInfo);
     socket.on("connection", () => setSocketConnected(true));
+    socket.emit("setup", doctorInfo);
   }, []);
 
   useEffect(() => {
@@ -124,7 +124,9 @@ const DoctorChat = () => {
           },
         }
       );
-    } catch (error) {}
+    } catch (error) {
+      console.log(error)
+    }
   };
 
   const handleInputChange = (e) => {
@@ -153,7 +155,7 @@ const DoctorChat = () => {
         );
 
         let result = await res.json();
-        console.log(result);
+        console.log(result,'❤️❤️❤️❤️');
         if (!res.ok) {
           throw new Error(result.message);
         }

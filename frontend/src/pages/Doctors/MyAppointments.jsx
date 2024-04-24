@@ -6,12 +6,11 @@ import Swal from "sweetalert2";
 import moment from "moment";
 
 import apiInstance from "../../axiosApi/axiosInstance";
-import doctorAuthSlice from "../../slices/doctorSlices/doctorAuthSlice";
+// import doctorAuthSlice from "../../slices/doctorSlices/doctorAuthSlice";
 import { useSelector } from "react-redux";
 import { doctoken } from "../../../config";
 import { useNavigate } from "react-router-dom";
 import Pagination from "../../components/Pagination/Pagination";
-
 
 const MyAppointments = () => {
   const navigate = useNavigate();
@@ -19,13 +18,12 @@ const MyAppointments = () => {
   const [bookingDetails, setBookingDetails] = useState([]);
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [appointmentsPerPage] = useState(3);
+  const [appointmentsPerPage] = useState(6);
   const [totalAppointments, setTotalAppointments] = useState(0);
-  // const [desiredDate, setDesiredDate] = useState("");
-  const [replyText, setReplyText] = useState("");
+
+  
   const { id } = useParams();
   const doctorInfo = useSelector((state) => state.docAuth.doctorInfo);
-  
 
   let docId = doctorInfo._id;
 
@@ -60,7 +58,6 @@ const MyAppointments = () => {
   const filterAppointmentsByDate = (filterType) => {
     let filteredAppointments = [...bookingDetails];
 
-   
     if (filterType === "latest") {
       filteredAppointments.sort(
         (a, b) =>
@@ -127,7 +124,7 @@ const MyAppointments = () => {
   };
 
   const handleFilterByDate = () => {
-    // Call filter function to update appointments
+    
     const filteredAppointments = filterAppointmentsByDate();
     setBookingDetails(filteredAppointments);
   };
@@ -138,22 +135,11 @@ const MyAppointments = () => {
     indexOfFirstAppointment,
     indexOfLastAppointment
   );
-  // const handleChatClick = () => {
-  //   navigate("/doctors/chat"); 
-  // };
-  // const reviewsResponse = await fetch(`${baseURL}/users/getallreviews?doctorId=${docId}`);
-  //       const reviewsData = await reviewsResponse.json();
-
-  
- 
-
   
 
   return (
     <>
-
-
-{/* <div className="overflow-x-auto"> */}
+    
       <table className="table-auto w-full border-collapse text-left text-sm text-gray-500">
         <thead className="bg-gray-100">
           <tr>
@@ -173,24 +159,22 @@ const MyAppointments = () => {
             <th scope="col" className="px-6 py-3 ">
               Booked on Date
               <select
-          onChange={(e) => filterAppointmentsByDate(e.target.value)}
-          className="ml-3"
-        >
-          <option value="">filter</option>
-          <option value="oldest">Oldest</option>
-          <option value="latest">Latest</option>
-          </select>
+                onChange={(e) => filterAppointmentsByDate(e.target.value)}
+                className="ml-3"
+              >
+                <option value="">filter</option>
+                <option value="oldest">Oldest</option>
+                <option value="latest">Latest</option>
+              </select>
             </th>
 
             <th scope="col" className="px-5 py-3">
               Booked on Time
-              
             </th>
 
             <th scope="col" className="px-6 py-3">
               Videocall
             </th>
-            
           </tr>
         </thead>
         <tbody>
@@ -212,11 +196,13 @@ const MyAppointments = () => {
                 )}
               </td>
 
-              <td className="px-4 py-2 border-b border-b-2">{item.ticketPrice}</td>
+              <td className="px-4 py-2 border-b border-b-2">
+                {item.ticketPrice}
+              </td>
               <td className="px-4 py-2 border-b border-b-2">{item.date}</td>
               <td className="px-4 py-2 border-b border-b-2">{item.time}</td>
               <td className="px-4 py-2 border-b border-b-2">
-                {console.log(item.date, "slot Date")}
+               
 
                 {moment().isAfter(
                   moment(`${item.date} ${item.time}`, "DD/MM/YYYY hh:mm")
@@ -246,15 +232,10 @@ const MyAppointments = () => {
                   </div>
                 )}
               </td>
-             
-
-
             </tr>
           ))}
         </tbody>
       </table>
-      
-    
 
       <Pagination
         totalPosts={bookingDetails.length}
@@ -262,8 +243,6 @@ const MyAppointments = () => {
         currentPage={currentPage}
         setCurrentPage={setCurrentPage}
       />
-    
-
     </>
   );
 };

@@ -15,7 +15,7 @@ const AdminHome = () => {
   const [doctors, setDoctors] = useState([]);
   
   const [booking, setBookings] = useState([]);
-  const [total, setTotal] = useState(0);
+  // const [total, setTotal] = useState(0);
 
   const [chartPie, setChartPie] = useState(null);
   const [yearlyBookings, setYearlyBookings] = useState([]);
@@ -83,15 +83,9 @@ const AdminHome = () => {
         });
 
         const result = await res.json();
-        console.log("Booking data:", result.data);
+      
         setBookings(result.data);
 
-        // Calculate total amount from bookings
-      // const total = result.data.reduce(
-      //   (acc, booking) => acc + booking.totalAmount,
-      //   0
-      // );
-      // setTotal(total);
       } catch (error) {
         console.log(error, "error");
       }
@@ -183,7 +177,7 @@ const AdminHome = () => {
         chartBar.destroy();
       }
     };
-  }, [chartBar, adminToken, baseURL]); // Only re-run if these dependencies change
+  }, [chartBar, adminToken, baseURL]); 
   
   useEffect(() => {
     const fetchYearlyData = async () => {
@@ -194,7 +188,9 @@ const AdminHome = () => {
 
         const result = await response.json();
         setYearlyBookings(result.data);
-      } catch (error) {}
+      } catch (error) {
+        console.error("Error fetching yearly data:", error);
+      }
     };
 
     fetchYearlyData();
@@ -230,17 +226,13 @@ const AdminHome = () => {
       },
     });
     setChartPie(newChartPie);
-  }, [yearlyBookings]);
-  useEffect(() => {
+
     return () => {
-      if (chartPie) {
-        chartPie.destroy();
+      if (newChartPie) {
+        newChartPie.destroy();
       }
     };
-  }, []);
-  
-
- 
+  }, [yearlyBookings]);
 
 
  

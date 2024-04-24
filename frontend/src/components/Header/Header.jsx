@@ -1,4 +1,4 @@
-import { useEffect,useState } from "react";
+import { useEffect, useState } from "react";
 import logo from "../../assets/images/logo.png";
 import { NavLink } from "react-router-dom";
 import { BiMenu } from "react-icons/bi";
@@ -31,22 +31,14 @@ const navLinks = [
 ];
 
 const Header = () => {
+  const user = useSelector((state) => state.auth.userInfo);
+  console.log(user, "user got it");
 
- 
-   const user = useSelector((state) => state.auth.userInfo);
-   console.log(user,'user got it')
-   
-   const [notification, setNotification] = useState(false);
-  
-  
-   
+  const [notification, setNotification] = useState(false);
 
-  
   const headerRef = useRef(null);
   const menuRef = useRef(null);
   const dispatch = useDispatch();
-
-  
 
   const handleStickyHeader = () => {
     window.addEventListener("scroll", () => {
@@ -70,7 +62,6 @@ const Header = () => {
     }
   };
   const navigate = useNavigate();
- 
 
   const logoutHandler = async () => {
     try {
@@ -88,7 +79,6 @@ const Header = () => {
       await response.json();
 
       dispatch(logout());
-
 
       navigate("/");
     } catch (err) {
@@ -122,11 +112,11 @@ const Header = () => {
             </ul>
           </div>
           <div className="flex items-center gap-4">
-            {user && user.token ? ( 
+            {user && user.token ? (
               <div className="flex">
-                <div 
-                onClick={()=>setNotification(true)}
-                className="flex items-center mr-6 cursor-pointer"
+                <div
+                  onClick={() => setNotification(true)}
+                  className="flex items-center mr-6 cursor-pointer"
                 >
                   <IoIosNotifications className="text-[20px]" />
                 </div>
@@ -146,7 +136,7 @@ const Header = () => {
                     Logout
                   </button>
                 </NavLink>
-                {notification&&(
+                {notification && (
                   <UserNotification setNotification={setNotification} />
                 )}
               </div>
@@ -157,7 +147,7 @@ const Header = () => {
                 </button>
               </NavLink>
             )}
-           
+
             <span className="md:hidden" onClick={toggleMenu}>
               <BiMenu className="w-6 h-6 cursor-pointer" />
             </span>

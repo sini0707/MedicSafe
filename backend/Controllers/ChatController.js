@@ -15,7 +15,7 @@ export const getRoomMessages = async (req, res) => {
       });
 
       if (messages) {
-        console.log("Messages found:", messages);
+        // console.log("Messages found:", messages);
         res.status(200).json(messages);
       } else {
         console.log("No messages found for the given room");

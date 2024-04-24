@@ -13,6 +13,7 @@ import {token} from "../../../config.js"
 const Profile = (user) => {
   const  userId=user.user._id;
 
+
   const [selectedFile,setSelectedFile]=useState(null)
   const [loading,setLoading]=useState(false)
   const [formData,setFormData]=useState({
@@ -77,10 +78,11 @@ console.log(file,'file');
           'Authorization': `Bearer ${token}`,
         },
         body:JSON.stringify(formData,)
-           // Convert the data to JSON
+          
       });
 
       const responseData = await res.json(); 
+      console.log('Response:', responseData);
 
   
       if (!res.ok) {
@@ -88,11 +90,12 @@ console.log(file,'file');
       }
       
         const { message,data } = responseData;
-         // Include the token from the existing user data
+        console.log('Updated Data:', data); 
+       
         data.token = user.user.token;
         dispatch(setCredentials(data));
         toast.success(message || 'Profile successfully updated'); 
-   
+        navigate('/profile');
   setLoading(false);
 
     } catch (err) {

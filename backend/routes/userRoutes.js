@@ -22,6 +22,7 @@ import {
   MakeVideoCall,
   getUserWallet,
   checkFeedback,
+  UserBookings,
   
 } from "../Controllers/userController.js";
 import { protect } from "../middleware/authMiddleware.js";
@@ -74,6 +75,8 @@ router.get("/FeedbackCheck/:id", protect, checkFeedback);
 router.get("/get-timings/:doctorId", getDoctorTimings);
 
 router.post("/checkout-session/:doctorId/:userId", getCheckoutSession);
+
+router.get("/bookings/:userId",UserBookings)
 
 router.get("/makeVideoCall/:id", MakeVideoCall);
 router.get("/getRoomMessage/:roomId",getRoomMessages);

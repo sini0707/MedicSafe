@@ -343,7 +343,7 @@ const updateUser = async (req, res) => {
   try {
     const id = req.params.id;
     const { name, email, mobile, gender, age, blood, role, photo } = req.body;
-
+  
     const updatedUser = await User.findByIdAndUpdate(
       id,
       {
@@ -453,7 +453,7 @@ export const CancelBooking = async (req, res) => {
 
   try {
     const booking = await Booking.findById(bookingId);
-    console.log(booking, "booking got ittt");
+
 
     if (!booking) {
       return res
@@ -462,10 +462,10 @@ export const CancelBooking = async (req, res) => {
     }
 
     const paymentAmount = Number(booking.ticketPrice);
-    console.log(paymentAmount, "payment amount got it");
+    
 
     const doctor = await Doctor.findById(booking.doctor._id);
-    console.log(doctor, "doctor got it");
+  
 
     booking.isCancelled = true;
     await booking.save();
@@ -576,7 +576,7 @@ const checkFeedback = asyncHandler(async (req, res) => {
 
     if (found) {
       res.status(200).json({ success: true, message: "Booking found" });
-      console.log("found");
+  
     } else {
       res.status(404).json({ success: false, message: "No Booking" });
     }
@@ -584,6 +584,21 @@ const checkFeedback = asyncHandler(async (req, res) => {
     console.log(error);
   }
 });
+
+export const  UserBookings = asyncHandler(async (req, res) => {
+
+  try {
+    const userId = req.params.userId;
+   
+    const bookings = await Booking.find({ user: userId });
+ 
+    res.json({ bookings });
+  } catch (error) {
+    console.error("Error fetching user bookings:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 
 export {
   login,

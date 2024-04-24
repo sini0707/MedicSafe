@@ -4,8 +4,7 @@ import asyncHandler from 'express-async-handler';
 const protect = asyncHandler(async (req, res, next) => {
  
   const Authtoken=req.headers.authorization;
-  
-
+ 
 
  
   if (Authtoken) {
@@ -15,7 +14,10 @@ const protect = asyncHandler(async (req, res, next) => {
     
        const decoded = jwt.verify(token, process.env.JWT_SECRET);
       
+
+      
        const userId=decoded.userId
+    
        
     
       

@@ -19,6 +19,7 @@ const MyAccount = () => {
   const [tab, setTab] = useState("bookings");
   const [walletBalance, setWalletBalance] = useState(0);
   const user = useSelector((state) => state.auth.userInfo);
+ 
 
   const {
     data: userData,
@@ -36,6 +37,7 @@ const MyAccount = () => {
     const fetchWalletBalance = async () => {
       try {
         const token = `${user.token}`;
+        console.log(token,'user token');
         const response = await fetch(
           `${baseURL}/users/get-wallet?id=${user._id}`,
           {

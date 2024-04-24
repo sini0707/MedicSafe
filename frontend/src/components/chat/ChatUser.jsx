@@ -14,10 +14,11 @@ import { GrSend } from "react-icons/gr";
 const ENDPOINT = "http://localhost:8000";
 let socket, selectedChatCompare;
 
-const ChatUser = ({onClose,doctor, user, photo, doctorPic, userName}) => {
+const ChatUser = ({ onClose,doctor, user, photo, doctorPic, userName}) => {
+
  const [socketConnected, setSocketConnected] = useState(false);
   const [room, setRoom] = useState({});
-  
+
   const [chats, setChats] = useState([]);
   const [content, setContent] = useState("");
   const [messageSent, setMessageSent] = useState(false);
@@ -28,11 +29,12 @@ const ChatUser = ({onClose,doctor, user, photo, doctorPic, userName}) => {
     if (user) {
   
       socket = io(ENDPOINT);
-      socket.emit("setup", user);
       socket.on("connection", () => setSocketConnected(true));
+      socket.emit("setup", user);
     }
     
   }, [ENDPOINT, user]);
+
 
   useEffect(() => {
     if (doctor && user) {
@@ -50,7 +52,7 @@ const ChatUser = ({onClose,doctor, user, photo, doctorPic, userName}) => {
           
 
           let result = await res.json();
-        console.log(result.data,'room data got it!')
+        console.log(result.data,'👍👍👍👍👍👍👍👍')
           if (!res.ok) {
             throw new Error(result.message);
           }
@@ -126,13 +128,14 @@ const ChatUser = ({onClose,doctor, user, photo, doctorPic, userName}) => {
         );
 
         let result = await res.json();
+        console.log(result)
         if (!res.ok) {
           throw new Error(result.message);
         }
 
         setContent("");
         setMessageSent(true);
-        socket.emit("newUserMessage", { content: content, roomId: room._id });
+        socket.emit("new Message",result);
       } catch (error) {
         console.log("error", error);
       }
@@ -142,7 +145,8 @@ const ChatUser = ({onClose,doctor, user, photo, doctorPic, userName}) => {
  
   useEffect(() => {
     socket.on("message received", (newMessageReceived) => {
-      if (selectedChatCompare && room._id === newMessageReceived.room._id) {
+      if (!selectedChatCompare || room._id !== newMessageReceived.room._id) {
+      } else {
         setChats([...chats, newMessageReceived]);
       }
     });
