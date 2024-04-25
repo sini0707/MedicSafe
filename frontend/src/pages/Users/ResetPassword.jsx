@@ -1,36 +1,33 @@
-import { useState } from 'react';
-import { baseURL } from '../../../../backend/config/db';
-import { useNavigate ,useLocation} from 'react-router-dom';
+import { useState } from "react";
+import { baseURL } from "../../../../backend/config/db";
+import { useNavigate, useLocation } from "react-router-dom";
 
 export const ResetPassword = () => {
-  const [password, setPassword] = useState('');
-  const [confirmPass, setConfirmPass] = useState('');
+  const [password, setPassword] = useState("");
+  const [confirmPass, setConfirmPass] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
-    const email = location.state.email;
+  const email = location.state.email;
   const submitHandler = async (e) => {
     e.preventDefault();
     try {
       const response = await fetch(`${baseURL}/users/reset-password`, {
         method: "post",
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({ password,email }), 
+        body: JSON.stringify({ password, email }),
       });
 
       if (response.status !== 200) {
-        throw new Error('Failed to verify');
+        throw new Error("Failed to verify");
       }
 
-    
-    
-      navigate('/home');
+      navigate("/home");
     } catch (err) {
-      console.error('Error:', err.message);
- 
+      console.error("Error:", err.message);
     }
-  }
+  };
 
   return (
     <div className="bg-gray-100 flex items-center justify-center h-screen">
@@ -46,7 +43,11 @@ export const ResetPassword = () => {
         <p className="text-sm text-gray-600 mb-6">
           Update password for enhanced account security.
         </p>
-        <form onSubmit={submitHandler} id="changePasswordForm" className="space-y-6">
+        <form
+          onSubmit={submitHandler}
+          id="changePasswordForm"
+          className="space-y-6"
+        >
           <div>
             <label
               htmlFor="newPassword"
@@ -94,5 +95,5 @@ export const ResetPassword = () => {
         </form>
       </div>
     </div>
-  )
-}
+  );
+};

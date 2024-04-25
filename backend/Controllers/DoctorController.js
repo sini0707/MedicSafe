@@ -168,7 +168,7 @@ export const forgotEmailCheck = asyncHandler(async (req, res) => {
       email: doctorExists.email,
     });
   } else {
-    res.status(400).json({ error: "User not found or blocked by admin" });
+    res.status(400).json({ error: "Doctor needs admin approval" });
   }
 });
 
@@ -212,11 +212,17 @@ export const updatedDoctor = async (req, res) => {
       },
       { new: true }
     );
+    const { password, ...rest } = updatedDoctor._doc;
+    const existingToken = req.headers.authorization.split(" ")[1];
+    console.log(existingToken,'exist');
+    
     res.status(200).json({
       sucess: true,
       message: "Successfully updated",
-      data: updatedDoctor,
+      data: {...rest,token:existingToken},
     });
+  
+
   } catch (err) {
     res.status(500).json({ sucess: false, message: "Failed to update" });
   }
@@ -464,3 +470,30 @@ export const approveVideoCall = async (req, res) => {
   }
 };
 
+
+export const  DoctorChangePassword = asyncHandler(async (req, res) => {
+
+  const { email, newpassword } = req.body;
+
+
+
+  const salt = await bcrypt.genSalt(10);
+ 
+
+  const hashPassword = await bcrypt.hash(newpassword, salt);
+
+  const doctorExists = await Doctor.findOne({ email: email });
+
+  if (doctorExists ) {
+    doctorExists .password = hashPassword;
+    let doctorChangePassword = await doctorExists .save();
+
+    if (doctorChangePassword) {
+      res.status(200).json({ message: "Password Changed Successfully" });
+    } else {
+      res.status(400).json({ error: "Failed to change the password" });
+    }
+  } else {
+    res.status(400).json({ error: "User not found" });
+  }
+});

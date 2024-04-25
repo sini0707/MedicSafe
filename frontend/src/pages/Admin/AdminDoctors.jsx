@@ -1,29 +1,21 @@
-import  { useEffect, useState } from 'react'
-import { toast } from 'react-toastify'
-import { baseURL } from '../../../../backend/config/db';
-import Pagination from '../../components/Pagination/Pagination.jsx'
-
-
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import { baseURL } from "../../../../backend/config/db";
+import Pagination from "../../components/Pagination/Pagination.jsx";
 
 const AdminDoctors = () => {
   const [doctors, setDoctors] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [postsPerPage] = useState(3); 
- 
-
-
-
- 
+  const [postsPerPage] = useState(3);
 
   const fetchDoctorsData = async () => {
     try {
-   
       const res = await fetch(`${baseURL}/admin/doctordata`, {
         method: "GET",
       });
-      
+
       const result = await res.json();
-      
+
       setDoctors(result.doctorsData);
     } catch (error) {
       console.error("Error fetching doctor data:", error);
@@ -33,7 +25,6 @@ const AdminDoctors = () => {
 
   const handleApprove = async (docId) => {
     try {
-     
       const res = await fetch(`${baseURL}/admin/approve/${docId}`, {
         method: "PUT",
       });
@@ -52,14 +43,13 @@ const AdminDoctors = () => {
     fetchDoctorsData();
   }, [currentPage]);
 
-
   const handleReject = async (docId) => {
     try {
       const res = await fetch(`${baseURL}/admin/reject/${docId}`, {
         method: "PUT",
       });
       if (res.ok) {
-        fetchDoctorsData(); 
+        fetchDoctorsData();
         toast.success("Doctor Rejected Successfully");
       } else {
         toast.error("Failed to Reject Doctor");
@@ -69,17 +59,13 @@ const AdminDoctors = () => {
       toast.error("Failed to reject doctor");
     }
   };
-  
+
   const nextPage = () => setCurrentPage(currentPage + 1);
   const prevPage = () => setCurrentPage(currentPage - 1);
- 
-
 
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
   const currentPosts = doctors.slice(indexOfFirstPost, indexOfLastPost);
- 
-  
 
   return (
     <section className="container">
@@ -91,31 +77,30 @@ const AdminDoctors = () => {
                 Sl.No
               </th>
               <th scope="col" className="px-6 py-3">
-                          Name
-                      </th>
-                      <th scope="col" className="px-6 py-3">
-                          Email
-                      </th>
-                      <th scope="col" className="px-6 py-3">
-                          Address
-                      </th>
-                      <th scope="col" className="px-6 py-3">
-                          Specialization
-                      </th>
-                      <th scope="col" className="px-6 py-3">
-                          Qualification
-                      </th>
-                      <th scope="col" className="px-6 py-3">
-                          Experience
-                      </th>
-                      <th scope="col" className="px-6 py-3">
-                          Options
-                      </th>
+                Name
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Email
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Address
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Specialization
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Qualification
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Experience
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Options
+              </th>
             </tr>
           </thead>
           <tbody className="border-2">
-         
-          {currentPosts && currentPosts.length > 0 ? (
+            {currentPosts && currentPosts.length > 0 ? (
               currentPosts.map((doctor, index) => (
                 <tr
                   className="bg-white border-b hover:bg-gray-100"
@@ -127,41 +112,36 @@ const AdminDoctors = () => {
                   >
                     {index + 1}
                   </th>
-                  <td className="px-6 py-4">
-                        {doctor.name}
-                      </td>
-                      <td className="px-6 py-4">
-                        {doctor.email}
-                      </td>
-                      <td className="px-6 py-4">
-                        {doctor.address}
-                      </td>
-                      <td className="px-6 py-4">
-                        {doctor.specialization}
-                      </td>
-                      <td className="px-6 py-4">
-                        {doctor.qualification}
-                      </td>
-                      <td className="px-6 py-4">
-                        {doctor.experience}
-                      </td>
-                      
-                      {
-                        (!doctor.approved)?(
-                          <td className="px-6 text-center py-4">
-                            <button onClick={()=>{handleApprove(doctor._id)}} className="bg-green-100 hover:bg-green-500 text-green-700 font-semibold hover:text-white py-2 px-4 border border-green-500 hover:border-transparent rounded">
-                              approve
-                            </button>
-                          </td>
-                        ):(
-                          <td className="px-6 text-center py-4">
-                          <button onClick={() => { handleReject(doctor._id) }} className="bg-red-100 hover:bg-red-500 text-red-700 font-semibold hover:text-white py-2 px-4 border border-red-500 hover:border-transparent rounded">
-                         Reject
-                       </button>
-                         </td>)
-                        
-                        
-                      }
+                  <td className="px-6 py-4">{doctor.name}</td>
+                  <td className="px-6 py-4">{doctor.email}</td>
+                  <td className="px-6 py-4">{doctor.address}</td>
+                  <td className="px-6 py-4">{doctor.specialization}</td>
+                  <td className="px-6 py-4">{doctor.qualification}</td>
+                  <td className="px-6 py-4">{doctor.experience}</td>
+
+                  {!doctor.approved ? (
+                    <td className="px-6 text-center py-4">
+                      <button
+                        onClick={() => {
+                          handleApprove(doctor._id);
+                        }}
+                        className="bg-green-100 hover:bg-green-500 text-green-700 font-semibold hover:text-white py-2 px-4 border border-green-500 hover:border-transparent rounded"
+                      >
+                        approve
+                      </button>
+                    </td>
+                  ) : (
+                    <td className="px-6 text-center py-4">
+                      <button
+                        onClick={() => {
+                          handleReject(doctor._id);
+                        }}
+                        className="bg-red-100 hover:bg-red-500 text-red-700 font-semibold hover:text-white py-2 px-4 border border-red-500 hover:border-transparent rounded"
+                      >
+                        Reject
+                      </button>
+                    </td>
+                  )}
                 </tr>
               ))
             ) : (
@@ -178,7 +158,7 @@ const AdminDoctors = () => {
         </table>
       </div>
       <Pagination
-       totalPosts={doctors.length}
+        totalPosts={doctors.length}
         postPerPage={postsPerPage}
         currentPage={currentPage}
         setCurrentPage={setCurrentPage}

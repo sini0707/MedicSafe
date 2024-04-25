@@ -196,7 +196,7 @@ export const sendChat = async (req, res) => {
     export const getNotification = async (req, res) => {
       const userId = req.userId;
 
-  console.log(userId, "userId");
+
 
   try {
     const Notification = await ChatMessage.find({
@@ -207,7 +207,7 @@ export const sendChat = async (req, res) => {
     });
 
     if (Notification) {
-      console.log("Notifications found:", Notification);
+    
       res.status(200).json(Notification);
     } else {
       console.log("No notifications found for the given room");
@@ -221,26 +221,6 @@ export const sendChat = async (req, res) => {
 };
 
 
-export const clearNotification = async (req, res) => {
-  const userId = req.userId;
-  try {
-    const notificationSeen = await ChatMessage.updateMany(
-      { receiver: userId },
-      { $set: { notificationSeen: true } }
-    );
-    if (notificationSeen) {
-      res.status(200).json(notificationSeen);
-    } else {
-      res
-        .status(404)
-        .json({ message: "No messages found for the given room." });
-    }
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ message: "Internal Server Error" });
-  }
-};
 
-    
 
   

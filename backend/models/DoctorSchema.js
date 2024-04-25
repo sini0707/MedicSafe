@@ -107,10 +107,9 @@ const DoctorSchema= new mongoose.Schema({
   );
   
 DoctorSchema.methods.matchPassword = async function (enteredPassword) {
-  console.log('match ');
-  console.log(enteredPassword,this.password,'got passwords');
+ 
 let res=await bcrypt.compare(enteredPassword, this.password);
-console.log(res,'resss');
+
 return res
   };
   DoctorSchema.pre('save', function (next) {

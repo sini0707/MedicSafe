@@ -6,7 +6,7 @@ import Swal from "sweetalert2";
 import moment from "moment";
 
 import apiInstance from "../../axiosApi/axiosInstance";
-// import doctorAuthSlice from "../../slices/doctorSlices/doctorAuthSlice";
+
 import { useSelector } from "react-redux";
 import { doctoken } from "../../../config";
 import { useNavigate } from "react-router-dom";

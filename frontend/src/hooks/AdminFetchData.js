@@ -9,15 +9,15 @@ function AdminFetchData(url) {
     const fetchData = async () => {
       setLoading(true);
       try {
-        console.log(adminToken,'admin side token')
-        console.log("Fetching data from:", url);
+       
+      
         const res = await fetch(url, {
           headers: { Authorization: `Bearer ${adminToken}` },
           credentials:'include'
         });
-        console.log("Response status:", res.status);
+    
         const result = await res.json();
-        console.log("Response data:", result);
+       
        
       
   
@@ -40,18 +40,18 @@ function AdminFetchData(url) {
     }, [url]);
   
     const refetch = () => {
-      // Call the fetchData function to refetch data
+     
       fetchData();
     };
   
-    console.log("data", data);
+
   
     return {
       data,
       loading,
       error,
       refetch,
-      fetchData, // Include the refetch function in the returned object
+      fetchData, 
     };
   }
   

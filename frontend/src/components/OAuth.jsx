@@ -28,7 +28,7 @@ export default function OAuth() {
             }),
            });
            const data= await res.json();
-           console.log(data,"zzzzz")
+           
            dispatch(setCredentials(data.data));
            navigate("/home");
 
@@ -48,4 +48,4 @@ export default function OAuth() {
   )
 }
 
-// export default OAuth
+

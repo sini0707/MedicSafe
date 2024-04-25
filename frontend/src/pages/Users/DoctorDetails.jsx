@@ -4,8 +4,7 @@ import moment from "moment-timezone";
 import { useNavigate, useParams } from "react-router-dom";
 import apiInstance from "../../axiosApi/axiosInstance";
 import { baseURL } from "../../../../backend/config/db";
-// import convertTo12HourFormat from "../../utils/convertTime";
-import formatDate from "../../utils/convertDate";
+
 import { toast } from "react-toastify";
 import { token } from "../../../config";
 import { useSelector } from "react-redux";
@@ -13,24 +12,22 @@ import DoctorAbout from "../Doctors/DoctorAbout.jsx";
 import Feedback from "../Doctors/Feedback.jsx";
 import "react-datepicker/dist/react-datepicker.css";
 import formatDateToUTC from "../../utils/inputDateConvert";
-import slotMaker from "../../utils/slotMaker";
+
 import ChatUser from "../../components/chat/ChatUser.jsx";
 import { FaCommentDots } from "react-icons/fa6";
 
 const DoctorDetails = () => {
   const [tab, setTab] = useState("about");
   const [details, setDetails] = useState({});
-  const [slot, setSlot] = useState("");
-  const [bookings, setBookings] = useState([]);
+
   const [available, setAvailable] = useState([]);
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [availableTime, setAvailableTime] = useState([]);
   const [slotBooked, setSlotBooked] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
- 
-  const [bookedSlots, setBookedSlots] = useState([]);
 
+  const [bookedSlots, setBookedSlots] = useState([]);
 
   let { id } = useParams();
   const doctorId = id;
@@ -68,16 +65,12 @@ const DoctorDetails = () => {
       console.error("Error fetching user bookings:", error);
     }
   };
-  
+
   useEffect(() => {
     if (userId) {
       fetchUserBookings();
     }
   }, [userId]);
-
-
-
-
 
   const bookHandler = async (date, time) => {
     if (!date || !time) {
@@ -91,12 +84,10 @@ const DoctorDetails = () => {
       .format("hh:mm A");
 
     try {
-
-
       const isAlreadyBooked = bookedSlots.some(
         (slot) => slot.date === indianDate && slot.time === indianTime
       );
-  
+
       if (isAlreadyBooked) {
         toast.error("This slot is already booked. Please select another slot.");
         return;
@@ -125,7 +116,7 @@ const DoctorDetails = () => {
       toast.error("select a future date");
       return;
     }
- 
+
     let selectedDate = e.target.value;
     let formattedDate = formatDateToUTC(selectedDate);
 
@@ -139,12 +130,15 @@ const DoctorDetails = () => {
     setAvailableTime(timings);
 
     setDate(selectedDate);
-    setTime(""); 
+    setTime("");
   };
 
   const handleTime = (selectedTime) => {
-   
-    if (bookedSlots.some((slot) => slot.date === date && slot.time === selectedTime)) {
+    if (
+      bookedSlots.some(
+        (slot) => slot.date === date && slot.time === selectedTime
+      )
+    ) {
       toast.error("This time slot is already booked by you");
       return;
     }
@@ -170,7 +164,6 @@ const DoctorDetails = () => {
       );
 
       let result = await res.json();
-    
 
       if (!res.ok) {
         throw new Error(result.message);
@@ -180,11 +173,9 @@ const DoctorDetails = () => {
     }
   };
 
-
   const isSlotBooked = (timeSlot) => {
     return bookedSlots.some((slot) => slot.time === timeSlot);
   };
-  
 
   return (
     <section className="container flex-col h-5/6">
@@ -258,24 +249,29 @@ const DoctorDetails = () => {
           <h3 className="text-blue-500 font-bold my-2">Special Timings</h3>
 
           {availableTime.map((timeSlot) => (
-  <button
-    key={timeSlot}
-    onClick={() => handleTime(timeSlot)}
-    className={`${
-      timeSlot === time && "bg-blue-500 text-white"
-    } mx-3 my-2 px-4 py-2 bg-gray-200 hover:bg-gray-300 text-blue-500 font-bold rounded`}
-    disabled={isSlotBooked(timeSlot)}
-  >
-   {timeSlot}
-  </button>
-))}
-<button
-          className="focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900"
-          onClick={() => bookHandler(date, time)}
-          disabled={!time || bookedSlots.some((slot) => slot.date === date && slot.time === time)}
-        >
-          Book Now
-        </button>
+            <button
+              key={timeSlot}
+              onClick={() => handleTime(timeSlot)}
+              className={`${
+                timeSlot === time && "bg-blue-500 text-white"
+              } mx-3 my-2 px-4 py-2 bg-gray-200 hover:bg-gray-300 text-blue-500 font-bold rounded`}
+              disabled={isSlotBooked(timeSlot)}
+            >
+              {timeSlot}
+            </button>
+          ))}
+          <button
+            className="focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900"
+            onClick={() => bookHandler(date, time)}
+            disabled={
+              !time ||
+              bookedSlots.some(
+                (slot) => slot.date === date && slot.time === time
+              )
+            }
+          >
+            Book Now
+          </button>
         </div>
       </div>
 
@@ -316,7 +312,7 @@ const DoctorDetails = () => {
 
       {isChatOpen && (
         <>
-          {/* Overlay to dim other elements */}
+         
           <div
             className="fixed inset-0 bg-black opacity-50"
             onClick={() => setIsChatOpen(false)}
@@ -330,7 +326,7 @@ const DoctorDetails = () => {
               photo={userInfo.photo}
               doctorPic={details.photo}
               userName={userInfo.name}
-              //  onClose={() => setIsChatOpen(false)}
+             
             />
           </div>
         </>

@@ -1,6 +1,6 @@
 import services from '../../assets/data/services';
 import ServiceCard from '../../components/Services/ServiceCard';
-// import Services from '../../assets/data/services';
+
 
 
 const ServicesPage = () => {

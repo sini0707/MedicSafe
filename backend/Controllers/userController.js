@@ -439,27 +439,7 @@ export const getDoctorTimings = async (req, res) => {
   }
 };
 
-// export const CancelBooking= async (req, res) => {
 
-//   const bookingId = req.params.id;
-
-//   const booking = await Booking.findById(bookingId);
-
-//   const doctor = await Doctor.findById(booking.doctor._id);
-
-//   try {
-//     const CancelBooking = await Booking.findByIdAndUpdate(
-//       bookingId,
-//       { $set: { isCancelled: true}});
-
-//     res.status(200).json({
-//       sucess: true,
-//       message: "Successfully Cancelled",
-//     });
-//   } catch (err) {
-//     res.status(500).json({ success: false, message: "Failed to cancel" });
-//   }
-// };
 
 export const CancelBooking = async (req, res) => {
   const bookingId = req.params.id;

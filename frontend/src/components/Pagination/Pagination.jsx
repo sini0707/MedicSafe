@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { IoIosArrowRoundBack, IoIosArrowRoundForward } from "react-icons/io";
 
 function Pagination({ totalPosts, postPerPage, setCurrentPage, currentPage }) {

@@ -6,11 +6,11 @@ import useGetProfile from "../../hooks/useFetchData";
 import { baseURL } from "../../../../backend/config/db";
 import Loading from "../../components/Loader/Loading";
 import Error from "../../components/Error/Error";
-import { logout } from "../../slices/authSlice";
+
 import { useNavigate } from "react-router-dom";
 import ChangePasswordForm from "../../pages/Users/ChangePassword.jsx";
 import { BsFillWalletFill } from "react-icons/bs";
-import WalletComponent from "../../pages/Users/WalletComponent.jsx";
+
 import { useSelector } from "react-redux";
 
 const MyAccount = () => {
@@ -144,8 +144,8 @@ const MyAccount = () => {
               {tab === "settings" && <Profile user={userData} />}
               {tab === "changePassword" && (
                 <ChangePasswordForm email={userData.email} />
-              )}{" "}
-              {/* Render ChangePassword component if tab is set to changePassword */}
+            )}{" "}
+              
             </div>
           </div>
         )}

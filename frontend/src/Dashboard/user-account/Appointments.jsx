@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+
 import { useState } from "react";
 import { baseURL } from "../../../../backend/config/db";
 import Swal from "sweetalert2";
@@ -40,7 +40,7 @@ const Appointments = ({ appointment }) => {
               text: "Your appointment has been cancelled.",
               icon: "success",
             });
-            // appointment[index].isCancelled = true;
+           
           }
         } catch (error) {
           console.log(error);

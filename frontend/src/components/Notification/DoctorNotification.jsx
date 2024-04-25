@@ -1,10 +1,11 @@
 import  { useState, useEffect } from "react";
-import { baseURL, docToken } from "../../config";
+
 import dayjs from "dayjs";
+import { baseURL } from "../../../../backend/config/db.js";
 
 const DoctorNotification = ({ setNotification }) => {
   const [message, setMessages] = useState([]);
-  const [clear, setClear] = useState(false);
+ 
 
   useEffect(() => {
     const fetchNotification = async () => {
@@ -30,27 +31,9 @@ const DoctorNotification = ({ setNotification }) => {
       }
     };
     fetchNotification();
-  }, [clear]);
+  }, []);
 
-  const clearNotification = async () => {
-    try {
-      const res = await fetch(`${baseURL}/doctors/clearDoctorNotification`, {
-        method: "post",
-
-        headers: {
-          Authorization: `Bearer ${docToken}`,
-        },
-      });
-      let result = await res.json();
-      if (!res.ok) {
-        throw new Error(result.message);
-      }
-
-      setClear(!clear);
-    } catch (error) {
-      console.log(error, "error");
-    }
-  };
+  
   return (
     <div>
       <div
@@ -129,7 +112,7 @@ const DoctorNotification = ({ setNotification }) => {
               ))}
               <div className="flex justify-end text-[12px]">
                 <button
-                  onClick={() => clearNotification()}
+                  
                   className="bg-blue-400 text-white p-1 rounded-sm mt-5 hover:scale-105 transition duration-100 ease-in-out"
                   style={{ lineHeight: "normal" }}
                 >

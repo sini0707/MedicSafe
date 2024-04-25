@@ -13,7 +13,7 @@ const UserNotification = ({setNotification}) => {
     const [clear, setClear] = useState(false);
 
     useEffect(() => {
-        console.log(token,'usernotifiocation token found')
+        
         const fetchNotification = async () => {
           try {
             const res = await fetch(`${baseURL}/users/getUserNotifications`, {
@@ -24,7 +24,7 @@ const UserNotification = ({setNotification}) => {
             });
     
             const result = await res.json();
-            console.log(result,'result udoo')
+           
     
             if (!res.ok) {
               throw new Error(result.message);

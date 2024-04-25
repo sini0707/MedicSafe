@@ -9,8 +9,8 @@ const PaymentBooking = () => {
  
   const [currentPage, setCurrentPage] = useState(1);
   const [postPerPage, setPostPerPage] = useState(5);
-  const[doctors,setDoctors]=useState([])
-  const [users,setUsers]=useState([])
+
+
 
   useEffect(() => {
     const totalBookings = async () => {
@@ -36,42 +36,6 @@ const PaymentBooking = () => {
     totalBookings();
   }, []);
 
-  // useEffect(() => {
-  //   const fetchDoctors = async () => {
-  //     try {
-  //       const res = await fetch(`${baseURL}/admin/doctordata`, {
-  //         method: "GET",
-  //       });
-  //       const result = await res.json();
-      
-  //       setDoctors(result.doctorsData);
-  //     } catch (error) {
-  //       console.error("Error fetching doctors data:", error);
-  //       toast.error("Failed to fetch doctors data");
-  //     }
-  //   };
-
-  //   fetchDoctors();
-  // }, []);
-
-  // useEffect(() => {
-  //   const fetchUsers = async () => {
-  //     try {
-  //       const res = await fetch(`${baseURL}/admin/userlist`, {
-  //         method: "GET",
-  //       });
-  //       const result = await res.json();
-      
-  //       setUsers(result.userData);
-  //     } catch (error) {
-  //       console.error("Error fetching users data:", error);
-  //       toast.error("Failed to fetch users data");
-  //     }
-  //   };
-
-  //   fetchUsers();
-  // }, []);
-
 
   const cancelBooking = async (id) => {
     try {
@@ -89,7 +53,7 @@ const PaymentBooking = () => {
         throw new Error(result.message);
       }
   
-      // Update the bookings with the updated status
+     
       setBookings((prevBookings) =>
         prevBookings.map((booking) =>
           booking._id === id ? { ...booking, isCancelled: true, status: "Rejected" } : booking
@@ -102,7 +66,7 @@ const PaymentBooking = () => {
     }
   };
   const handleCancel = async (id, event) => {
-    event.preventDefault(); // Prevent the default form submission
+    event.preventDefault(); 
     await cancelBooking(id);
   };
   
@@ -134,12 +98,8 @@ const PaymentBooking = () => {
               <th className="w-1/6 text-left py-3 px-4 uppercase font-semibold text-sm">
                 Payment
               </th>
-              {/* <th className="w-1/6 text-left py-3 px-4 uppercase font-semibold text-sm">
-                Status
-              </th> */}
-              <th className="w-1/6 text-left py-3 px-4 uppercase font-semibold text-sm">
-                Action
-              </th>
+              
+              
             </tr>
           </thead>
           <tbody className="text-gray-700">
@@ -160,24 +120,8 @@ const PaymentBooking = () => {
                   <td className="px-6 py-4">{booking.slotTime}</td>
                   <td className="px-6 py-4">{booking.ticketPrice}</td>
                   <td className="px-6 py-4">{booking.isPaid ? 'Paid' : 'Not Paid'}</td>
-                  {/* <td className="px-6 py-4">{booking.status}</td> */}
-                  <td className="px-6 py-4">
-                    {booking.isCancelled ? (
-                      <button
-                        className="bg-yellow-500 p-2 text-white rounded-md hover:scale-110 transition duration-100 ease-in-out cursor-pointer"
-                        disabled
-                      >
-                        Cancelled
-                      </button>
-                    ) : (
-                      <button
-                      onClick={(event) => handleCancel(booking._id, event)}
-                        className="bg-red-500 p-2 text-white rounded-md hover:scale-110 transition duration-100 ease-in-out cursor-pointer"
-                      >
-                        Cancel
-                      </button>
-                    )}
-                  </td>
+                 
+                  
                 </tr>
               );
             })}

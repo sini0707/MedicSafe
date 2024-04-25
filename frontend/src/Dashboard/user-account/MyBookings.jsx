@@ -3,7 +3,7 @@ import { baseURL } from "../../../../backend/config/db";
 
 import Loading from "../../components/Loader/Loading";
 import Error from "../../components/Error/Error";
-import DoctorCard from "../../components/Doctors/DoctorCard";
+
 import Appointments from "./Appointments";
 import { useState, useEffect } from "react";
 
@@ -26,29 +26,19 @@ const MyBookings = () => {
     setAppointments(appointments);
   }, [appointments]);
 
-  // const totalAppointments = appointments.length;
-
-  // let totalPagess = Math.ceil(totalAppointments / appointmentsPerPage);
   const totalAppointments = appointments.length;
-let totalPages = Math.ceil(totalAppointments / appointmentsPerPage);
+  let totalPages = Math.ceil(totalAppointments / appointmentsPerPage);
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
 
-  // const indexOfLastDoctor = currentPage * appointmentsPerPage;
-  // const indexOfFirstDoctor = indexOfLastDoctor - appointmentsPerPage;
-  // const currentDoctors = MyAppointments.slice(
-  //   indexOfFirstDoctor,
-  //   indexOfLastDoctor
-  // );
   const indexOfLastAppointment = currentPage * appointmentsPerPage;
-const indexOfFirstAppointment = indexOfLastAppointment - appointmentsPerPage;
-const currentAppointments = MyAppointments.slice(
-  indexOfFirstAppointment,
-  indexOfLastAppointment
-);
-
+  const indexOfFirstAppointment = indexOfLastAppointment - appointmentsPerPage;
+  const currentAppointments = MyAppointments.slice(
+    indexOfFirstAppointment,
+    indexOfLastAppointment
+  );
 
   return (
     <div>
@@ -60,14 +50,12 @@ const currentAppointments = MyAppointments.slice(
             <Appointments appointment={currentAppointments} />
           </div>
           {totalAppointments > appointmentsPerPage && (
-           
             <Pagination
-  totalPosts={totalAppointments}
-  postPerPage={appointmentsPerPage}
-  setCurrentPage={setCurrentPage}
-  currentPage={currentPage}
-/>
-
+              totalPosts={totalAppointments}
+              postPerPage={appointmentsPerPage}
+              setCurrentPage={setCurrentPage}
+              currentPage={currentPage}
+            />
           )}
         </>
       )}

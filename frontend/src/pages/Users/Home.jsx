@@ -1,4 +1,4 @@
-import React from "react";
+
 import heroImg01 from "../../assets/images/hero-img01.jpg";
 import heroImg02 from "../../assets/images/hero-img02.png";
 import heroImg03 from "../../assets/images/hero-img03.png";
@@ -273,22 +273,7 @@ const Home = () => {
 
       {/*................faq section end.......................*/}
 
-      {/*................Testimonial...........................*/}
-
-      {/* <section>
-        <div className="container">
-          <div className="xl:w-[470px] mx-auto">
-            <h2 className="heading text-center">what our patient say</h2>
-            <p className="text_para text-center">
-              world-class care for everyone.our health system offers
-              unmatched,expert health care.
-            </p>
-          </div>
-          <Testimonial />
-        </div>
-      </section> */}
-
-      {/*................Testimonial end...........................*/}
+      
     </>
   );
 };

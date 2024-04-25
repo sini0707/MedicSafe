@@ -40,7 +40,7 @@ import {
   createRoom,
   sendChat,
   getNotification,
-  clearNotification
+ 
   
 } from "../Controllers/ChatController.js";
 
@@ -91,6 +91,6 @@ router.post(
 );
 
 router.get("/getUserNotifications",protect, getNotification);
-router.post("/clearNotification", clearNotification);
+
 
 export default router;

@@ -11,7 +11,6 @@ const FeedbackForm = ({ details, setshowFeedbackForm }) => {
 
   const [hover, setHover] = useState(0);
   const [reviewText, setReviewText] = useState("");
- 
 
   const userInfo = useSelector((state) => state.auth.userInfo);
 
@@ -24,9 +23,7 @@ const FeedbackForm = ({ details, setshowFeedbackForm }) => {
     user: userId,
     doctor: details._id,
   };
-  
 
-  
   const {
     fetchData,
     data: reviews,
@@ -54,14 +51,11 @@ const FeedbackForm = ({ details, setshowFeedbackForm }) => {
       if (res.ok) {
         toast.success("Feedback submitted successfully");
 
-        
         fetchData();
 
-        
         setRating(0);
         setReviewText("");
       } else {
-      
         toast.error("Failed to submit feedback");
       }
     } catch (error) {
@@ -70,10 +64,7 @@ const FeedbackForm = ({ details, setshowFeedbackForm }) => {
     }
   };
 
-  
-
   return (
-    
     <form action="">
       <div>
         <h3 className="text-headingColor text-[16px] leading-6 font-semibold mb-4 mt-0">
@@ -115,7 +106,6 @@ const FeedbackForm = ({ details, setshowFeedbackForm }) => {
         <textarea
           className="border border-solid border-[#0066ff34] focus:outline outline-primaryColor w-full px-4 py-3 rounded-md"
           rows="5"
-         
           placeholder="write your message"
           onChange={(e) => setReviewText(e.target.value)}
         />

@@ -1,6 +1,5 @@
-
 import "react-toastify/dist/ReactToastify.css";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import DoctorList from "../../components/Doctors/DoctorList";
 import SortAndFilter from "../../components/SortAndFilter";
@@ -8,9 +7,7 @@ import Pagination from "../../components/Pagination/Pagination";
 import apiInstance from "../../axiosApi/axiosInstance";
 import { baseURL } from "../../../../backend/config/db";
 
-
 const Doctorss = () => {
-
   const [doctors, setDoctors] = useState([]);
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -24,7 +21,11 @@ const Doctorss = () => {
     const fetchDoctors = async () => {
       try {
         const res = await apiInstance.get(`${baseURL}/users/getdoctors`, {
-          params: { page: currentPage, pageSize: doctorsPerPage, search: search },
+          params: {
+            page: currentPage,
+            pageSize: doctorsPerPage,
+            search: search,
+          },
         });
         const doctorsList = res.data.doctorsData;
         if (doctorsList) {
@@ -43,14 +44,8 @@ const Doctorss = () => {
   };
 
   const handleDoctorsClick = () => {
-   
-    
-   
     navigate("/doctors");
   };
-
-  // const totalDoctors = doctors.length;
-  
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -62,24 +57,30 @@ const Doctorss = () => {
       (doctor.name.toLowerCase().includes(search.toLowerCase()) ||
         doctor.specialization.toLowerCase().includes(search.toLowerCase()))
   );
-  
+
   if (sortted !== "") {
     filterdDoctors = filterdDoctors.sort((a, b) => a.fees - b.fees);
   }
   if (filter !== "") {
-    filterdDoctors = filterdDoctors.filter((item) => item.specialization === filter);
+    filterdDoctors = filterdDoctors.filter(
+      (item) => item.specialization === filter
+    );
   }
   if (minRating !== 0) {
-    filterdDoctors = filterdDoctors.filter((doctor) => doctor.averageRating >= minRating);
+    filterdDoctors = filterdDoctors.filter(
+      (doctor) => doctor.averageRating >= minRating
+    );
   }
-  
+
   const indexOfLastDoctor = currentPage * doctorsPerPage;
   const indexOfFirstDoctor = indexOfLastDoctor - doctorsPerPage;
-  const currentDoctors = filterdDoctors.slice(indexOfFirstDoctor, indexOfLastDoctor);
-  
+  const currentDoctors = filterdDoctors.slice(
+    indexOfFirstDoctor,
+    indexOfLastDoctor
+  );
+
   const totalDoctors = filterdDoctors.length;
   const totalPages = Math.ceil(totalDoctors / doctorsPerPage);
-  
 
   return (
     <>
@@ -95,7 +96,11 @@ const Doctorss = () => {
             />
           </div>
         </div>
-        <SortAndFilter setSortted={setSortted} setFilter={setFilter} setMinRating={setMinRating} />
+        <SortAndFilter
+          setSortted={setSortted}
+          setFilter={setFilter}
+          setMinRating={setMinRating}
+        />
         <div className="doctors-section" onClick={handleDoctorsClick}>
           <DoctorList doctors={currentDoctors} />
         </div>
@@ -111,4 +116,3 @@ const Doctorss = () => {
 };
 
 export default Doctorss;
-

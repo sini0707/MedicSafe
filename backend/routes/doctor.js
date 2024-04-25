@@ -14,6 +14,7 @@ import {
   getSingleDoctor,
   bookingDetails,
   approveVideoCall,
+  DoctorChangePassword,
   
   
 } from "../Controllers/DoctorController.js";
@@ -24,7 +25,7 @@ import {
   sendChat,
   MarkMessageAsRead,
   getNotification,
-  clearNotification,
+ 
   
   
 } from "../Controllers/ChatController.js"
@@ -47,13 +48,14 @@ router.get("/getdoctor/:id", getSingleDoctor);
 router.get("/booking-details/:docId", bookingDetails);  
 router.post("/approveVideoCall/:id", approveVideoCall);
 router.put("/submitreply/:id",submitReply);
+router.post("/changepassword",DoctorChangePassword);
 
 router.get("/get-doctor-rooms/:id", getDoctorRooms);
 router.get("/get-rooms-messages/:roomId", getRoomMessages);
 router.post("/sendChat/:roomId/:sender/:type/:Id/:senderName",sendChat);
 router.put("/mark-room-message-read/:id",MarkMessageAsRead);
 router.get("/getDoctorNotifications", getNotification);
-router.post("/clearDoctorNotification", clearNotification);
+
 
 
 

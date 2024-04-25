@@ -35,9 +35,6 @@ const DoctorChat = () => {
   useEffect(() => {
     const fetchRoom = async () => {
       try {
-        
-       
-      
         const res = await fetch(
           `${baseURL}/doctors/get-doctor-rooms/${doctorInfo._id}`,
           {
@@ -48,7 +45,6 @@ const DoctorChat = () => {
           }
         );
         let result = await res.json();
-       
 
         if (!res.ok) {
           throw new Error(result.message);
@@ -112,7 +108,6 @@ const DoctorChat = () => {
   };
 
   const markMessageAsRead = async (roomId) => {
-    
     try {
       const res = await fetch(
         `${baseURL}/doctors/mark-room-message-read/${roomId}`,
@@ -125,7 +120,7 @@ const DoctorChat = () => {
         }
       );
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   };
 
@@ -135,9 +130,8 @@ const DoctorChat = () => {
 
   const sendHandler = async () => {
     if (content.trim() === "") {
-      // Check if content is empty
       toast.error("Message cannot be empty");
-      return; // Exit the function if content is empty
+      return;
     }
 
     const sendMessage = async () => {
@@ -155,7 +149,7 @@ const DoctorChat = () => {
         );
 
         let result = await res.json();
-       
+
         if (!res.ok) {
           throw new Error(result.message);
         }
@@ -171,8 +165,6 @@ const DoctorChat = () => {
 
   useEffect(() => {
     socket.on("message recevied", (newMessageReceived) => {
-    
-
       if (!selectedChatCompare || chatId !== newMessageReceived.room._id) {
         //empty
       } else {
@@ -181,20 +173,15 @@ const DoctorChat = () => {
     });
   }, [chatId, selectedChatCompare, chats]);
   useEffect(() => {
-    // Listen for new message events from the user
     socket.on("newUserMessage", (newMessage) => {
-      // Update the chat interface to display the new message
       setChats((prevChats) => [...prevChats, newMessage]);
     });
   }, []);
-  
 
   return (
     <div className=" font-semibold">
       <div className="flex h-screen overflow-hidden">
-        {/* Sidebar */}
         <div className="w-1/4 bg-white border-r border-gray-300">
-          {/* Sidebar Header */}
           <header className="p-4 border-b border-gray-300 flex justify-between items-center bg-indigo-600 text-white">
             <span className="font-bold">Active Conversations</span>
             <div className="relative">
@@ -209,7 +196,7 @@ const DoctorChat = () => {
                   <path d="M2 10a2 2 0 012-2h12a2 2 0 012 2 2 2 0 01-2 2H4a2 2 0 01-2-2z" />
                 </svg>
               </button>
-              {/* Menu Dropdown */}
+
               <div
                 id="menuDropdown"
                 className="absolute right-0 mt-2 w-48 bg-white border border-gray-300 rounded-md shadow-lg hidden"
@@ -245,9 +232,9 @@ const DoctorChat = () => {
                   key={chat._id}
                   className="flex flex-col space-y-1 mt-4 -mx-2 overflow-y-auto"
                   onClick={() => {
-                    setChatId((prevChatId) => chat._id); // Set the chat ID
-                    setPatient((prevPatient) => chat.user); // Set the patient
-                    markMessageAsRead(chat._id); // Mark messages as read
+                    setChatId((prevChatId) => chat._id);
+                    setPatient((prevPatient) => chat.user);
+                    markMessageAsRead(chat._id);
                   }}
                 >
                   <button
@@ -297,7 +284,7 @@ const DoctorChat = () => {
                               <div className="flex items-center justify-center h-10 w-10 rounded-full bg-indigo-500 flex-shrink-0">
                                 U
                               </div>
-                              {/* <div className="relative ml-3 text-sm bg-white py-2 px-4 shadow rounded-xl"> */}
+
                               <div
                                 className={`relative ml-3 text-sm bg-white py-2 px-4 shadow rounded-xl ${
                                   readStatus[chat._id] ? "bg-blue-100" : ""
@@ -340,22 +327,7 @@ const DoctorChat = () => {
             </div>
             <div className="flex flex-row items-center h-16 rounded-xl bg-white w-full px-4">
               <div>
-                <button className="flex items-center justify-center text-gray-400 hover:text-gray-600">
-                  {/* <svg
-                      className="w-5 h-5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"
-                      ></path>
-                    </svg> */}
-                </button>
+                <button className="flex items-center justify-center text-gray-400 hover:text-gray-600"></button>
               </div>
               <div className="flex-grow ml-4">
                 <div className="relative w-full">

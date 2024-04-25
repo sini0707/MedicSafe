@@ -9,8 +9,7 @@ import { useDispatch } from 'react-redux';
 import { baseURL } from '../../../../backend/config/db';
 import {logout} from '../../slices/doctorSlices/doctorAuthSlice';
 import { IoIosNotifications } from "react-icons/io";
-// import DoctorNotification from "../Notification/DoctorNotification.jsx"
-
+import DoctorNotification from "../Notification/DoctorNotification.jsx";
 
 
 
