@@ -27,7 +27,7 @@ const Home = () => {
           <div className="flex flex-col lg:flex-row gap-[90px] items-center justify-center">
             {/*.........hero content.........*/}
             <div>
-              <div className="lg:w-[570px]">
+              <div className="lg:w-[570px] md:w-[460]">
                 <h1 className="text-[36px] leading-[46px] text-headingColor font-[800] md:text-[60px] md:leading-[70px]">
                   we help patients live a healthy, longer life
                 </h1>

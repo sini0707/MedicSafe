@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState,useRef} from "react";
 import io from "socket.io-client";
 import { toast } from 'react-toastify';
 import { baseURL } from "../../../../backend/config/db";
@@ -6,6 +6,7 @@ import { token } from "../../../config";
 import { RiCheckDoubleFill } from "react-icons/ri";
 import { IoCheckmark } from "react-icons/io5";
 import { GrSend } from "react-icons/gr";
+import AnimationTyping from "../AnimationTyping/AnimationTyping.jsx";
 
 
 
@@ -22,9 +23,11 @@ const ChatUser = ({ onClose,doctor, user, photo, doctorPic, userName}) => {
   const [chats, setChats] = useState([]);
   const [content, setContent] = useState("");
   const [messageSent, setMessageSent] = useState(false);
+  const [isTyping, setIsTyping] = useState(false);
+  const typingTimeoutRef = useRef(null);
 
-
-  console.log(room._id,"roooooom")
+  const messagesEndRef = useRef(null);
+ 
   useEffect(() => {
     if (user) {
   
@@ -52,7 +55,7 @@ const ChatUser = ({ onClose,doctor, user, photo, doctorPic, userName}) => {
           
 
           let result = await res.json();
-        console.log(result.data,'👍👍👍👍👍👍👍👍')
+        
           if (!res.ok) {
             throw new Error(result.message);
           }
@@ -83,7 +86,7 @@ const ChatUser = ({ onClose,doctor, user, photo, doctorPic, userName}) => {
         );
 
         let result = await res.json();
-        console.log(result, "RESULT FETCH MESSAGE");
+       
 
         if (!res.ok) {
           throw new Error(result.message);
@@ -93,6 +96,7 @@ const ChatUser = ({ onClose,doctor, user, photo, doctorPic, userName}) => {
         setMessageSent(false);
         socket.emit("join_chat", room._id);
         selectedChatCompare = chats;
+        scrollToBottom();
         
       } catch (error) {
         console.log("error", error);
@@ -128,7 +132,7 @@ const ChatUser = ({ onClose,doctor, user, photo, doctorPic, userName}) => {
         );
 
         let result = await res.json();
-        console.log(result)
+        
         if (!res.ok) {
           throw new Error(result.message);
         }
@@ -136,6 +140,7 @@ const ChatUser = ({ onClose,doctor, user, photo, doctorPic, userName}) => {
         setContent("");
         setMessageSent(true);
         socket.emit("new Message",result);
+        scrollToBottom();
       } catch (error) {
         console.log("error", error);
       }
@@ -148,9 +153,55 @@ const ChatUser = ({ onClose,doctor, user, photo, doctorPic, userName}) => {
       if (!selectedChatCompare || room._id !== newMessageReceived.room._id) {
       } else {
         setChats([...chats, newMessageReceived]);
+        scrollToBottom();
       }
     });
   });
+
+
+  useEffect(() => {
+    socket.on("typing", ({ isTyping }) => {
+      setIsTyping(isTyping);
+    });
+  }, []);
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+
+  const formatChatTime = (createdAt) => {
+    const date = new Date(createdAt);
+    const options = { hour: "numeric", minute: "numeric", hour12: true };
+    return date.toLocaleDateString("en-US", options);
+  };
+
+
+
+
+
+  const handleTyping = () => {
+    clearTimeout(typingTimeoutRef.current);
+    setIsTyping(true);
+    typingTimeoutRef.current = setTimeout(() => {
+      setIsTyping(false);
+      socket.emit("typing", { roomID: room._id, isTyping: false });
+    }, 2000);
+    
+    socket.emit("typing", { roomID: room._id, isTyping: true });
+  };
+
+
+  useEffect(() => {
+    socket.on("typing", ({ roomID, isTyping }) => {
+      // Check if the received roomID matches the current room's ID and if the sender is the doctor
+      if (roomID === room._id && !selectedChatCompare) {
+        setIsTyping(isTyping);
+      }
+    });
+  }, [room._id, selectedChatCompare]);
+  
+
+  
   return (
     
     <div className="flex flex-col items-center justify-center w-[500px] min-h-[540px] text-gray-800 p-10">
@@ -179,12 +230,12 @@ const ChatUser = ({ onClose,doctor, user, photo, doctorPic, userName}) => {
                     </div>
 
                     <span className="text-xs text-gray-500 leading-none">
-                      {/* {formatChatTime(chat.createdAt)} */}
+                      {formatChatTime(chat.createdAt)}
                     </span>
                   </div>
                   <div className="flex-shrink-0 h-10 w-10 rounded-full bg-gray-300 ">
                     <img
-                      src={photo}
+                      src={doctorPic}
                       alt=""
                       className=" rounded-full h-full w-full object-cover"
                     />
@@ -204,7 +255,7 @@ const ChatUser = ({ onClose,doctor, user, photo, doctorPic, userName}) => {
                       <p className="text-sm">{chat.content}</p>
                     </div>
                     <span className="text-xs text-gray-500 leading-none">
-                      {/* {formatChatTime(chat.createdAt)} */}
+                      {formatChatTime(chat.createdAt)}
                     </span>
                   </div>
                 </div>
@@ -214,16 +265,21 @@ const ChatUser = ({ onClose,doctor, user, photo, doctorPic, userName}) => {
         ) : (
           <p>No messages</p>
         )}
+        <div ref={messagesEndRef} />
       </div>
+      {isTyping && <AnimationTyping />}
 
       <div className="bg-blue-500 p-4 flex">
-        <input
-          onChange={(e) => setContent(e.target.value)}
-          value={content}
-          className="flex items-center h-10 w-4/5 rounded px-3 text-sm"
-          type="text"
-          placeholder="Type your message…"
-        />
+      <input
+            onChange={(e) => {
+              setContent(e.target.value);
+              handleTyping(); 
+            }}
+            value={content}
+            className="flex items-center h-10 w-4/5 rounded px-3 text-sm"
+            type="text"
+            placeholder="Type your message…"
+          />
         <button
           onClick={() => sendHandler()}
           className="rounded-full flex items-center ml-2 hover:scale-105 transition duration-100 ease-in-out cursor-pointer justify-center w-1/5 bg-[#8b5cf6]"

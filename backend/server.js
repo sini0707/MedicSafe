@@ -16,7 +16,6 @@ import { Server } from "socket.io";
 import { createServer } from "http";
 
 const app = express();
-// const server = createServer(app);
 
 const corsOptions = {
   origin: true,
@@ -38,10 +37,7 @@ app.use(
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/doctors", doctorRoute);
 app.use("/api/v1/admin", adminRoutes);
-//  app.use("/chat",ChatRoute);
-//  app.use('/message',MessageRoute)
 
-// app.get('/', (req, res) => res.send('API running'));
 if (process.env.NODE_ENV === "production") {
   const __dirname = path.resolve();
   app.use(express.static(path.join(__dirname, "/frontend/dist")));
@@ -56,7 +52,6 @@ if (process.env.NODE_ENV === "production") {
 }
 app.use(notFound);
 app.use(errorHandler);
-
 
 const server = app.listen(port, () => {
   try {
@@ -73,72 +68,54 @@ const io = new Server(server, {
     origin: "*",
   },
 });
-let users=[];
+let users = [];
 io.on("connection", (socket) => {
- 
-
+  let typingTimeoutRef = null;
   socket.on("setup", (user) => {
- 
     socket.join(user);
-    users.push(user)
-  
+    users.push(user);
+
     socket.emit("connected");
   });
   socket.on("join_chat", (room) => {
- 
     socket.join(room);
   });
 
-//   socket.on("new Message", (newMessageRecived) => {
-    
-//     let chat = newMessageRecived;
- 
-   
-   
+  socket.on("new Message", (newMessageRecived) => {
+    var chat = newMessageRecived.room;
 
-   
+    if (!chat.user || !chat.doctor) {
+      return console.log("chat.users  not defined  ");
+    }
 
-//     if (!chat.room.user || !chat.room.doctor) {
-//       return console.log("chat.users  not defined  ");
-//     }
+    socket.in(chat._id).emit("message received", newMessageRecived);
 
-//     // chat.user.forEach((user) => {
-//     //   if (user._id == newMessageRecived.sender._id) return;
-//     //   socket.in(user._id).emit("message received", newMessageRecived);
-//     // });
-   
-//     // if (chat.room.room.user._id===newMessageRecived.room.sender._id) return;
-//       io.to(chat.room._id).emit("message received", newMessageRecived);
-//     // users.forEach((user)=>{
-//     //   if(user===chat.room.user){
-//     //     io.to(user).emit('message recieved',newMessageRecived)
-//     //   }
-//     // })
-//   });
-// });
-socket.on("new Message", (newMessageRecived) => {
+    if (chat.user._id === newMessageRecived.sender._id) {
+      socket.to(chat._id).emit("message recevied", newMessageRecived);
+    }
 
+    if (chat.doctor._id === newMessageRecived.sender._id) {
+      socket.to(chat._id).emit("message recevied", newMessageRecived);
+    }
+  });
 
-  var chat = newMessageRecived.room;
+  socket.on("typing", ({ roomID, isTyping }) => {
+    // Broadcast the "typing" event to all users in the same room
+    socket.to(roomID).emit("typing", { roomID, isTyping });
 
-  if (!chat.user || !chat.doctor) {
-    return console.log("chat.users  not defined  ");
-  }
+    // Clear previous typingTimeoutRef if it's defined
+    if (typingTimeoutRef !== null) {
+      clearTimeout(typingTimeoutRef);
+    }
 
-  socket.in(chat._id).emit("message received", newMessageRecived);
-
-  if (chat.user._id === newMessageRecived.sender._id) {
-    socket.to(chat._id).emit("message recevied", newMessageRecived);
-  }
-
-  if (chat.doctor._id === newMessageRecived.sender._id) {
-    socket.to(chat._id).emit("message recevied", newMessageRecived);
-  }
+    // Set a new timeout to remove typing indicator after 3 seconds
+    typingTimeoutRef = setTimeout(() => {
+      socket.to(roomID).emit("typing", { roomID, isTyping: false });
+      typingTimeoutRef = null; // Reset typingTimeoutRef after timeout
+    }, 3000);
+  });
+  socket.off("setup", () => {
+    console.log("User Disconnected");
+    socket.leave(user);
+  });
 });
-
-socket.off("setup", () => {
-  console.log("User Disconnected");
-  socket.leave(user);
-});
-});
-

@@ -20,6 +20,7 @@ const Signup = () => {
     confirmpass: "",
     blood: "",
   });
+  const [bloodError, setBloodError] = useState("");
 
   const navigate = useNavigate();
 
@@ -46,6 +47,8 @@ const Signup = () => {
     if (passwordRegex.test(password)) {
       if (password !== confirmpass) {
         toast.error("Passwords do not match!!");
+      }else if (!formData.blood) {
+        setBloodError("Please select a blood group.");
       } else {
         try {
           const res = await fetch(`${baseURL}/users/register`, {
@@ -140,15 +143,29 @@ const Signup = () => {
                 />
               </div>
               <div className="mb-5">
-                <input
-                  type="blood"
-                  placeholder="blood"
+              <select
                   name="blood"
                   value={formData.blood}
-                  onChange={(e) => handleInputChange(e)}
+                  onChange={(e) => {
+                    handleInputChange(e);
+                    setBloodError("");
+                  }}
                   className="w-full pr-4 py-3 border-b border-solid border-[#0066ff61] focus:outline-none focus:border-b-primaryColor text-[16px] leading-7 text-headingColor
             placeholder:text-textColor  cursor-pointer required"
-                />
+                >
+                  <option value="">Select Blood Group</option>
+                  <option value="A+">A+</option>
+                  <option value="A-">A-</option>
+                  <option value="B+">B+</option>
+                  <option value="B-">B-</option>
+                  <option value="O+">O+</option>
+                  <option value="O-">O-</option>
+                  <option value="AB+">AB+</option>
+                  <option value="AB-">AB-</option>
+                </select>
+                {bloodError && (
+                  <p className="text-red-500 text-sm">{bloodError}</p>
+                )}
               </div>
               <div className="mb-5 flex items-center justify-between">
                 <label
@@ -163,7 +180,7 @@ const Signup = () => {
                     className="text-textColor font-semibold text-[15px] leading-7 px-4 py-3 focus:outline-none"
                   >
                     <option value="patient">Patient</option>
-                    <option value="doctor">Doctor</option>
+                    {/* <option value="doctor">Doctor</option> */}
                   </select>
                 </label>
                 <label className="text-headingColor font-semibold text-[15px] leading-7">

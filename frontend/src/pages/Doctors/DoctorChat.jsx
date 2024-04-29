@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect,useRef  } from "react";
 import { useSelector } from "react-redux";
 import io from "socket.io-client";
 import { baseURL } from "../../../../backend/config/db";
@@ -6,6 +6,7 @@ import { doctoken } from "../../../config";
 import { toast } from "react-toastify";
 import { IoCheckmark } from "react-icons/io5";
 import { RiCheckDoubleFill } from "react-icons/ri";
+import AnimationTyping from "../../components/AnimationTyping/AnimationTyping";
 
 const ENDPOINT = "http://localhost:8000";
 var socket, selectedChatCompare;
@@ -23,6 +24,10 @@ const DoctorChat = () => {
   const [doctor, setDoctor] = useState(null);
   const [content, setContent] = useState("");
   const [readStatus, setReadStatus] = useState({});
+  const [isTyping, setIsTyping] = useState(false);
+  const typingTimeoutRef = useRef(null);
+  const chatContainerRef = useRef(null);
+  
 
   const doctorInfo = useSelector((state) => state.docAuth.doctorInfo);
 
@@ -100,6 +105,7 @@ const DoctorChat = () => {
     };
     fetchMessage();
   }, [chatId, messageSent]);
+  
 
   const formatChatTime = (createdAt) => {
     const date = new Date(createdAt);
@@ -177,6 +183,33 @@ const DoctorChat = () => {
       setChats((prevChats) => [...prevChats, newMessage]);
     });
   }, []);
+
+  useEffect(() => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+    }
+  }, [chats]);
+
+  useEffect(() => {
+    // Listen for typing event
+    socket.on("typing", ({ roomID, isTyping }) => {
+        if (roomID === chatId) {
+            setIsTyping(isTyping);
+        }
+    });
+}, [chatId]);
+
+const handleTyping = () => {
+  clearTimeout(typingTimeoutRef.current);
+  setIsTyping(true);
+  typingTimeoutRef.current = setTimeout(() => {
+    setIsTyping(false);
+    socket.emit("typing", { roomID: chatId, isTyping: false });
+  }, 2000);
+  
+  socket.emit("typing", { roomID: chatId, isTyping: true });
+};
+
 
   return (
     <div className=" font-semibold">
@@ -272,11 +305,11 @@ const DoctorChat = () => {
         {/* Main Chat Area */}
         <div className="flex flex-col flex-auto h-full p-6">
           <div className="flex flex-col flex-auto flex-shrink-0 rounded-2xl bg-gray-100 h-full p-4">
-            <div className="flex flex-col h-full overflow-x-auto mb-4">
-              {chatId ? (
-                chats && chats.length > 0 ? (
-                  chats.map((chat, index) => (
-                    <div key={index} className="flex flex-col h-full">
+            <div className="flex flex-col h-full overflow-x-auto mb-4"ref={chatContainerRef}>
+            {chatId ? (
+            chats && chats.length > 0 ? (
+            chats.slice().reverse().map((chat, index) => (
+            <div key={index} className="flex flex-col h-full">
                       <div className="grid grid-cols-12 gap-y-2">
                         {chat.senderType === "User" ? (
                           <div className="col-start-1 col-end-8 p-3 rounded-lg">
@@ -325,18 +358,23 @@ const DoctorChat = () => {
                 )
               ) : null}
             </div>
+            {isTyping && <AnimationTyping />}
             <div className="flex flex-row items-center h-16 rounded-xl bg-white w-full px-4">
               <div>
                 <button className="flex items-center justify-center text-gray-400 hover:text-gray-600"></button>
               </div>
               <div className="flex-grow ml-4">
                 <div className="relative w-full">
-                  <input
-                    value={content}
-                    onChange={(e) => setContent(e.target.value)}
-                    type="text"
-                    className="flex w-full border rounded-xl focus:outline-none focus:border-indigo-300 pl-4 h-10"
-                  />
+                <input
+            onChange={(e) => {
+                setContent(e.target.value);
+                handleTyping(); // Call handleTyping when the doctor types
+            }}
+            value={content}
+            className="flex items-center h-10 w-4/5 rounded px-3 text-sm"
+            type="text"
+            placeholder="Type your message…"
+        />
                   <button
                     // onClick={() => sendHandler()}
                     className="absolute flex items-center justify-center h-full w-12 right-0 top-0 text-gray-400 hover:text-gray-600"

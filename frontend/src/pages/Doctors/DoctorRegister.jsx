@@ -37,6 +37,24 @@ const DoctorRegister = () => {
 
   const submitHandler = async (e) => {
     e.preventDefault();
+    if (!name || !email || !specialization || !address || !qualification || !experience || !fees || !password || !confirmpass) {
+      toast.error("Please fill in all required fields.");
+      return;
+    }
+  
+    if (!isValidEmail(email)) {
+      toast.error("Please enter a valid email address.");
+      return;
+    }
+  
+    if (password !== confirmpass) {
+      toast.error("Passwords do not match.");
+      return;
+    } if (!isValidPassword(password)) {
+      toast.error("Password must contain at least 5 characters with at least one uppercase letter, one lowercase letter, one number, and one special character.");
+      return;
+    }
+  
     try {
       const requestData = {
         name,
@@ -47,24 +65,36 @@ const DoctorRegister = () => {
         address,
         fees,
         password,
-
         imagePath: image,
         role,
       };
-
+  
       const res = await apiInstance.post(
         `${baseURL}/doctors/register`,
         requestData
       );
-
+  
       if (!res.data.success) {
         toast.error(res.data.message);
       }
-
+  
       navigate("/doctors/otp", { state: { email } });
     } catch (err) {
       toast.error(err?.response?.data?.message || err.message);
     }
+  };
+  
+  // Email validation function
+  const isValidEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+
+
+  const isValidPassword = (password) => {
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{5,}$/;
+    return passwordRegex.test(password);
   };
   useEffect(() => {
     const fetchSpecializationList = async () => {
