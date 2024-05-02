@@ -9,7 +9,7 @@ import { setCredentials } from "../../slices/authSlice.js";
 
 import { token } from "../../../config.js";
 
-const Profile = (user,onUpdateUser) => {
+const Profile = (user) => {
   const userId = user.user._id;
 
   const [selectedFile, setSelectedFile] = useState(null);
@@ -92,10 +92,10 @@ const Profile = (user,onUpdateUser) => {
     }
   };
 
-  useEffect(() => {
-    // Update the parent component (MyAccount) with the updated user data
-    onUpdateUser(formData);
-  }, [formData, onUpdateUser]);
+  // useEffect(() => {
+  //   // Update the parent component (MyAccount) with the updated user data
+  //   onUpdateUser(formData);
+  // }, [formData]);
 
   return (
     <div className="mt-10">

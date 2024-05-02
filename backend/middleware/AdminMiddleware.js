@@ -6,8 +6,6 @@ import Admin from '../models/adminModel.js';
 const protect = asyncHandler(async (req, res, next) => {
 
     const Authtoken=req.headers.authorization;
-    
-  
     if (Authtoken) {
       try {
   
@@ -16,10 +14,10 @@ const protect = asyncHandler(async (req, res, next) => {
     
          const decoded = jwt.verify(token, process.env.ADMIN_JWT_SECRET);
       
-         const userId=decoded.userId
+         const userId=decoded.adminId
         
-      //   if(decoded.role!=='user'){
-      //     res.status(401).json({error:"Not authorized,user not found"})
+      //   if(decoded.role!=='admin'){
+      //     res.status(401).json({error:"Not authorized,admin not found"})
       //     throw new Error("Not authorized,user not found")
       //   }else{
           req.userId = userId; 

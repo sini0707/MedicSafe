@@ -33,9 +33,8 @@ const navLinks = [
 const Header = () => {
   const user = useSelector((state) => state.auth.userInfo);
 
-
   const [notification, setNotification] = useState(false);
-
+  
   const headerRef = useRef(null);
   const menuRef = useRef(null);
   const dispatch = useDispatch();

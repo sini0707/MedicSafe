@@ -344,7 +344,7 @@ const updateUser = async (req, res) => {
     const id = req.params.id;
     console.log("User ID:", id);
     const { name, email, mobile, gender, age, blood, role, photo } = req.body;
-  
+
     const updatedUser = await User.findByIdAndUpdate(
       id,
       {
@@ -361,24 +361,15 @@ const updateUser = async (req, res) => {
       },
       { new: true }
     );
-const { password,  ...rest } = updatedUser._doc;
-const existingToken = req.headers.authorization.split(" ")[1];
-console.log(existingToken,"exis");
+    const { password, ...rest } = updatedUser._doc;
+    const existingToken = req.headers.authorization.split(" ")[1];
+    console.log(existingToken, "exis");
 
     res.status(200).json({
       success: true,
       message: "Successfully updated",
-      data: {...rest,token:existingToken},
+      data: { ...rest, token: existingToken },
     });
-    
-  
-   
-
-    // res.status(200).json({
-    //   status: true,
-    //   message: "successfully updated",
-    //   data: { ...rest, token: existingToken },
-    // });
   } catch (err) {
     console.error(err);
     res.status(500).json({ success: false, message: "Failed to update" });
@@ -439,14 +430,11 @@ export const getDoctorTimings = async (req, res) => {
   }
 };
 
-
-
 export const CancelBooking = async (req, res) => {
   const bookingId = req.params.id;
 
   try {
     const booking = await Booking.findById(bookingId);
-
 
     if (!booking) {
       return res
@@ -455,10 +443,8 @@ export const CancelBooking = async (req, res) => {
     }
 
     const paymentAmount = Number(booking.ticketPrice);
-    
 
     const doctor = await Doctor.findById(booking.doctor._id);
-  
 
     booking.isCancelled = true;
     await booking.save();
@@ -523,7 +509,6 @@ export const MakeVideoCall = async (req, res) => {
   try {
     const user = await User.find({ _id: userId });
 
-    
     const roomId = `${uuidv4()}-${userId}`;
 
     res.status(200).json({ message: "Video Call", roomId });
@@ -563,13 +548,12 @@ const checkFeedback = asyncHandler(async (req, res) => {
     for (const booking of Bookings) {
       if (booking.doctor.toString() === docId) {
         found = true;
-        break; 
+        break;
       }
     }
 
     if (found) {
       res.status(200).json({ success: true, message: "Booking found" });
-  
     } else {
       res.status(404).json({ success: false, message: "No Booking" });
     }
@@ -578,20 +562,18 @@ const checkFeedback = asyncHandler(async (req, res) => {
   }
 });
 
-export const  UserBookings = asyncHandler(async (req, res) => {
-
+export const UserBookings = asyncHandler(async (req, res) => {
   try {
     const userId = req.params.userId;
-   
+
     const bookings = await Booking.find({ user: userId });
- 
+
     res.json({ bookings });
   } catch (error) {
     console.error("Error fetching user bookings:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 });
-
 
 export {
   login,

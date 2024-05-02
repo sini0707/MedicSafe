@@ -21,7 +21,7 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
     const isAllowed = allowedRoles.includes(role);
     console.log('Is admin allowed:', isAllowed);
 
-     const accessibleRoute = token && isAllowed ? children : <Navigate to="/login" replace={true} />;
+     const accessibleRoute = token && isAllowed ? children : <Navigate to="/admin" replace={true} />;
      console.log('Accessible route:', accessibleRoute);
        return accessibleRoute;
   }

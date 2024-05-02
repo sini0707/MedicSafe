@@ -17,9 +17,9 @@ const protect = asyncHandler(async (req, res, next) => {
     
        const userId=decoded.doctorId
       
-    //   if(decoded.role!=='user'){
-    //     res.status(401).json({error:"Not authorized,user not found"})
-    //     throw new Error("Not authorized,user not found")
+    //   if(decoded.role!=='doctor'){
+    //     res.status(401).json({error:"Not authorized,doctor not found"})
+    //     throw new Error("Not authorized,doctor not found")
     //   }else{
         req.userId = userId; 
               next();

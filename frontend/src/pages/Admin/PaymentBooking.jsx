@@ -65,6 +65,63 @@ const PaymentBooking = () => {
       toast.error("Failed to cancel booking");
     }
   };
+
+  // const cancelBooking = async (id, userId) => {
+  //   try {
+  //     const res = await fetch(`${baseURL}/admin/cancelBooking/${id}`, {
+  //       method: "PUT",
+  //       headers: {
+  //         Authorization: `Bearer ${adminToken}`,
+  //         "Content-Type": "application/json", 
+  //       },
+  //       body: JSON.stringify({ status: "Rejected" }),
+  //     });
+  //     const result = await res.json();
+  
+  //     if (!res.ok) {
+  //       throw new Error(result.message);
+  //     }
+  
+  //     // Credit the canceled booking amount to the user's wallet
+  //     await creditToUserWallet(userId, result.data.ticketPrice);
+  
+  //     // Update bookings state
+  //     setBookings((prevBookings) =>
+  //       prevBookings.map((booking) =>
+  //         booking._id === id ? { ...booking, isCancelled: true, status: "Rejected" } : booking
+  //       )
+  //     );
+  //     toast.success("Booking successfully cancelled and amount credited to user's wallet");
+  //   } catch (error) {
+  //     console.log(error);
+  //     toast.error("Failed to cancel booking");
+  //   }
+  // };
+  
+
+  // const creditToUserWallet = async (userId, amount) => {
+  //   try {
+  //     const res = await fetch(`${baseURL}/users/creditWallet`, {
+  //       method: "PUT",
+  //       headers: {
+  //         Authorization: `Bearer ${adminToken}`,
+  //         "Content-Type": "application/json", 
+  //       },
+  //       body: JSON.stringify({ userId, amount }),
+  //     });
+  //     const result = await res.json();
+  
+  //     if (!res.ok) {
+  //       throw new Error(result.message);
+  //     }
+  
+  //     console.log("Amount credited to user's wallet:", amount);
+  //   } catch (error) {
+  //     console.error("Error crediting amount to user's wallet:", error);
+  //     throw new Error("Failed to credit amount to user's wallet");
+  //   }
+  // };
+  
   const handleCancel = async (id, event) => {
     event.preventDefault(); 
     await cancelBooking(id);
@@ -76,7 +133,7 @@ const PaymentBooking = () => {
 
   return (
     <div className="md:px-32 py-8 w-full">
-      <div className="shadow overflow-hidden rounded border-b border-gray-200">
+       <div className="relative mx-5 overflow-x-auto shadow-md sm:rounded-lg">
         <table className="min-w-full bg-white">
           <thead className="bg-gray-800 text-white">
             <tr>
@@ -99,6 +156,12 @@ const PaymentBooking = () => {
                 Payment
               </th>
               
+              <th className="w-1/6 text-left py-3 px-4 uppercase font-semibold text-sm">
+                Action
+              </th>
+
+
+              
               
             </tr>
           </thead>
@@ -120,6 +183,24 @@ const PaymentBooking = () => {
                   <td className="px-6 py-4">{booking.slotTime}</td>
                   <td className="px-6 py-4">{booking.ticketPrice}</td>
                   <td className="px-6 py-4">{booking.isPaid ? 'Paid' : 'Not Paid'}</td>
+                  <td className="px-6 py-4">
+                    {booking.isCancelled ? (
+                      <button
+                        // onClick={() => cancelBooking(el._id)}
+                        className="bg-gray-500 p-2 text-white rounded-md hover:scale-110 transition duration-100 ease-in-out cursor-pointer "
+                      >
+                        Cancelled
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => cancelBooking(booking._id)}
+                        className="bg-red-500 p-2 text-white rounded-md hover:scale-110 transition duration-100 ease-in-out cursor-pointer "
+                      >
+                        Cancel
+                      </button>
+                    )}
+                  </td>
+
                  
                   
                 </tr>

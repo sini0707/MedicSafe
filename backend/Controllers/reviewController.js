@@ -3,7 +3,7 @@ import generateToken from "../utils/generateToken.js";
 import Review from "../models/ReviewSchema.js";
 import Doctor from "../models/DoctorSchema.js";
 
-// get all reviews
+
 
 export const getAllReviews = async (req, res) => {
   try {
@@ -19,7 +19,7 @@ export const getAllReviews = async (req, res) => {
   }
 };
 
-// create review
+
 export const createReview = async (req, res) => {
   const { rating, reviewText, user, doctor } = req.body.review;
 

@@ -7,11 +7,14 @@ import { toast } from "react-toastify";
 import { IoCheckmark } from "react-icons/io5";
 import { RiCheckDoubleFill } from "react-icons/ri";
 import AnimationTyping from "../../components/AnimationTyping/AnimationTyping";
+import { RiDeleteBinLine } from 'react-icons/ri';
 
 const ENDPOINT = "http://localhost:8000";
 var socket, selectedChatCompare;
 
 const DoctorChat = () => {
+ 
+  
   const [socketConnected, setSocketConnected] = useState(false);
 
   const [rooms, setRooms] = useState("");
@@ -55,14 +58,15 @@ const DoctorChat = () => {
           throw new Error(result.message);
         }
 
-        const sortedRooms = result.sort((a, b) => {
-          return (
-            new Date(b.latestMessageTimestamp) -
-            new Date(a.latestMessageTimestamp)
-          );
-        });
-
+        const sortedRooms = result.map(room => ({
+          ...room,
+          latestMessageTimestamp: room.messages.length > 0 ? new Date(room.messages[0].createdAt) : new Date(0)
+        }));
+  
+        sortedRooms.sort((a, b) => b.latestMessageTimestamp - a.latestMessageTimestamp);
+  
         setRooms(sortedRooms);
+        console.log(sortedRooms,'latest')
       } catch (error) {
         setError(error);
         console.log("error", error);
@@ -70,7 +74,8 @@ const DoctorChat = () => {
     };
     fetchRoom();
   }, [doctorInfo._id]);
-
+  
+  
   const handleStartChatWithDoctor = (chatId, patient, doctor) => {
     setChatId(chatId);
     setPatient(patient);
@@ -79,33 +84,36 @@ const DoctorChat = () => {
 
   useEffect(() => {
     const fetchMessage = async () => {
-      try {
-        const res = await fetch(
-          `${baseURL}/doctors/get-rooms-messages/${chatId}`,
-          {
-            method: "get",
-            headers: {
-              Authorization: `Bearer ${doctoken}`,
-            },
-          }
-        );
+        try {
+            const res = await fetch(
+                `${baseURL}/doctors/get-rooms-messages/${chatId}`,
+                {
+                    method: "get",
+                    headers: {
+                        Authorization: `Bearer ${doctoken}`,
+                    },
+                }
+            );
 
-        let result = await res.json();
+            let result = await res.json();
 
-        if (!res.ok) {
-          throw new Error(result.message);
+            if (!res.ok) {
+                throw new Error(result.message);
+            }
+
+           
+
+            setChats(result);
+            setMessageSent(false);
+            selectedChatCompare = chats;
+            socket.emit("join_chat", chatId);
+        } catch (error) {
+            console.log("error", error);
         }
-        setChats(result);
-        setMessageSent(false);
-        selectedChatCompare = chats;
-        socket.emit("join_chat", chatId);
-      } catch (error) {
-        console.log("error", error);
-      }
     };
     fetchMessage();
-  }, [chatId, messageSent]);
-  
+}, [chatId, messageSent]);
+
 
   const formatChatTime = (createdAt) => {
     const date = new Date(createdAt);
@@ -113,22 +121,7 @@ const DoctorChat = () => {
     return date.toLocaleDateString("en-US", options);
   };
 
-  const markMessageAsRead = async (roomId) => {
-    try {
-      const res = await fetch(
-        `${baseURL}/doctors/mark-room-message-read/${roomId}`,
-        {
-          method: "PUT",
-          headers: {
-            Authorization: `Bearer ${doctoken}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  
 
   const handleInputChange = (e) => {
     setContent(e.target.value);
@@ -178,11 +171,17 @@ const DoctorChat = () => {
       }
     });
   }, [chatId, selectedChatCompare, chats]);
+  
+ 
+  
+  
   useEffect(() => {
     socket.on("newUserMessage", (newMessage) => {
       setChats((prevChats) => [...prevChats, newMessage]);
     });
   }, []);
+
+  
 
   useEffect(() => {
     if (chatContainerRef.current) {
@@ -191,7 +190,7 @@ const DoctorChat = () => {
   }, [chats]);
 
   useEffect(() => {
-    // Listen for typing event
+   
     socket.on("typing", ({ roomID, isTyping }) => {
         if (roomID === chatId) {
             setIsTyping(isTyping);
@@ -210,105 +209,92 @@ const handleTyping = () => {
   socket.emit("typing", { roomID: chatId, isTyping: true });
 };
 
+const markMessageAsRead = async (roomId) => {
+  try {
+    const res = await fetch(
+      `${baseURL}/doctors/mark-room-message-read/${roomId}`,
+      {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${doctoken}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+
+
+
+
+
+
 
   return (
     <div className=" font-semibold">
+        
       <div className="flex h-screen overflow-hidden">
         <div className="w-1/4 bg-white border-r border-gray-300">
           <header className="p-4 border-b border-gray-300 flex justify-between items-center bg-indigo-600 text-white">
             <span className="font-bold">Active Conversations</span>
             <div className="relative">
-              <button id="menuButton" className="focus:outline-none">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5 text-gray-100"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
-                  <path d="M2 10a2 2 0 012-2h12a2 2 0 012 2 2 2 0 01-2 2H4a2 2 0 01-2-2z" />
-                </svg>
-              </button>
+             
 
-              <div
-                id="menuDropdown"
-                className="absolute right-0 mt-2 w-48 bg-white border border-gray-300 rounded-md shadow-lg hidden"
-              >
-                <ul className="py-2 px-3">
-                  <li>
-                    <a
-                      href="#"
-                      className="block px-4 py-2 text-gray-800 hover:text-gray-400"
-                    >
-                      Option 1
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href="#"
-                      className="block px-4 py-2 text-gray-800 hover:text-gray-400"
-                    >
-                      Option 2
-                    </a>
-                  </li>
-                  {/* Add more menu options here */}
-                </ul>
-              </div>
+              
             </div>
           </header>
 
           {/* Contact List */}
-          <div className="overflow-y-auto h-screen p-3 mb-9 pb-20">
-            {rooms.length > 0 ? (
-              rooms.map((chat) => (
-                <div
-                  key={chat._id}
-                  className="flex flex-col space-y-1 mt-4 -mx-2 overflow-y-auto"
-                  onClick={() => {
-                    setChatId((prevChatId) => chat._id);
-                    setPatient((prevPatient) => chat.user);
-                    markMessageAsRead(chat._id);
-                  }}
-                >
-                  <button
-                    className="flex flex-row items-center hover:bg-gray-100 rounded-xl p-2"
-                    onClick={() =>
-                      handleStartChatWithDoctor(
-                        chat._id,
-                        chat.user,
-                        chat.doctor
-                      )
-                    }
-                  >
-                    <div className="flex items-center justify-center h-8 w-8 bg-gray-200 rounded-full">
-                      {/* <img src={chat.user.photo} alt="User" className="h-full w-full rounded-full" /> */}
+       {/* Contact List */}
+<div className="overflow-y-auto h-screen p-3 mb-9 pb-20">
+{rooms.length > 0 ? (
+                  rooms.map((chat, index) => (
+                    <div
+                      key={index}
+                      className="flex flex-col space-y-1 mt-4 -mx-2  overflow-y-auto"
+                      onClick={() => {
+                        setChatId((prevChatId) => chat._id);
+                        setPatient((prevPatient) => chat.user);
+                        markMessageAsRead(chat._id);
+                      }}
+                    >
+                      <button className="flex flex-row items-center hover:bg-gray-100 rounded-xl p-2">
+                        <div className="flex items-center justify-center h-8 w-8 bg-gray-200 rounded-full">
+                          Q
+                        </div>
+                        <div className="ml-2 text-sm font-semibold">
+                          {chat.user.name}
+                        </div>
+                      </button>
                     </div>
-                    <div className="ml-2 text-sm font-semibold">
-                      {chat.user.name}
-                    </div>
-                  </button>
-                </div>
-              ))
-            ) : (
-              <div className="flex flex-col space-y-1 mt-4 -mx-2 overflow-y-auto">
-                <button className="flex flex-row items-center hover:bg-gray-100 rounded-xl p-2">
-                  <div className="flex items-center justify-center h-8 w-8 bg-gray-200 rounded-full">
-                    U
+                  ))
+                ) : (
+                  <div className="flex flex-col space-y-1 mt-4 -mx-2  overflow-y-auto">
+                    <button className="flex flex-row items-center hover:bg-gray-100 rounded-xl p-2">
+                      <div className="flex items-center justify-center h-8 w-8 bg-gray-200 rounded-full">
+                        U
+                      </div>
+                      <div className="ml-2 text-sm font-semibold">No chats</div>
+                    </button>
                   </div>
-                  <div className="ml-2 text-sm font-semibold">No chats</div>
-                </button>
+                )}
               </div>
-            )}
-          </div>
+
         </div>
 
         {/* Main Chat Area */}
         <div className="flex flex-col flex-auto h-full p-6">
+        
           <div className="flex flex-col flex-auto flex-shrink-0 rounded-2xl bg-gray-100 h-full p-4">
             <div className="flex flex-col h-full overflow-x-auto mb-4"ref={chatContainerRef}>
+              
+           
             {chatId ? (
-            chats && chats.length > 0 ? (
-            chats.slice().reverse().map((chat, index) => (
+                    chats && chats.length > 0 ? (
+                      chats.map((chat, index) => (
             <div key={index} className="flex flex-col h-full">
                       <div className="grid grid-cols-12 gap-y-2">
                         {chat.senderType === "User" ? (
@@ -346,12 +332,16 @@ const handleTyping = () => {
                                 <div className="text-xs text-gray-500 mt-1">
                                   {formatChatTime(chat.createdAt)}
                                 </div>
+                               
                               </div>
+                             
                             </div>
                           </div>
+                          
                         )}
                       </div>
                     </div>
+                    
                   ))
                 ) : (
                   <h1>No Chats available!!</h1>
@@ -360,26 +350,37 @@ const handleTyping = () => {
             </div>
             {isTyping && <AnimationTyping />}
             <div className="flex flex-row items-center h-16 rounded-xl bg-white w-full px-4">
+           
               <div>
                 <button className="flex items-center justify-center text-gray-400 hover:text-gray-600"></button>
+                
               </div>
               <div className="flex-grow ml-4">
                 <div className="relative w-full">
                 <input
             onChange={(e) => {
                 setContent(e.target.value);
-                handleTyping(); // Call handleTyping when the doctor types
+                handleTyping(); 
             }}
             value={content}
             className="flex items-center h-10 w-4/5 rounded px-3 text-sm"
             type="text"
             placeholder="Type your message…"
+            
         />
+         <button
+                onClick={() => deleteMessage(chats._id)}
+                className="absolute top-1/2 transform -translate-y-1/2 right-[50px] bg-gray-500 text-white px-3 py-1 rounded-md hover:bg-orange-600 focus:outline-none"
+              >
+                <RiDeleteBinLine className="text-xl" /> {/* Use the delete icon component */}
+              </button>
                   <button
-                    // onClick={() => sendHandler()}
+                  
                     className="absolute flex items-center justify-center h-full w-12 right-0 top-0 text-gray-400 hover:text-gray-600"
                   ></button>
+                  
                 </div>
+               
               </div>
               <div className="ml-4">
                 <button
@@ -404,11 +405,13 @@ const handleTyping = () => {
                     </svg>
                   </span>
                 </button>
+              
               </div>
             </div>
           </div>
         </div>
       </div>
+     
     </div>
   );
 };

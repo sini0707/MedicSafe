@@ -9,9 +9,8 @@ import { useDispatch } from 'react-redux';
 import { baseURL } from '../../../../backend/config/db';
 import {logout} from '../../slices/doctorSlices/doctorAuthSlice';
 import { IoIosNotifications } from "react-icons/io";
-// import DoctorNotification from "../Notification/DoctorNotification.jsx";
-
-
+import DoctorNotification from "../Notification/DoctorNotification";
+import io from "socket.io-client";
 
 
 
@@ -40,15 +39,32 @@ const navLinks = [
 ]
 
 const DoctorHeader = () => {
+
+  const [notification, setNotification] = useState(false);
   
   
   const doctor=useSelector((state)=>state.docAuth.doctorInfo);
-  console.log(doctor,'header doctor details')
-  const [notification, setNotification] = useState(false);
+
+  
+ 
+  
+ 
+
 
   const headerRef=useRef(null)
   const menuRef=useRef(null)
  const dispatch=useDispatch()
+
+ useEffect(() => {
+  const socket = io("http://localhost:8000"); 
+  socket.on("newMessage", () => {
+    setNotification(true); 
+  });
+
+  return () => {
+    socket.disconnect(); 
+  };
+}, []);
  
 
 
@@ -131,8 +147,22 @@ const DoctorHeader = () => {
           </ul>
         </div>
         <div className='flex items-center gap-4'>
-          {doctor && doctor.token ? ( // Check if user and token exist
+          <div>
+          <div
+                  onClick={() => setNotification(true)}
+                  className="flex items-center mr-6 cursor-pointer"
+                >
+                  <IoIosNotifications className="text-[20px]" />
+                </div>
+
+          </div>
+     
+
+    
+           {doctor&&doctor.token ? (
+           
             <div>
+            
                <div
                   onClick={() => setNotification(true)}
                   className="flex items-center mr-6 cursor-pointer"
@@ -148,17 +178,22 @@ const DoctorHeader = () => {
             </div>
           ) : (
             <NavLink to="">
-              {/* <button className='bg-primaryColor py-2 px-6 text-white font [600] h-[44px] flex items-center rounded-[50px]'>
+               <button className='bg-primaryColor py-2 px-6 text-white font [600] h-[44px] flex items-center rounded-[50px]'>
                 Login
-              </button> */}
+              </button> 
             </NavLink>
-          )}
+          )} 
           <button onClick={logoutHandler} className='bg-primaryColor py-2 px-6 text-white font [600] h-[44px] flex items-center rounded-[50px]'>
             Logout
           </button>
+
+          {notification&&(
+                  <DoctorNotification setNotification={setNotification} />
+                )}
           <span className='md:hidden' onClick={toggleMenu}>
             <BiMenu className='w-6 h-6 cursor-pointer' />
           </span>
+         
         </div>
       </div>
     </div>

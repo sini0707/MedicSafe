@@ -8,35 +8,65 @@ import { token } from "../../../config";
 
 
 const UserNotification = ({setNotification}) => {
+  // const user = useSelector((state) => state.auth.userInfo);
+  // console.log(user)
    
     const [message, setMessages] = useState([]);
     const [clear, setClear] = useState(false);
 
     useEffect(() => {
-        
-        const fetchNotification = async () => {
-          try {
-            const res = await fetch(`${baseURL}/users/getUserNotifications`, {
-              method: "get",
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            });
+      console.log("Inside useEffect");
     
-            const result = await res.json();
-           
+      const fetchNotification = async () => {
+        try {
+          
+          console.log("Fetching notifications...");
+          const res = await fetch(`${baseURL}/users/getUserNotifications`, {
+            method: "post",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
     
-            if (!res.ok) {
-              throw new Error(result.message);
-            }
+          console.log("Response received:", res);
     
-            setMessages(result);
-          } catch (error) {
-            console.log("error", error);
+          const result = await res.json();
+          console.log("Result:", result);
+    
+          if (!res.ok) {
+            console.log("Error response received:", result.message);
+            throw new Error(result.message);
           }
-        };
-        fetchNotification();
-      }, [clear]);
+    
+          console.log("Setting messages:", result);
+          setMessages(result);
+        } catch (error) {
+          console.log("Error occurred:", error);
+        }
+      };
+    
+      fetchNotification();
+    }, [clear]);
+    
+      const clearNotification = async () => {
+        try {
+          const res = await fetch(`${baseURL}/users/clearNotification`, {
+            method: "post",
+    
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          let result=await res.json()
+          if(!res.ok){
+            throw new Error(result.message)
+          }
+    
+          setClear(!clear)
+        } catch (error) {
+          console.log(error, "error");
+        }
+      };
 
         
   return (

@@ -11,8 +11,8 @@ const AdminHome = () => {
 
   const [booking, setBookings] = useState([]);
 
-  // const [chartPie, setChartPie] = useState(null);
-  // const [yearlyBookings, setYearlyBookings] = useState([]);
+   const [chartPie, setChartPie] = useState(null);
+   const [yearlyBookings, setYearlyBookings] = useState([]);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -154,60 +154,86 @@ const AdminHome = () => {
     };
   }, [chartBar, adminToken, baseURL]);
 
-  // useEffect(() => {
-  //   const fetchYearlyData = async () => {
-  //     try {
-  //       const response = await fetch(`${baseURL}/admin/YearlyBooking`, {
-  //         method: "get",
-  //       });
 
-  //       const result = await response.json();
-  //       setYearlyBookings(result.data);
-  //     } catch (error) {
-  //       console.error("Error fetching yearly data:", error);
-  //     }
-  //   };
 
-  //   fetchYearlyData();
-  // }, []);
+  useEffect(() => {
+    const totalBookings = async () => {
+      try {
+       
+        const res = await fetch(`${baseURL}/admin/getBooking`, {
+          method: "get",
+          headers: {
+            Authorization: `Bearer ${adminToken}`,
+          },
+        });
+       
+        const result = await res.json();
+       
+        setBookings(result.data);
 
-  // useEffect(() => {
-  //   if (!yearlyBookings.length) {
-  //     return;
-  //   }
+       
+      } catch (error) {
+        console.log(error, "error");
+      }
+    };
+    
+    totalBookings();
+  }, []);
 
-  //   if (chartPie) {
-  //     chartPie.destroy();
-  //   }
+  useEffect(() => {
+    const fetchYearlyData = async () => {
+      try {
+        const response = await fetch(`${baseURL}/admin/YearlyBooking`, {
+          method: "get",
+        });
 
-  //   const ctx = document.getElementById("chartPie");
-  //   const newChartPie = new Chart(ctx, {
-  //     type: "pie",
-  //     data: {
-  //       labels: yearlyBookings.map((item) => item._id),
-  //       datasets: [
-  //         {
-  //           label: "Yearly Bookings",
-  //           data: yearlyBookings.map((item) => item.totalBookings),
-  //           backgroundColor: [
-  //             "rgb(255, 99, 132)",
-  //             "rgb(54, 162, 235)",
-  //             "rgb(255, 205, 86)",
-  //             "rgb(75, 192, 192)",
-  //             "rgb(153, 102, 255)",
-  //           ],
-  //         },
-  //       ],
-  //     },
-  //   });
-  //   setChartPie(newChartPie);
+        const result = await response.json();
+        setYearlyBookings(result.data);
+      } catch (error) {
+        console.error("Error fetching yearly data:", error);
+      }
+    };
 
-  //   return () => {
-  //     if (newChartPie) {
-  //       newChartPie.destroy();
-  //     }
-  //   };
-  // }, [yearlyBookings]);
+    fetchYearlyData();
+  }, []);
+
+  useEffect(() => {
+    if (!yearlyBookings.length) {
+      return;
+    }
+
+    if (chartPie) {
+      chartPie.destroy();
+    }
+
+    const ctx = document.getElementById("chartPie");
+    const newChartPie = new Chart(ctx, {
+      type: "pie",
+      data: {
+        labels: yearlyBookings.map((item) => item._id),
+        datasets: [
+          {
+            label: "Yearly Bookings",
+            data: yearlyBookings.map((item) => item.totalBookings),
+            backgroundColor: [
+              "rgb(255, 99, 132)",
+              "rgb(54, 162, 235)",
+              "rgb(255, 205, 86)",
+              "rgb(75, 192, 192)",
+              "rgb(153, 102, 255)",
+            ],
+          },
+        ],
+      },
+    });
+    setChartPie(newChartPie);
+
+    return () => {
+      if (newChartPie) {
+        newChartPie.destroy();
+      }
+    };
+  }, [yearlyBookings]);
 
   return (
     <div className="min-h-screen bg-gray-50/50">

@@ -23,6 +23,7 @@ import {
   getUserWallet,
   checkFeedback,
   UserBookings,
+ 
   
 } from "../Controllers/userController.js";
 import { protect } from "../middleware/authMiddleware.js";
@@ -40,8 +41,8 @@ import {
   createRoom,
   sendChat,
   getNotification,
+  clearNotification,
  
-  
 } from "../Controllers/ChatController.js";
 
 const router = express.Router();
@@ -70,6 +71,8 @@ router.get("/getallreviews/:id", protect, getAllReviews);
 
 router.post("/get-wallet", getUserWallet);
 
+
+
 router.get("/FeedbackCheck/:id", protect, checkFeedback);
 
 router.get("/get-timings/:doctorId", getDoctorTimings);
@@ -90,7 +93,9 @@ router.post(
   sendChat
 );
 
-router.get("/getUserNotifications",protect, getNotification);
+router.post("/getUserNotifications",protect,getNotification);
+router.post("/clearNotification",protect,clearNotification);
 
+ 
 
 export default router;

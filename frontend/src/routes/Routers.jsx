@@ -9,6 +9,7 @@ import MyAccount from "../Dashboard/user-account/MyAccount.jsx";
 import { Routes, Route } from "react-router-dom";
 import Dashboard from "../Dashboard/user-account/doctor-account/Dashboard";
 import ProtectedRoute from "./ProtectedRoute";
+
 import AdminLogin from "../pages/Admin/adminLogin.jsx";
 import AdminHome from "../pages/Admin/AdminHome.jsx";
 import AdminUsers from "../pages/Admin/AdminUsers.jsx";
@@ -40,7 +41,7 @@ import WalletComponent from "../pages/Users/WalletComponent.jsx";
 import DoctorChat from "../pages/Doctors/DoctorChat.jsx";
 // import ErrorPage from "../components/ErrorPage/ErrorPage.jsx";
 
-
+import ProtectedDoctorRoute from "./ProtectedDoctorRoute.jsx"
 
 
 function Routers() {
@@ -88,7 +89,14 @@ function Routers() {
      
 
      {/*** **************Doctors Route start******************** */}
-      <Route path="/doctors/profile/me" element={<Dashboard />} />
+     
+      {/* <Route path='/doctors/profile/me'  element={
+          <ProtectedDoctorRoute allowedRoles={["doctor"]}>
+            <Dashboard/>
+          </ProtectedDoctorRoute>
+        }/> */}
+
+       <Route path="/doctors/profile/me" element={<Dashboard />} />
       <Route path="/doctors/finddoctors" element={<Doctorss />} />
       <Route path="/doctors/doctorDetails/:id" element={<DoctorDetails />} />
       <Route path="/doctors/signup" element={<DoctorRegister />} />
@@ -99,7 +107,8 @@ function Routers() {
       <Route path="/doctors/home" element={<DoctorsHome />} />
 
       <Route path="/doctors/managetime" element={<DoctorTimeManagement />} />
-
+      
+      
       <Route path="/doctors/appointments" element={<MyAppointments />} />
 
       <Route path="/doctors/profile" element={<DoctorProfile />} />

@@ -100,18 +100,18 @@ io.on("connection", (socket) => {
   });
 
   socket.on("typing", ({ roomID, isTyping }) => {
-    // Broadcast the "typing" event to all users in the same room
+    
     socket.to(roomID).emit("typing", { roomID, isTyping });
 
-    // Clear previous typingTimeoutRef if it's defined
+   
     if (typingTimeoutRef !== null) {
       clearTimeout(typingTimeoutRef);
     }
 
-    // Set a new timeout to remove typing indicator after 3 seconds
+   
     typingTimeoutRef = setTimeout(() => {
       socket.to(roomID).emit("typing", { roomID, isTyping: false });
-      typingTimeoutRef = null; // Reset typingTimeoutRef after timeout
+      typingTimeoutRef = null; 
     }, 3000);
   });
   socket.off("setup", () => {

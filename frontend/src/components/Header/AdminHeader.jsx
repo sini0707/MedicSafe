@@ -62,9 +62,9 @@ const AdminHeader = () => {
     return () => window.removeEventListener('scroll', handleStickyHeader);
   }, []);
 
-  // const logoutHandler = () => {
+  // const handleLogout = () => {
   //   localStorage.removeItem("adminInfo");
-  //   navigate("/admin/login");
+    // navigate("/admin");
   // };
 
 
@@ -92,7 +92,7 @@ const AdminHeader = () => {
 
       
 
-      navigate("/admin/home");
+      navigate("/admin");
     } catch (err) {
       console.log(err);
     }
@@ -130,9 +130,12 @@ const AdminHeader = () => {
           </div>
 
 
-          <button onClick={logoutHandler} className='bg-primaryColor py-2 px-6 text-white font [600] h-[44px] flex items-center rounded-[50px]'>
-            Logout
-          </button>
+          <button
+                onClick={logoutHandler}
+                className="bg-primaryColor py-2 px-6 text-white font-[600] h-[44px] flex items-center cursor-pointer justify-center rounded-[50px] "
+              >
+                Logout
+              </button>
           </>
       )}
 
