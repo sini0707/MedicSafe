@@ -84,8 +84,8 @@ const DoctorProfile = (doctor) => {
 
       const { message, data } = responseData;
 
-      data.token = doctor.doctor.token;
-      setFormData(data);
+      // data.token = doctor.doctor.token;
+      // setFormData(data);
       dispatch(setDoctorCredentials(data));
       toast.success(message || "Profile successfully updated");
 

@@ -1,13 +1,10 @@
 import jwt from "jsonwebtoken";
 
-const DoctorgenToken = (res, doctorId) => {
+const generateDoctorToken = (res, doctorId) => {
   const token = jwt.sign({ doctorId ,role:'doctor'}, process.env.DOCTOR_JWT_SECRET, {
     expiresIn: "30d",
   });
-
- 
-
- 
+  console.log(token,"tokennnnn")
 
 
   res.cookie("docjwt", token, {
@@ -21,4 +18,4 @@ const DoctorgenToken = (res, doctorId) => {
   return token;
 };
 
-export default DoctorgenToken;
+export default generateDoctorToken

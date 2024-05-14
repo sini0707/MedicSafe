@@ -7,6 +7,7 @@ import formatDate from "../../utils/convertDate";
 
 import apiInstance from "../../axiosApi/axiosInstance";
 import { baseURL } from "../../../../backend/config/db";
+import { doctoken } from "../../../config";
 
 import Pagination from "../../components/Pagination/Pagination";
 
@@ -41,7 +42,12 @@ const DoctorTimeManagement = () => {
     try {
       const res = await apiInstance.post(
         `${baseURL}/doctors/managetime`,
-        newBody
+        newBody,
+        {
+          headers: {
+            Authorization: `Bearer ${doctoken}`
+          }
+        }
       );
       if (res) {
         toast.success("Time Added Successfully");
@@ -78,7 +84,12 @@ const DoctorTimeManagement = () => {
   const handleDelete = async (id) => {
     try {
       const res = await apiInstance.get(
-        `${baseURL}/doctors/delete-timing/${doctorInfo._id}/${id}`
+        `${baseURL}/doctors/delete-timing/${doctorInfo._id}/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${doctoken}` 
+          }
+        }
       );
       if (res) {
         toast.success("Deleted Successfully");

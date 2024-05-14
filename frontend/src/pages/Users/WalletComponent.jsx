@@ -37,34 +37,33 @@ const WalletComponent = () => {
   }, [user]);
 
   return (
-    <div>
-      <div
-        className="font-regular relative block w-full max-w-screen-md rounded-lg bg-green-500 px-4 py-4 text-base text-white"
-        data-dismissible="alert"
-      >
-        <p className="text-center text-lg font-bold text-black ">
-          Wallet component
-        </p>
+    <div className="px-4 lg:px-0">
+      <div className="flex justify-center">
+        <div className="max-w-md w-full bg-cyan-500 rounded-lg p-6">
+          <p className="text-center text-lg font-bold text-black mb-4">
+            Wallet component
+          </p>
 
-        {wallet && (
-          <div>
-            <h2 className="text-lg font-bold">
-              Wallet Balance: <span style={{ color: "black" }}></span>$
-              {wallet.balance}
-            </h2>
-            <hr style={{ fontWeight: "bold" }} />
-            <h3>Transaction History:</h3>
-            <ul>
-              {wallet.transactions.map((transaction, index) => (
-                <li key={index}>
-                  Amount: {transaction.amount} <br />
-                  Type: {transaction.type}
-                  <hr style={{ fontWeight: "bold" }} />
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
+          {wallet && (
+            <div>
+              <h2 className="text-lg font-bold">
+                Wallet Balance:{" "}
+                <span className="text-black">${wallet.balance}</span>
+              </h2>
+              <hr className="my-4" />
+              <h3>Transaction History:</h3>
+              <ul>
+                {wallet.transactions.map((transaction, index) => (
+                  <li key={index} className="my-2">
+                    <p>Amount: {transaction.amount}</p>
+                    <p>Type: {transaction.type}</p>
+                    <hr className="my-2" />
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

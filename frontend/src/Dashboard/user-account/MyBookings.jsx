@@ -1,17 +1,15 @@
+import { useState, useEffect } from "react";
 import useFetchData from "../../hooks/useFetchData";
 import { baseURL } from "../../../../backend/config/db";
-
 import Loading from "../../components/Loader/Loading";
 import Error from "../../components/Error/Error";
-
 import Appointments from "./Appointments";
-import { useState, useEffect } from "react";
-
 import Pagination from "../../components/Pagination/Pagination.jsx";
+// import apiInstance from "../../axiosApi/axiosInstance.js";
 
 const MyBookings = () => {
   const [currentPage, setCurrentPage] = useState(1);
-  const [appointmentsPerPage] = useState(3);
+  const [appointmentsPerPage] = useState(2);
   const [MyAppointments, setAppointments] = useState([]);
 
   const {
@@ -23,11 +21,13 @@ const MyBookings = () => {
   );
 
   useEffect(() => {
+   
     setAppointments(appointments);
   }, [appointments]);
 
+  
   const totalAppointments = appointments.length;
-  let totalPages = Math.ceil(totalAppointments / appointmentsPerPage);
+  const totalPages = Math.ceil(totalAppointments / appointmentsPerPage);
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -39,6 +39,8 @@ const MyBookings = () => {
     indexOfFirstAppointment,
     indexOfLastAppointment
   );
+  
+  
 
   return (
     <div>
@@ -53,8 +55,10 @@ const MyBookings = () => {
             <Pagination
               totalPosts={totalAppointments}
               postPerPage={appointmentsPerPage}
-              setCurrentPage={setCurrentPage}
+              setCurrentPage={handlePageChange}
               currentPage={currentPage}
+              totalPages={totalPages} 
+              
             />
           )}
         </>

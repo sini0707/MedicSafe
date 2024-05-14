@@ -5,6 +5,8 @@ import { Link } from "react-router-dom";
 import uploadImageCloudinary from "../../../../backend/utils/uploadCloudinary";
 import { toast } from "react-toastify";
 import { baseURL } from "../../../../backend/config/db";
+import { FiUser,FiMail, FiLock } from 'react-icons/fi';
+import { FiDroplet,FiUpload} from 'react-icons/fi';
 
 const Signup = () => {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -98,7 +100,8 @@ const Signup = () => {
               create an <span className="text-primaryColor">account</span>
             </h3>
             <form onSubmit={submitHandler}>
-              <div className="mb-5">
+            <div className="mb-5 flex items-center"> 
+              <FiUser className="text-primaryColor mr-2" /> 
                 <input
                   type="text"
                   placeholder="Full Name"
@@ -109,7 +112,8 @@ const Signup = () => {
             placeholder:text-textColor  cursor-pointer required"
                 />
               </div>
-              <div className="mb-5">
+              <div className="mb-5 flex items-center"> {/* Email */}
+    <FiMail className="text-primaryColor mr-2"/>
                 <input
                   type="email"
                   placeholder="Enter your email"
@@ -120,7 +124,8 @@ const Signup = () => {
             placeholder:text-textColor  cursor-pointer required"
                 />
               </div>
-              <div className="mb-5">
+              <div className="mb-5 flex items-center"> 
+    <FiLock className="text-primaryColor mr-2" /> 
                 <input
                   type="password"
                   placeholder="password"
@@ -131,7 +136,8 @@ const Signup = () => {
             placeholder:text-textColor  cursor-pointer required"
                 />
               </div>
-              <div className="mb-5">
+              <div className="mb-5 flex items-center"> 
+    <FiLock className="text-primaryColor mr-2" /> 
                 <input
                   type="password"
                   placeholder="confirmpass"
@@ -142,7 +148,8 @@ const Signup = () => {
             placeholder:text-textColor  cursor-pointer required"
                 />
               </div>
-              <div className="mb-5">
+              <div className="mb-5 flex items-center"> 
+              <FiDroplet className="text-primaryColor mr-2"/>
               <select
                   name="blood"
                   value={formData.blood}
@@ -221,6 +228,9 @@ const Signup = () => {
                     htmlFor="customFile"
                     className="absolute top-0 left-0 w-full h-full flex items-center px-[0.75rem] py-[0.375rem] text-[15px] leading-6 overflow-hidden bg-[#0066ff46] text-headingColor font semibold rounded-lg truncate cursor-pointer"
                   >
+                    <span className="mr-2">
+    <FiUpload /> {/* Assuming FiUpload is the icon for upload */}
+  </span>
                     Upload Photo
                   </label>
                 </div>

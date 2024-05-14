@@ -146,15 +146,33 @@ const Profile = (user) => {
           />
         </div>
         <div className="mb-5">
-          <input
-            type="text"
-            placeholder="Blood Type"
-            name="blood"
-            value={formData.blood}
-            onChange={(e) => handleInputChange(e)}
-            className="w-full pr-4 py-3 border-b border-solid border-[#0066ff61] focus:outline-none focus:border-b-primaryColor text-[16px] leading-7 text-headingColor
-            placeholder:text-textColor  cursor-pointer "
-          />
+        {/* <input
+  type="text"
+  placeholder="Blood Type"
+  name="blood"
+  value={formData.blood}
+  onChange={(e) => handleInputChange(e)}
+  className="w-full pr-4 py-3 border-b border-solid border-[#0066ff61] focus:outline-none focus:border-b-primaryColor text-[16px] leading-7 text-headingColor
+  placeholder:text-textColor  cursor-pointer "
+/> */}
+<select
+  name="blood"
+  value={formData.blood}
+  onChange={(e) => handleInputChange(e)}
+  className="w-full pr-4 py-3 border-b border-solid border-[#0066ff61] focus:outline-none focus:border-b-primaryColor text-[16px] leading-7 text-headingColor
+  placeholder:text-textColor  cursor-pointer "
+>
+  <option value="">Select Blood Group</option>
+  <option value="A+">A+</option>
+  <option value="A-">A-</option>
+  <option value="B+">B+</option>
+  <option value="B-">B-</option>
+  <option value="O+">O+</option>
+  <option value="O-">O-</option>
+  <option value="AB+">AB+</option>
+  <option value="AB-">AB-</option>
+</select>
+
         </div>
         <div className="mb-5">
           <input

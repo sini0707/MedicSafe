@@ -40,6 +40,7 @@ const DoctorChangePassword = ({ email }) => {
       setPasswordChanged(true);
       window.location.reload();
     } catch (error) {
+      
       console.log(error);
     }
   };

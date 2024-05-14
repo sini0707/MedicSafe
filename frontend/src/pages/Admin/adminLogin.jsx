@@ -4,10 +4,12 @@ import { baseURL } from "../../../../backend/config/db";
 import {toast} from "react-toastify";
 import { useSelector } from 'react-redux';
 
+
  import { useDispatch } from 'react-redux';
  
  import  HashLoader from "react-spinners/HashLoader.js";
  import { setadminCredentials } from '../../slices/adminSlices/adminAuthSlice.js';
+import { adminToken } from '../../../config.js';
 
 
 const adminLogin = () => {
@@ -42,6 +44,7 @@ useEffect(()=>{
           method: 'post',
           headers: {
             'Content-Type': 'application/json',
+           
           },
           credentials: 'include',
           body: JSON.stringify(formData),

@@ -3,29 +3,33 @@ import ChatMessage from "../models/chatMessage.js";
 
 export const getRoomMessages = async (req, res) => {
   const { roomId } = req.params;
-  console.log("Room ID:", roomId);
+
   try {
-    const messages = await ChatMessage.find({ room: roomId }).sort({
-      createdAt: 1,
-    });
+    const messages = await ChatMessage.find({ room: roomId })
+      .populate('sender', '_id name email')
+      .populate('room', '_id user doctor');
 
     if (messages) {
       res.status(200).json(messages);
     } else {
-      console.log("No messages found for the given room");
-      res.status(404).json({ message: "No message found for the given room " });
+      res.status(404).json({ message: "No message found for the given room" });
     }
   } catch (error) {
+    console.error("Error fetching room messages:", error);
     res.status(500).json({ message: "Internal server Error" });
   }
 };
+
 
 export const getRoom = async (req, res) => {
   try {
     const { doctorId, userId } = req.params;
 
-    const room = await ChatRoom.findOne({ doctor: doctorId, user: userId });
+    const room = await ChatRoom.findOne({ doctor: doctorId, user: userId })
+      .populate('doctor', '_id name email') 
+      .populate('user', '_id name email');   
 
+      console.log(room); 
     if (room) {
       res.status(200).json({ success: true, data: room });
     } else {
@@ -71,9 +75,9 @@ export const createRoom = async (req, res) => {
 
 export const sendChat = async (req, res) => {
   const { content, read } = req.body;
-
   const { sender, roomId, type, Id, senderName } = req.params;
 
+ 
   const newMessage = new ChatMessage({
     room: roomId,
     sender: sender,
@@ -84,29 +88,32 @@ export const sendChat = async (req, res) => {
     read: read,
   });
 
+ 
   await newMessage.save();
+  
 
   let chatRoom = await ChatRoom.findOne({ _id: roomId });
-
+  
   if (chatRoom) {
     chatRoom.messages.push(newMessage._id);
-
     chatRoom.latestMessageTimestamp = newMessage.createdAt;
-
     await chatRoom.save();
+   
   }
 
+  
   await newMessage.populate([
-    { path: "sender", select: "_id name email" },
+    { path: 'sender', select: '_id name email' }, 
     {
-      path: "room",
+      path: 'room',
       populate: [
-        { path: "user", select: "_id name email" },
-        { path: "doctor", select: "_id name email" },
+        { path: 'user', select: '_id name email' }, 
+        { path: 'doctor', select: '_id name email' }, 
       ],
     },
-  ]);
-
+  ])
+;
+ 
   res.json(newMessage);
 };
 
@@ -153,7 +160,7 @@ export const MarkMessageAsRead = async (req, res) => {
 };
 
 export const getNotification = async (req, res) => {
-  console.log("userId")
+ 
   const userId = req.userId;
   
 
@@ -165,12 +172,11 @@ export const getNotification = async (req, res) => {
       createdAt: -1,
     });
 
-    console.log(Notification,"notification")
 
     if (Notification) {
       res.status(200).json(Notification);
     } else {
-      console.log("No notifications found for the given room");
+     
       res.status(404).json({ message: "No message found for the  given room" });
     }
   } catch (error) {

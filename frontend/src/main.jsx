@@ -8,7 +8,11 @@ import "react-toastify/dist/ReactToastify.css";
 import { AuthContextProvider } from './context/AuthContext.jsx';
 import store from './store.js';
 import { Provider } from 'react-redux';
+import { ChakraProvider } from '@chakra-ui/react'
+
+
 ReactDOM.createRoot(document.getElementById('root')).render(
+  <ChakraProvider>
   <Provider store={store}>
     <React.StrictMode>
       <BrowserRouter>
@@ -25,4 +29,5 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       </BrowserRouter>
     </React.StrictMode>
   </Provider>
+  </ChakraProvider>
 );

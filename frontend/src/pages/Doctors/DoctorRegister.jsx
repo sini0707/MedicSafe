@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import { baseURL } from "../../../../backend/config/db";
 import uploadImageCloudinary from "../../../../backend/utils/uploadCloudinary";
 
+
 import apiInstance from "../../axiosApi/axiosInstance";
 
 const DoctorRegister = () => {
@@ -23,6 +24,8 @@ const DoctorRegister = () => {
   const [image, setImage] = useState(null);
   const [role, setRole] = useState("Doctor");
   const [specializationList, setSpecializationList] = useState([]);
+ 
+ 
 
   const handleFileInputChange = async (event) => {
     const file = event.target.files[0];
@@ -99,7 +102,7 @@ const DoctorRegister = () => {
   useEffect(() => {
     const fetchSpecializationList = async () => {
       try {
-        const res = await apiInstance.get(`${baseURL}/admin/getspecialization`);
+        const res = await apiInstance.get(`${baseURL}/doctors/getspecializations`);
         setSpecializationList(res.data);
       } catch (error) {
         console.error("Error fetching specializationList:", error);
@@ -211,6 +214,10 @@ const DoctorRegister = () => {
                 )}
               </select>
             </div>
+
+
+
+
 
             <div className="my-[10px]">
               <label
@@ -379,6 +386,7 @@ const DoctorRegister = () => {
         </div>
       </div>
     </section>
+    
   );
 };
 

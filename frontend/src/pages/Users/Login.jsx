@@ -7,6 +7,7 @@ import HashLoader from "react-spinners/HashLoader.js";
 import { setCredentials } from "../../slices/authSlice.js";
 import { useDispatch, useSelector } from "react-redux";
 import OAuth from "../../components/OAuth.jsx";
+import { FiMail, FiLock , FiEye, FiEyeOff} from 'react-icons/fi';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -24,6 +25,8 @@ const Login = () => {
   });
   const [loading, setLoading] = useState(false);
   const [role, setRole] = useState("patient");
+  const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
+ 
 
   const dispatch = useDispatch();
 
@@ -60,7 +63,7 @@ const Login = () => {
     } catch (error) {
       console.log(error, "error");
       setLoading(false);
-      toast.error("you are blocked");
+      toast.error("Please select Correct email and password!!!");
     }
   };
 
@@ -71,7 +74,8 @@ const Login = () => {
           Hello! <span className="text-primaryColor">Welcome</span>Back
         </h3>
         <form className="py-4 md:py-0" onSubmit={submitHandler}>
-          <div className="mb-5">
+        <div className="mb-5 flex items-center">
+          <FiMail className="text-primaryColor mr-2" />
             <input
               type="email"
               placeholder="Enter your email"
@@ -82,16 +86,28 @@ const Login = () => {
             placeholder:text-textColor  cursor-pointer required"
             />
           </div>
-          <div className="mb-5">
-            <input
-              type="password"
-              name="password"
-              placeholder="password"
-              value={formData.password}
-              onChange={(e) => handleInputChange(e)}
-              className="w-full py-3 border-b border-solid border-[#0066ff61] focus:border-b-primaryColor text-[16px] leading-7 text-headingColor
-            placeholder:text-textColor  cursor-pointer required"
-            />
+          <div className="mb-5 flex items-center">
+          <FiLock className="text-primaryColor mr-2" /> 
+          <input
+        type={showPassword ? "text" : "password"} 
+        name="password"
+        placeholder="Password"
+        value={formData.password}
+        onChange={(e) => handleInputChange(e)}
+        className="w-full py-3 border-b border-solid border-[#0066ff61] focus:border-b-primaryColor text-[16px] leading-7 text-headingColor placeholder:text-textColor cursor-pointer required"
+      />
+     
+      {showPassword ? (
+        <FiEyeOff
+          className="text-primaryColor cursor-pointer"
+          onClick={() => setShowPassword(false)}
+        />
+      ) : (
+        <FiEye
+          className="text-primaryColor cursor-pointer"
+          onClick={() => setShowPassword(true)}
+        />
+      )}
           </div>
 
           <div className="mb-5">

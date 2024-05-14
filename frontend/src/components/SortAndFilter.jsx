@@ -4,9 +4,17 @@ import React, { useState } from 'react';
 const SortAndFilter = ({setSortted,setFilter,setMinRating  }) => {
 
 
+  
+
   const handleSort = (sortValue) => {
-   setSortted(sortValue)
+    if (sortValue === "low-high") {
+      setSortted("low-high");
+    } else if (sortValue === "high-low") {
+      setSortted("high-low");
+    }
   };
+  
+  
 
   const handleFilter = (filtered) => {
    
@@ -24,48 +32,51 @@ const SortAndFilter = ({setSortted,setFilter,setMinRating  }) => {
 
 
   return (
-    <div className='w-full flex md:flex-row gap-10' >
+    <div className='w-full flex flex-col gap-4 md:flex-row md:gap-10'>
 
-<div style={{ display: 'flex', alignItems: 'center' }}>
-        <label className='relative text-cyan-400 w-full text-xs md:text-lg font-bold  rounded-lg'>Filter By:</label>
-        <select onChange={(e)=>handleFilter(e.target.value)}
-              className="focus:outline-none  rounded-lg  text-black font-semibold   md:text-md text-sm  "
-              id="yourSelect"
-              
-              name="role"
-            >
-              <option value="">Select</option>
-              <option className='text-black font-semibold text-md' value="Radiology">Radiology</option>
-              <option className='text-black font-semibold text-md' value="cardiology">cardiology</option>
-              
-              <option className='text-black font-semibold text-md' value="ophtamology">ophtamology</option>
-              <option className='text-black font-semibold text-md' value="ophtamology">Dermatology</option>
-             
-
-
-            </select>
-       
-      </div>
-
-      <div className='flex justify-between items-center'>
-  <div>
-    <label className='relative text-cyan-400 text-xs md:text-lg font-bold  rounded-lg'>
-      Sort By:
-      <select onChange={(e)=>handleSort(e.target.value)}
+    {/* Filter By */}
+    <div className='flex flex-col items-center'>
+      <label className='text-cyan-400 text-xs md:text-lg font-bold rounded-lg'>
+        Filter By:
+      </label>
+      <select 
+        onChange={(e)=>handleFilter(e.target.value)}
+        className="focus:outline-none rounded-lg text-black font-semibold md:text-md text-sm"
+        id="yourSelect"
+        name="role"
+      >
+        <option value="">Select</option>
+        <option className='text-black font-semibold text-md' value="Radiology">Radiology</option>
+        <option className='text-black font-semibold text-md' value="cardiology">Cardiology</option>
+        <option className='text-black font-semibold text-md' value="opthalmology">Opthalmology</option>
+        <option className='text-black font-semibold text-md' value="dermatology">Dermatology</option>
+      </select>
+    </div>
+  
+    {/* Sort By */}
+    <div className='flex flex-col items-center'>
+      <label className='text-cyan-400 text-xs md:text-lg font-bold rounded-lg'>
+        Sort By:
+      </label>
+      <select 
+        onChange={(e) => handleSort(e.target.value)}
         className="focus:outline-none rounded-lg text-black font-semibold md:text-md text-sm"
         id="sortSelect"
         name="sort"
       >
         <option value="">Fee</option>
-        <option className='text-black font-semibold text-md' value="low-high">low-high</option>
+        <option className='text-black font-semibold text-md' value="low-high">Low-High</option>
+        <option className='text-black font-semibold text-md' value="high-low">High-Low</option>
       </select>
-    </label>
-  </div>
-
-  <div className='flex justify-between items-center  ml-8'>
-    <label className='relative text-cyan-400 text-xs md:text-lg font-bold rounded-lg'>
-      Filter Rating:
-      <select onChange={(e) => handleRatingFilter(e.target.value)}
+    </div>
+  
+    {/* Filter Rating */}
+    <div className='flex flex-col items-center'>
+      <label className='text-cyan-400 text-xs md:text-lg font-bold rounded-lg'>
+        Filter Rating:
+      </label>
+      <select 
+        onChange={(e) => handleRatingFilter(e.target.value)}
         className="focus:outline-none rounded-lg text-black font-semibold md:text-md text-sm"
         id="ratingSelect"
         name="rating"
@@ -77,13 +88,11 @@ const SortAndFilter = ({setSortted,setFilter,setMinRating  }) => {
         <option value="4">4 stars</option>
         <option value="5">5 stars</option>
       </select>
-    </label>
+    </div>
+  
   </div>
-</div>
-
-      
-      </div>
-    
+  
+  
   );
 };
 

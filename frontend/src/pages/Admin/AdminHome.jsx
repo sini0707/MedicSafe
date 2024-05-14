@@ -19,6 +19,9 @@ const AdminHome = () => {
       try {
         const res = await fetch(`${baseURL}/admin/userlist`, {
           method: "GET",
+          headers: {
+            Authorization: `Bearer ${adminToken}`,
+          },
         });
 
         const result = await res.json();
@@ -36,6 +39,9 @@ const AdminHome = () => {
       try {
         const res = await fetch(`${baseURL}/admin/doctordata`, {
           method: "GET",
+          headers: {
+            Authorization: `Bearer ${adminToken}`,
+          },
         });
 
         const result = await res.json();

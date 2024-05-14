@@ -25,6 +25,7 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
      console.log('Accessible route:', accessibleRoute);
        return accessibleRoute;
   }
+  
 };
 
 export default ProtectedRoute;

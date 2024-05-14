@@ -1,11 +1,25 @@
 // Modal.js
-import React, { useEffect, useRef } from "react";
+import  { useEffect, useRef } from "react";
 
-const Modal = ({ show, onClose, children }) => {
+const Modal = ({ show, onClose, children, addPre, submit }) => {
+
+  console.log(submit,"submit")
+
   const textareaRef = useRef(null);
 
+  const handleText = (e) => {
+    addPre(e.target.value);
+  };
+
+  const handleSubmit = () => {
+    console.log("Submitting modal form...");
+    submit()
+  
+    onClose();
+  };
+
   useEffect(() => {
-    // Focus the textarea when the modal is opened
+   
     if (show) {
       textareaRef.current.focus();
     }
@@ -28,10 +42,17 @@ const Modal = ({ show, onClose, children }) => {
               ref={textareaRef}
               rows={4}
               cols={50}
-              placeholder="Enter your reply"
+              placeholder="Type your message"
+              onChange={(e) => handleText(e)}
               autoFocus
               className="w-full p-2 border border-gray-300 rounded mt-4"
             />
+            <button
+              onClick={handleSubmit}
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4"
+            >
+              Submit
+            </button>
           </div>
         </div>
       )}

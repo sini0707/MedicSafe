@@ -58,9 +58,12 @@ const Doctorss = () => {
         doctor.specialization.toLowerCase().includes(search.toLowerCase()))
   );
 
-  if (sortted !== "") {
+  if (sortted === "low-high") {
     filterdDoctors = filterdDoctors.sort((a, b) => a.fees - b.fees);
+  } else if (sortted === "high-low") {
+    filterdDoctors = filterdDoctors.sort((a, b) => b.fees - a.fees);
   }
+  
   if (filter !== "") {
     filterdDoctors = filterdDoctors.filter(
       (item) => item.specialization === filter

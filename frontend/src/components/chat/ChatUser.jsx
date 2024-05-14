@@ -154,6 +154,8 @@ const ChatUser = ({ onClose, doctor, user, photo, doctorPic, userName }) => {
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
+  
+  
 
   const formatChatTime = (createdAt) => {
     const date = new Date(createdAt);
@@ -283,12 +285,7 @@ const ChatUser = ({ onClose, doctor, user, photo, doctorPic, userName }) => {
         </div>
       </div>
      
-      <button
-    onClick={() => deleteMessage(chats._id)}
-    className="absolute top-[10px] left-[50px] bg-gray-500 text-white px-3 py-1 rounded-md hover:bg-orange-600 focus:outline-none"
-  >
-    <RiDeleteBinLine className="text-xl" /> {/* Use the delete icon component */}
-  </button>
+      
       <div className="absolute top-2 left-5 cursor-pointer">
         <svg
           // onClick={onClose}

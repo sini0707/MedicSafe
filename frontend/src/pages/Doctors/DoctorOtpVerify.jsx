@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useRef } from "react";
+import { doctoken } from "../../../config";
 
 import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
@@ -38,8 +39,14 @@ const DoctorOtpVerify = () => {
   const submitHandler = async (e) => {
     e.preventDefault();
     try {
-      const res = await verify({ email, otp });
-
+      const res = await verify(
+        { email, otp },
+        {
+          headers: {
+            Authorization: `Bearer ${doctoken}`,
+          },
+        }
+      );
       if (res.data) {
         if (res.data.success) {
           toast.success("Doctor registered successfully");

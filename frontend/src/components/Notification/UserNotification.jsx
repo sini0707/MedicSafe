@@ -8,19 +8,16 @@ import { token } from "../../../config";
 
 
 const UserNotification = ({setNotification}) => {
-  // const user = useSelector((state) => state.auth.userInfo);
-  // console.log(user)
-   
+  
     const [message, setMessages] = useState([]);
     const [clear, setClear] = useState(false);
 
     useEffect(() => {
-      console.log("Inside useEffect");
-    
+      
       const fetchNotification = async () => {
         try {
           
-          console.log("Fetching notifications...");
+         
           const res = await fetch(`${baseURL}/users/getUserNotifications`, {
             method: "post",
             headers: {
@@ -28,17 +25,16 @@ const UserNotification = ({setNotification}) => {
             },
           });
     
-          console.log("Response received:", res);
+         
     
           const result = await res.json();
-          console.log("Result:", result);
+         
     
           if (!res.ok) {
             console.log("Error response received:", result.message);
             throw new Error(result.message);
           }
     
-          console.log("Setting messages:", result);
           setMessages(result);
         } catch (error) {
           console.log("Error occurred:", error);

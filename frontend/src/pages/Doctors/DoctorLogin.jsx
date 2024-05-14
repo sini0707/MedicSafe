@@ -6,6 +6,7 @@ import apiInstance from "../../axiosApi/axiosInstance";
 import HashLoader from "react-spinners/HashLoader";
 import { setDoctorCredentials } from "../../slices/doctorSlices/doctorAuthSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { FiMail, FiLock } from 'react-icons/fi';
 
 const DoctorLogin = () => {
   const doctor = useSelector((state) => state.docAuth.doctorInfo);
@@ -45,7 +46,8 @@ const DoctorLogin = () => {
       toast.success(res.data.message);
       navigate("/doctors/home");
     } catch (err) {
-      toast.error(err.message, "VFdvd");
+      // toast.error(err.message, "VFdvd");
+      toast.error("Please select Correct email and password!!!");
       setLoading(false);
     }
   };
@@ -57,7 +59,8 @@ const DoctorLogin = () => {
           Hello! <span className="text-primaryColor">Welcome</span>Back
         </h3>
         <form className="py-4 md:py-0" onSubmit={submitHandler}>
-          <div className="mb-5">
+        <div className="mb-5 flex items-center">
+          <FiMail className="text-primaryColor mr-2" />
             <input
               type="email"
               placeholder="Enter your email"
@@ -68,7 +71,8 @@ const DoctorLogin = () => {
             placeholder:text-textColor  cursor-pointer required"
             />
           </div>
-          <div className="mb-5">
+          <div className="mb-5 flex items-center">
+          <FiLock className="text-primaryColor mr-2" /> 
             <input
               type="password"
               name="password"
@@ -81,7 +85,7 @@ const DoctorLogin = () => {
           </div>
 
           <div className="mb-5"></div>
-          <div className="mt-7">
+          <div className="mt-7 flex flex-col gap-4">
             <button
               type="submit"
               className="w-full bg-primaryColor  text-white text-[18px] leading-[30px] rounded-lg px-4 py-3"

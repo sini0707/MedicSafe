@@ -6,9 +6,12 @@ import DoctorgenToken from "../utils/DoctorgenToken.js";
 import User from "../models/userModel.js"
 import bcrypt from "bcryptjs";
 import nodemailer from "nodemailer";
-import { generateDoctorToken } from "../utils/generateToken.js";
+import generateDoctorToken from "../utils/DoctorgenToken.js";
 import { Pagination } from "react-bootstrap";
 import { v4 as uuidv4 } from "uuid";
+import pdf from 'pdfkit';
+import Specialization from "../models/SpecializationModel.js";
+
 const sendOtpLink = (email, otp) => {
   try {
     const transporter = nodemailer.createTransport({
@@ -92,6 +95,20 @@ export const register = async (req, res) => {
       .json({ success: false, message: "Internal server error, try again" });
   }
 };
+
+
+ export const GetSpecialization = asyncHandler(async (req, res) => {
+  try {
+   
+    const specializations = await Specialization.find({}, 'name');
+
+    res.json(specializations);
+  } catch (error) {
+   
+    console.error("Error fetching specializations:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
 
 export const DoctorOtpVerify = asyncHandler(async (req, res) => {
   const { email, otp } = req.body;
@@ -497,3 +514,32 @@ export const  DoctorChangePassword = asyncHandler(async (req, res) => {
     res.status(400).json({ error: "User not found" });
   }
 });
+
+export const generatePrescription = async (req, res) => {
+  console.log("hello")
+  // try {
+  //   console.log("Starting prescription generation...");
+    
+  
+  //   const { prescriptionText } = req.body; 
+  //   console.log("Prescription text:", prescriptionText);
+
+   
+  //   const newBooking = new Booking({
+  //     prescription: prescriptionText,
+  //   });
+  //   console.log("New booking object:", newBooking);
+
+   
+  //   await newBooking.save();
+  //   console.log("New booking saved successfully.");
+
+  
+  //   res.status(200).json({ message: 'Prescription submitted successfully!' });
+  //   console.log("Prescription submitted successfully!");
+  // } catch (error) {
+  
+  //   console.error('Error submitting prescription:', error);
+  //   res.status(500).json({ message: 'Internal server error' });
+  // }
+};

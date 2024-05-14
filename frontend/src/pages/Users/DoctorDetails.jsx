@@ -21,6 +21,7 @@ const DoctorDetails = () => {
   const [details, setDetails] = useState({});
 
   const [available, setAvailable] = useState([]);
+
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [availableTime, setAvailableTime] = useState([]);
@@ -28,6 +29,8 @@ const DoctorDetails = () => {
   const [isChatOpen, setIsChatOpen] = useState(false);
 
   const [bookedSlots, setBookedSlots] = useState([]);
+
+  console.log(bookedSlots,"itanu")
 
   let { id } = useParams();
   const doctorId = id;
@@ -40,7 +43,12 @@ const DoctorDetails = () => {
   const fetchDoctor = async () => {
     try {
       const res = await apiInstance.get(
-        `${baseURL}/doctors/getdoctor/${doctorId}`
+        `${baseURL}/doctors/getdoctor/${doctorId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
       );
       setDetails(res.data.data);
       setAvailable(res.data.data.available);
@@ -55,7 +63,14 @@ const DoctorDetails = () => {
 
   const fetchUserBookings = async () => {
     try {
-      const res = await apiInstance.get(`${baseURL}/users/bookings/${userId}`);
+      const res = await apiInstance.get(
+        `${baseURL}/users/bookings/${userId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
       const userBookedSlots = res.data.bookings.map((booking) => ({
         date: booking.slotDate,
         time: booking.slotTime,
@@ -97,6 +112,11 @@ const DoctorDetails = () => {
         {
           date: indianDate,
           time: indianTime,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
         }
       );
 
@@ -117,12 +137,42 @@ const DoctorDetails = () => {
       return;
     }
 
+    //Date converter
+    function formatDateToIndian(dateString) {
+      const date = new Date(dateString); // Convert string to Date object
+      const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+      const indianDate = date.toLocaleDateString('en-IN', options);
+      return indianDate;
+  }
+
+
     let selectedDate = e.target.value;
+
+   
     let formattedDate = formatDateToUTC(selectedDate);
+    console.log(formattedDate,"formatted datae")
+  
+      // for(let slot of available){
+      //   //  console.log(time,"kfdmvklf")
+      //   let availableDate=formatDateToIndian(slot.date)
+       
+      // }
+
+      console.log(available,"available")
+      console.log(bookedSlots,"booked slots")
+
+     
+     
+
+
+      
 
     let availavleTimings = available.filter(
       (item) => item.date === formattedDate
     );
+
+    let bookedTimings = bookedSlots.filter((item) => item.date === formattedDate);
+    console.log(bookedTimings,"booked timings")
     const timings = availavleTimings.map((elem) => {
       return elem.fromTime;
     });
@@ -133,11 +183,14 @@ const DoctorDetails = () => {
     setTime("");
   };
 
+  
+
   const handleTime = (selectedTime) => {
     if (
-      bookedSlots.some(
-        (slot) => slot.date === date && slot.time === selectedTime
-      )
+      console.log(bookedSlots,"booked slots")
+      // bookedSlots.some(
+      //   (slot) => slot.date === date && slot.time === selectedTime
+      // )  
     ) {
       toast.error("This time slot is already booked by you");
       return;
@@ -177,6 +230,8 @@ const DoctorDetails = () => {
     return bookedSlots.some((slot) => slot.time === timeSlot);
   };
 
+  const filteredAvailableTime = availableTime.filter((timeSlot) => !isSlotBooked(timeSlot));
+ 
   return (
     <section className="container flex-col h-5/6">
       <div className="flex flex-col lg:flex-row md:justify-start items-center">
@@ -192,19 +247,25 @@ const DoctorDetails = () => {
           <div className="details text-center mx-5 md:text-left h-full">
             <div className="flex justify-center md:justify-start py-2">
               <h1 className="px-2 font-bold text-3xl">{details.name}</h1>
+              
               <div className="flex items-center gap-[6px]">
                 <span className="flex items-center gap-[6px] text-[14px] leading-5 lg:text-[16px] lg:leading-7 font-semibold text-headingColor">
                   {formattedRating}
                   <img src={starIcon} alt="" />
                 </span>
+                
                 <span className="text-[14px] leading-5 lg:text-[16px] lg:leading-7 font-[400] text-textColor">
                   {}
                 </span>
+                
               </div>
-              <span className="h-fit inline-flex items-center rounded-md bg-blue-50 px-2 py-2 text-xs font-bold text-blue-700 ring-1 ring-inset ring-blue-700/10">
-                {details.specialization}
-              </span>
+              
             </div>
+            
+              <h3 className="p-2 font-medium ">
+              Specialization :{" "}
+              <span className="text-blue-500 font-bold"> {details.specialization}</span>
+            </h3>
             <h3 className="p-2 font-medium ">
               Experience :{" "}
               <span className="text-blue-500 font-bold">
@@ -225,7 +286,12 @@ const DoctorDetails = () => {
               <span className="text-blue-500 font-bold"> {details.fees}</span>
             </h3>
 
-            <div className="flex h-fit my-3">
+           
+          </div>
+        </div>
+
+        <div className="h-60 w-full lg:w-2/5">
+        <div className="flex h-fit my-3">
               <div className="mx-2 flex border-2 items-center px-2 h-fit border-blue-300 rounded">
                 <label htmlFor="from" className="w-1/3">
                   Date :
@@ -242,48 +308,62 @@ const DoctorDetails = () => {
                 />
               </div>
             </div>
-          </div>
-        </div>
+          
 
-        <div className="h-60 w-full lg:w-2/5">
-          <h3 className="text-blue-500 font-bold my-2">Special Timings</h3>
-
-          {availableTime.map((timeSlot) => (
+          {/* {availableTime.map((timeSlot) => (
+            
             <button
               key={timeSlot}
               onClick={() => handleTime(timeSlot)}
               className={`${
                 timeSlot === time && "bg-blue-500 text-white"
-              } mx-3 my-2 px-4 py-2 bg-gray-200 hover:bg-gray-300 text-blue-500 font-bold rounded`}
+              } mx-3 my-2 px-4 py-2 ${
+                isSlotBooked(timeSlot) ? "bg-gray-400 cursor-not-allowed" : "bg-green-500 hover:bg-green-300 text-black-500 font-bold"
+              } rounded`}
               disabled={isSlotBooked(timeSlot)}
             >
               {timeSlot}
             </button>
-          ))}
-          <button
-            className="focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900"
-            onClick={() => bookHandler(date, time)}
-            disabled={
-              !time ||
-              bookedSlots.some(
-                (slot) => slot.date === date && slot.time === time
-              )
-            }
-          >
-            Book Now
-          </button>
+          ))} 
+          */}
+       {filteredAvailableTime.map((timeSlot) => (
+      <button
+        key={timeSlot}
+        onClick={() => handleTime(timeSlot)}
+        className={`${
+          timeSlot === time && "bg-blue-500 text-white"
+        } mx-3 my-2 px-4 py-2 bg-green-500 hover:bg-green-300 text-black-500 font-bold rounded`}
+      >
+        {timeSlot}
+      </button>
+    ))}
+
+    {availableTime.length > 0 && (
+      <button
+        className="focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900"
+        onClick={() => bookHandler(date, time)}
+        disabled={
+          !time ||
+          bookedSlots.some(
+            (slot) => slot.date === date && slot.time === time
+          )
+        }
+      >
+        Book Now
+      </button>
+    )}
         </div>
       </div>
 
       <div className="mt-[50px] border-b border-solid border-[#0066ff34]">
-        <button
+        {/* <button
           onClick={() => setTab("about")}
           className={`${
             tab === "about" && "border-b border-solid border-primaryColor"
           } py-2 px-5 mr-5 text-[16px] leading-7 text-headingColor  font-semibold`}
         >
           About
-        </button>
+        </button> */}
 
         <button
           onClick={() => setTab("feedback")}

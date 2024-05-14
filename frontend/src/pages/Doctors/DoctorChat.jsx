@@ -1,4 +1,4 @@
-import { useState, useEffect,useRef  } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import io from "socket.io-client";
 import { baseURL } from "../../../../backend/config/db";
@@ -7,14 +7,11 @@ import { toast } from "react-toastify";
 import { IoCheckmark } from "react-icons/io5";
 import { RiCheckDoubleFill } from "react-icons/ri";
 import AnimationTyping from "../../components/AnimationTyping/AnimationTyping";
-import { RiDeleteBinLine } from 'react-icons/ri';
 
 const ENDPOINT = "http://localhost:8000";
 var socket, selectedChatCompare;
 
 const DoctorChat = () => {
- 
-  
   const [socketConnected, setSocketConnected] = useState(false);
 
   const [rooms, setRooms] = useState("");
@@ -30,7 +27,6 @@ const DoctorChat = () => {
   const [isTyping, setIsTyping] = useState(false);
   const typingTimeoutRef = useRef(null);
   const chatContainerRef = useRef(null);
-  
 
   const doctorInfo = useSelector((state) => state.docAuth.doctorInfo);
 
@@ -58,15 +54,19 @@ const DoctorChat = () => {
           throw new Error(result.message);
         }
 
-        const sortedRooms = result.map(room => ({
+        const sortedRooms = result.map((room) => ({
           ...room,
-          latestMessageTimestamp: room.messages.length > 0 ? new Date(room.messages[0].createdAt) : new Date(0)
+          latestMessageTimestamp: room.messages.length > 0 ? new Date(room.messages[0].createdAt) : new Date(0),
+          lastMessage: room.messages.length > 0 ? {
+            content: room.messages[0].content,
+            createdAt: room.messages[0].createdAt,
+          } : null,
         }));
-  
+    
         sortedRooms.sort((a, b) => b.latestMessageTimestamp - a.latestMessageTimestamp);
-  
+    
         setRooms(sortedRooms);
-        console.log(sortedRooms,'latest')
+        console.log(sortedRooms); 
       } catch (error) {
         setError(error);
         console.log("error", error);
@@ -74,8 +74,32 @@ const DoctorChat = () => {
     };
     fetchRoom();
   }, [doctorInfo._id]);
-  
-  
+
+  useEffect(() => {
+    socket.on("message received", (newMessageReceived) => {
+      const updatedRooms = [...rooms];
+      const roomIndex = updatedRooms.findIndex(
+        (room) => room._id === newMessageReceived.room._id
+      );
+
+      if (roomIndex !== -1) {
+        updatedRooms[roomIndex].lastMessage = newMessageReceived.message;
+
+        updatedRooms.sort((a, b) => {
+          const timestampA = a.lastMessage
+            ? new Date(a.lastMessage.createdAt)
+            : new Date(0);
+          const timestampB = b.lastMessage
+            ? new Date(b.lastMessage.createdAt)
+            : new Date(0);
+          return timestampB - timestampA;
+        });
+
+        setRooms(updatedRooms);
+      }
+    });
+  }, [rooms]);
+
   const handleStartChatWithDoctor = (chatId, patient, doctor) => {
     setChatId(chatId);
     setPatient(patient);
@@ -84,44 +108,39 @@ const DoctorChat = () => {
 
   useEffect(() => {
     const fetchMessage = async () => {
-        try {
-            const res = await fetch(
-                `${baseURL}/doctors/get-rooms-messages/${chatId}`,
-                {
-                    method: "get",
-                    headers: {
-                        Authorization: `Bearer ${doctoken}`,
-                    },
-                }
-            );
+      try {
+        const res = await fetch(
+          `${baseURL}/doctors/get-rooms-messages/${chatId}`,
+          {
+            method: "get",
+            headers: {
+              Authorization: `Bearer ${doctoken}`,
+            },
+          }
+        );
 
-            let result = await res.json();
+        let result = await res.json();
 
-            if (!res.ok) {
-                throw new Error(result.message);
-            }
-
-           
-
-            setChats(result);
-            setMessageSent(false);
-            selectedChatCompare = chats;
-            socket.emit("join_chat", chatId);
-        } catch (error) {
-            console.log("error", error);
+        if (!res.ok) {
+          throw new Error(result.message);
         }
+
+        setChats(result);
+        setMessageSent(false);
+        selectedChatCompare = chats;
+        socket.emit("join_chat", chatId);
+      } catch (error) {
+        console.log("error", error);
+      }
     };
     fetchMessage();
-}, [chatId, messageSent]);
-
+  }, [chatId, messageSent]);
 
   const formatChatTime = (createdAt) => {
     const date = new Date(createdAt);
     const options = { hour: "numeric", minute: "numeric", hour12: true };
-    return date.toLocaleDateString("en-US", options);
+    return date.toLocaleTimeString("en-US", options);
   };
-
-  
 
   const handleInputChange = (e) => {
     setContent(e.target.value);
@@ -171,131 +190,120 @@ const DoctorChat = () => {
       }
     });
   }, [chatId, selectedChatCompare, chats]);
-  
- 
-  
-  
+
   useEffect(() => {
     socket.on("newUserMessage", (newMessage) => {
       setChats((prevChats) => [...prevChats, newMessage]);
     });
   }, []);
 
-  
-
   useEffect(() => {
     if (chatContainerRef.current) {
-      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+      chatContainerRef.current.scrollTop =
+        chatContainerRef.current.scrollHeight;
     }
   }, [chats]);
 
   useEffect(() => {
-   
     socket.on("typing", ({ roomID, isTyping }) => {
-        if (roomID === chatId) {
-            setIsTyping(isTyping);
-        }
-    });
-}, [chatId]);
-
-const handleTyping = () => {
-  clearTimeout(typingTimeoutRef.current);
-  setIsTyping(true);
-  typingTimeoutRef.current = setTimeout(() => {
-    setIsTyping(false);
-    socket.emit("typing", { roomID: chatId, isTyping: false });
-  }, 2000);
-  
-  socket.emit("typing", { roomID: chatId, isTyping: true });
-};
-
-const markMessageAsRead = async (roomId) => {
-  try {
-    const res = await fetch(
-      `${baseURL}/doctors/mark-room-message-read/${roomId}`,
-      {
-        method: "PUT",
-        headers: {
-          Authorization: `Bearer ${doctoken}`,
-          "Content-Type": "application/json",
-        },
+      if (roomID === chatId) {
+        setIsTyping(isTyping);
       }
-    );
-  } catch (error) {
-    console.log(error);
-  }
-};
+    });
+  }, [chatId]);
 
+  const handleTyping = () => {
+    clearTimeout(typingTimeoutRef.current);
+    setIsTyping(true);
+    typingTimeoutRef.current = setTimeout(() => {
+      setIsTyping(false);
+      socket.emit("typing", { roomID: chatId, isTyping: false });
+    }, 2000);
 
+    socket.emit("typing", { roomID: chatId, isTyping: true });
+  };
 
-
-
-
-
+  const markMessageAsRead = async (roomId) => {
+    try {
+      const res = await fetch(
+        `${baseURL}/doctors/mark-room-message-read/${roomId}`,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${doctoken}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div className=" font-semibold">
-        
       <div className="flex h-screen overflow-hidden">
         <div className="w-1/4 bg-white border-r border-gray-300">
           <header className="p-4 border-b border-gray-300 flex justify-between items-center bg-indigo-600 text-white">
             <span className="font-bold">Active Conversations</span>
-            <div className="relative">
-             
-
-              
-            </div>
+            <div className="relative"></div>
           </header>
 
           {/* Contact List */}
-       {/* Contact List */}
-<div className="overflow-y-auto h-screen p-3 mb-9 pb-20">
-{rooms.length > 0 ? (
-                  rooms.map((chat, index) => (
-                    <div
-                      key={index}
-                      className="flex flex-col space-y-1 mt-4 -mx-2  overflow-y-auto"
-                      onClick={() => {
-                        setChatId((prevChatId) => chat._id);
-                        setPatient((prevPatient) => chat.user);
-                        markMessageAsRead(chat._id);
-                      }}
-                    >
-                      <button className="flex flex-row items-center hover:bg-gray-100 rounded-xl p-2">
-                        <div className="flex items-center justify-center h-8 w-8 bg-gray-200 rounded-full">
-                          Q
-                        </div>
-                        <div className="ml-2 text-sm font-semibold">
-                          {chat.user.name}
-                        </div>
-                      </button>
-                    </div>
-                  ))
-                ) : (
-                  <div className="flex flex-col space-y-1 mt-4 -mx-2  overflow-y-auto">
-                    <button className="flex flex-row items-center hover:bg-gray-100 rounded-xl p-2">
-                      <div className="flex items-center justify-center h-8 w-8 bg-gray-200 rounded-full">
-                        U
-                      </div>
-                      <div className="ml-2 text-sm font-semibold">No chats</div>
-                    </button>
-                  </div>
-                )}
-              </div>
 
+          <div className="overflow-y-auto h-screen p-3 mb-9 pb-20">
+            {rooms.length > 0 ? (
+              rooms.map((chat, index) => (
+                <div
+                  key={index}
+                  className="flex flex-col space-y-1 mt-4 -mx-2 overflow-y-auto"
+                  onClick={() => {
+                    setChatId((prevChatId) => chat._id);
+                    setPatient((prevPatient) => chat.user);
+                    markMessageAsRead(chat._id);
+                  }}
+                >
+                  <button className="flex flex-row items-center hover:bg-gray-100 rounded-xl p-2">
+                    <div className="flex items-center justify-center h-8 w-8 bg-gray-200 rounded-full">
+                      Q
+                    </div>
+                    <div className="ml-2 text-sm font-semibold">
+                      {chat.user.name}
+                    </div>
+
+                    {chat.lastMessage && (
+                      <div className="ml-auto text-xs text-gray-500">
+                        <div> {chat.lastMessage.content}</div>
+                        <div> {formatChatTime(chat.lastMessage.createdAt)}</div>
+                      </div>
+                    )}
+                  </button>
+                </div>
+              ))
+            ) : (
+              <div className="flex flex-col space-y-1 mt-4 -mx-2  overflow-y-auto">
+                <button className="flex flex-row items-center hover:bg-gray-100 rounded-xl p-2">
+                  <div className="flex items-center justify-center h-8 w-8 bg-gray-200 rounded-full">
+                    U
+                  </div>
+                  <div className="ml-2 text-sm font-semibold">No chats</div>
+                </button>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Main Chat Area */}
         <div className="flex flex-col flex-auto h-full p-6">
-        
           <div className="flex flex-col flex-auto flex-shrink-0 rounded-2xl bg-gray-100 h-full p-4">
-            <div className="flex flex-col h-full overflow-x-auto mb-4"ref={chatContainerRef}>
-              
-           
-            {chatId ? (
-                    chats && chats.length > 0 ? (
-                      chats.map((chat, index) => (
-            <div key={index} className="flex flex-col h-full">
+            <div
+              className="flex flex-col h-full overflow-x-auto mb-4"
+              ref={chatContainerRef}
+            >
+              {chatId ? (
+                chats && chats.length > 0 ? (
+                  chats.map((chat, index) => (
+                    <div key={index} className="flex flex-col h-full">
                       <div className="grid grid-cols-12 gap-y-2">
                         {chat.senderType === "User" ? (
                           <div className="col-start-1 col-end-8 p-3 rounded-lg">
@@ -332,16 +340,12 @@ const markMessageAsRead = async (roomId) => {
                                 <div className="text-xs text-gray-500 mt-1">
                                   {formatChatTime(chat.createdAt)}
                                 </div>
-                               
                               </div>
-                             
                             </div>
                           </div>
-                          
                         )}
                       </div>
                     </div>
-                    
                   ))
                 ) : (
                   <h1>No Chats available!!</h1>
@@ -350,37 +354,24 @@ const markMessageAsRead = async (roomId) => {
             </div>
             {isTyping && <AnimationTyping />}
             <div className="flex flex-row items-center h-16 rounded-xl bg-white w-full px-4">
-           
               <div>
                 <button className="flex items-center justify-center text-gray-400 hover:text-gray-600"></button>
-                
               </div>
               <div className="flex-grow ml-4">
                 <div className="relative w-full">
-                <input
-            onChange={(e) => {
-                setContent(e.target.value);
-                handleTyping(); 
-            }}
-            value={content}
-            className="flex items-center h-10 w-4/5 rounded px-3 text-sm"
-            type="text"
-            placeholder="Type your message…"
-            
-        />
-         <button
-                onClick={() => deleteMessage(chats._id)}
-                className="absolute top-1/2 transform -translate-y-1/2 right-[50px] bg-gray-500 text-white px-3 py-1 rounded-md hover:bg-orange-600 focus:outline-none"
-              >
-                <RiDeleteBinLine className="text-xl" /> {/* Use the delete icon component */}
-              </button>
-                  <button
-                  
-                    className="absolute flex items-center justify-center h-full w-12 right-0 top-0 text-gray-400 hover:text-gray-600"
-                  ></button>
-                  
+                  <input
+                    onChange={(e) => {
+                      setContent(e.target.value);
+                      handleTyping();
+                    }}
+                    value={content}
+                    className="flex items-center h-10 w-4/5 rounded px-3 text-sm"
+                    type="text"
+                    placeholder="Type your message…"
+                  />
+                 
+                  <button className="absolute flex items-center justify-center h-full w-12 right-0 top-0 text-gray-400 hover:text-gray-600"></button>
                 </div>
-               
               </div>
               <div className="ml-4">
                 <button
@@ -405,13 +396,11 @@ const markMessageAsRead = async (roomId) => {
                     </svg>
                   </span>
                 </button>
-              
               </div>
             </div>
           </div>
         </div>
       </div>
-     
     </div>
   );
 };

@@ -3,6 +3,8 @@ import apiInstance from "../../axiosApi/axiosInstance";
 import { useNavigate } from "react-router-dom";
 
 import { baseURL } from "../../../../backend/config/db";
+import { token } from "../../../config";
+import { toast } from 'react-toastify';
 
 const ChangePasswordForm = ({ email }) => {
   const [currentPassword, setcurrentPassword] = useState("");
@@ -18,7 +20,13 @@ const ChangePasswordForm = ({ email }) => {
     e.preventDefault();
 
     try {
+
+      if (!currentPassword || !newpassword || !confirmPass) {
+        toast.error("Please fill in all fields.");
+        return;
+      }
       if (newpassword !== confirmPass) {
+        toast.error("New password and confirm password do not match.");
         return;
       }
 
@@ -29,8 +37,13 @@ const ChangePasswordForm = ({ email }) => {
         currentPassword,
         newpassword,
         confirmPass,
-      });
-      setPasswordChanged(true);
+    }, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+    setPasswordChanged(true);
+    toast.success("Password changed successfully"); 
       window.location.reload();
     } catch (error) {
       console.log(error);

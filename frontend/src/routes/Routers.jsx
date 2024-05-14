@@ -40,16 +40,32 @@ import Specialization from "../pages/Admin/Specialization.jsx";
 import WalletComponent from "../pages/Users/WalletComponent.jsx";
 import DoctorChat from "../pages/Doctors/DoctorChat.jsx";
 // import ErrorPage from "../components/ErrorPage/ErrorPage.jsx";
-
-import ProtectedDoctorRoute from "./ProtectedDoctorRoute.jsx"
-
+import ProtectedAdminRoute from "./ProtectedAdminRoute.jsx";
+import { ChakraProvider } from "@chakra-ui/react";
 
 function Routers() {
   return (
+
     <Routes>
       <Route path="/" element={<Home />} />
-      <Route path="/home" element={<Home />} />
-      <Route path="/finddoctors" element={<Doctorss />} />
+
+      <Route
+        path="/home"
+        element={
+          <ProtectedRoute allowedRoles={["patient"]}>
+            <Home />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/finddoctors"
+        element={
+          <ProtectedRoute allowedRoles={["patient"]}>
+            <Doctorss />
+          </ProtectedRoute>
+        }
+      />
+
       <Route path="/users/doctorDetails/:id" element={<DoctorDetails />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Signup />} />
@@ -59,7 +75,16 @@ function Routers() {
 
       <Route path="/contact" element={<Contact />} />
       <Route path="/services" element={<Services />} />
-      <Route path="/changepassword" element={<ChangePassword />} />
+
+      <Route
+        path="/changepassword"
+        element={
+          <ProtectedRoute allowedRoles={["patient"]}>
+            <ChangePassword />
+          </ProtectedRoute>
+        }
+      />
+
       <Route
         path="/users/profile/me"
         element={
@@ -68,35 +93,47 @@ function Routers() {
           </ProtectedRoute>
         }
       />
-<Route path="/users/wallet" element={<WalletComponent/>} />
 
+      <Route
+        path="/users/wallet"
+        element={
+          <ProtectedRoute allowedRoles={["patient"]}>
+            <WalletComponent />
+          </ProtectedRoute>
+        }
+      />
 
-<Route path="/users/room/:roomId" element={<UserVideoCallRoom  />} />
+      <Route
+        path="/users/room/:roomId"
+        element={
+          <ProtectedRoute allowedRoles={["patient"]}>
+            <UserVideoCallRoom />
+          </ProtectedRoute>
+        }
+      />
 
-      
-      <Route path="/checkout-success" element={
+      <Route
+        path="/checkout-success"
+        element={
           <ProtectedRoute allowedRoles={["patient"]}>
             <SuccessPayment />
           </ProtectedRoute>
-        }/> 
+        }
+      />
 
-      
-      <Route path='/bookings'  element={
+      <Route
+        path="/bookings"
+        element={
           <ProtectedRoute allowedRoles={["patient"]}>
             <MyBookings />
           </ProtectedRoute>
-        }/>
-     
+        }
+      />
 
-     {/*** **************Doctors Route start******************** */}
-     
-      {/* <Route path='/doctors/profile/me'  element={
-          <ProtectedDoctorRoute allowedRoles={["doctor"]}>
-            <Dashboard/>
-          </ProtectedDoctorRoute>
-        }/> */}
+      {/*** **************Doctors Route start******************** */}
 
-       <Route path="/doctors/profile/me" element={<Dashboard />} />
+      <Route path="/doctors/profile/me" element={<Dashboard />} />
+
       <Route path="/doctors/finddoctors" element={<Doctorss />} />
       <Route path="/doctors/doctorDetails/:id" element={<DoctorDetails />} />
       <Route path="/doctors/signup" element={<DoctorRegister />} />
@@ -107,8 +144,7 @@ function Routers() {
       <Route path="/doctors/home" element={<DoctorsHome />} />
 
       <Route path="/doctors/managetime" element={<DoctorTimeManagement />} />
-      
-      
+
       <Route path="/doctors/appointments" element={<MyAppointments />} />
 
       <Route path="/doctors/profile" element={<DoctorProfile />} />
@@ -116,20 +152,58 @@ function Routers() {
         path="/doctors/changepassword"
         element={<DoctorChangePassword />}
       />
-       <Route path="/doctors/room/:roomId" element={<DoctorVideoCallRoom />} />
-     
-       <Route path='/doctors/chat' element={<DoctorChat/>}/>
-      
 
+      <Route path="/doctors/room/:roomId" element={<DoctorVideoCallRoom />} />
+
+      <Route path="/doctors/chat" element={<DoctorChat />} />
 
       <Route path="/admin" element={<AdminLogin />} />
-      <Route path="/admin/home" element={<AdminHome />} />
-      <Route path="/admin/userlist" element={<AdminUsers />} />
-      <Route path="/admin/doctorslist" element={<AdminDoctors />} />
-      <Route path="/admin/bookings" element={<PaymentBooking />} />
-      <Route path="/admin/specializations" element={<Specialization />} />
+
+      <Route
+        path="/admin/home"
+        element={
+          <ProtectedAdminRoute allowedRoles={["admin"]}>
+            <AdminHome />
+          </ProtectedAdminRoute>
+        }
+      />
+
+      <Route
+        path="/admin/userlist"
+        element={
+          <ProtectedAdminRoute allowedRoles={["admin"]}>
+            <AdminUsers />
+          </ProtectedAdminRoute>
+        }
+      />
+      <Route
+        path="/admin/doctorslist"
+        element={
+          <ProtectedAdminRoute allowedRoles={["admin"]}>
+            <AdminDoctors />
+          </ProtectedAdminRoute>
+        }
+      />
+
+      <Route
+        path="/admin/bookings"
+        element={
+          <ProtectedAdminRoute allowedRoles={["admin"]}>
+            <PaymentBooking />
+          </ProtectedAdminRoute>
+        }
+      />
+
+      <Route
+        path="/admin/specializations"
+        element={
+          <ProtectedAdminRoute allowedRoles={["admin"]}>
+            <Specialization />
+          </ProtectedAdminRoute>
+        }
+      />
+
       {/* <Route path="*" element={<ErrorPage />} /> */}
-     
     </Routes>
   );
 }

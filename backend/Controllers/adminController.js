@@ -1,5 +1,5 @@
 import Admin from "../models/adminModel.js";
-import adminGenToken from "../utils/adminGentoken.js";
+import adminGenToken from "../utils/AdminGentoken.js";
 import asyncHandler from "express-async-handler";
 import User from "../models/userModel.js";
 import bcrypt from "bcryptjs";

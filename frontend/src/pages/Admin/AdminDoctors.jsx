@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { baseURL } from "../../../../backend/config/db";
 import Pagination from "../../components/Pagination/Pagination.jsx";
+import { adminToken } from "../../../config.js";
 
 const AdminDoctors = () => {
   const [doctors, setDoctors] = useState([]);
@@ -12,6 +13,9 @@ const AdminDoctors = () => {
     try {
       const res = await fetch(`${baseURL}/admin/doctordata`, {
         method: "GET",
+        headers:{
+          Authorization:`Bearer ${adminToken}`
+        }
       });
 
       const result = await res.json();
@@ -27,6 +31,9 @@ const AdminDoctors = () => {
     try {
       const res = await fetch(`${baseURL}/admin/approve/${docId}`, {
         method: "PUT",
+        headers: {
+          Authorization: `Bearer ${adminToken}`,
+        },
       });
       if (res.ok) {
         fetchDoctorsData();
@@ -47,6 +54,9 @@ const AdminDoctors = () => {
     try {
       const res = await fetch(`${baseURL}/admin/reject/${docId}`, {
         method: "PUT",
+        headers: {
+          Authorization: `Bearer ${adminToken}`,
+        },
       });
       if (res.ok) {
         fetchDoctorsData();
@@ -68,104 +78,91 @@ const AdminDoctors = () => {
   const currentPosts = doctors.slice(indexOfFirstPost, indexOfLastPost);
 
   return (
-    <section className="container">
-      <div className="relative mx-5 overflow-x-auto shadow-md sm:rounded-lg">
-        <table className="w-full text-sm text-left text-gray-500">
-          <thead className="md:w-1/3 my-2 mx-4 p-5 text-center rounded-lg border-4 border-blue-500 bg-blue-200">
-            <tr>
-              <th scope="col" className="px-6 py-3">
-                Sl.No
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Name
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Email
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Address
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Specialization
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Qualification
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Experience
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Options
-              </th>
-            </tr>
-          </thead>
-          <tbody className="border-2">
-            {currentPosts && currentPosts.length > 0 ? (
-              currentPosts.map((doctor, index) => (
-                <tr
-                  className="bg-white border-b hover:bg-gray-100"
-                  key={doctor._id}
-                >
-                  <th
-                    scope="row"
-                    className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap"
-                  >
-                    {index + 1}
-                  </th>
-                  <td className="px-6 py-4">{doctor.name}</td>
-                  <td className="px-6 py-4">{doctor.email}</td>
-                  <td className="px-6 py-4">{doctor.address}</td>
-                  <td className="px-6 py-4">{doctor.specialization}</td>
-                  <td className="px-6 py-4">{doctor.qualification}</td>
-                  <td className="px-6 py-4">{doctor.experience}</td>
+    <section className="container mx-auto">
+  <div className="overflow-x-auto shadow-md sm:rounded-lg">
+    <table className="w-full bg-white  divide-gray-200">
+      <thead className="bg-pink-300">
+        <tr>
+          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-black-500 uppercase tracking-wider">
+            Sl.No
+          </th>
+          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-black-500 uppercase tracking-wider">
+            Name
+          </th>
+          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-black-500 uppercase tracking-wider">
+            Email
+          </th>
+          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-black-500 uppercase tracking-wider">
+            Address
+          </th>
+          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-black-500 uppercase tracking-wider">
+            Specialization
+          </th>
+          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-black-500 uppercase tracking-wider">
+            Qualification
+          </th>
+          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-black-500 uppercase tracking-wider">
+            Experience
+          </th>
+          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-black-500 uppercase tracking-wider">
+            Options
+          </th>
+        </tr>
+      </thead>
+      <tbody className="bg-white divide-y divide-gray-200">
+        {currentPosts && currentPosts.length > 0 ? (
+          currentPosts.map((doctor, index) => (
+            <tr className="hover:bg-gray-100" key={doctor._id}>
+              <td className="px-6 py-4 whitespace-nowrap">{index + 1}</td>
+              <td className="px-6 py-4 whitespace-nowrap">{doctor.name}</td>
+              <td className="px-6 py-4 whitespace-nowrap">{doctor.email}</td>
+              {/* <td className="px-6 py-4 whitespace-nowrap">{doctor.address}</td> */}
+              <textarea
+                className="px-6 py-4 whitespace-nowrap resize-none overflow-hidden"
+                value={doctor.address}   />
 
-                  {!doctor.approved ? (
-                    <td className="px-6 text-center py-4">
-                      <button
-                        onClick={() => {
-                          handleApprove(doctor._id);
-                        }}
-                        className="bg-green-100 hover:bg-green-500 text-green-700 font-semibold hover:text-white py-2 px-4 border border-green-500 hover:border-transparent rounded"
-                      >
-                        approve
-                      </button>
-                    </td>
-                  ) : (
-                    <td className="px-6 text-center py-4">
-                      <button
-                        onClick={() => {
-                          handleReject(doctor._id);
-                        }}
-                        className="bg-red-100 hover:bg-red-500 text-red-700 font-semibold hover:text-white py-2 px-4 border border-red-500 hover:border-transparent rounded"
-                      >
-                        Reject
-                      </button>
-                    </td>
-                  )}
-                </tr>
-              ))
-            ) : (
-              <tr className="bg-white border-b hover:bg-gray-200">
-                <td
-                  colSpan={8}
-                  className="px-6 py-4 font-medium text-gray-900 text-center"
-                >
-                  No Doctors Found
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
-      <Pagination
-        totalPosts={doctors.length}
-        postPerPage={postsPerPage}
-        currentPage={currentPage}
-        setCurrentPage={setCurrentPage}
-        nextPage={nextPage}
-        prevPage={prevPage}
-      />
-    </section>
+              <td className="px-6 py-4 whitespace-nowrap">{doctor.specialization}</td>
+              <td className="px-6 py-4 whitespace-nowrap">{doctor.qualification}</td>
+              <td className="px-6 py-4 whitespace-nowrap">{doctor.experience}</td>
+              <td className="px-6 py-4 whitespace-nowrap">
+                {!doctor.approved ? (
+                  <button
+                    onClick={() => handleApprove(doctor._id)}
+                    className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                  >
+                    Approve
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => handleReject(doctor._id)}
+                    className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                  >
+                    Reject
+                  </button>
+                )}
+              </td>
+            </tr>
+          ))
+        ) : (
+          <tr className="bg-white">
+            <td colSpan={8} className="px-6 py-4 text-sm text-gray-500 text-center">
+              No Doctors Found
+            </td>
+          </tr>
+        )}
+      </tbody>
+    </table>
+  </div>
+  <Pagination
+    totalPosts={doctors.length}
+    postPerPage={postsPerPage}
+    currentPage={currentPage}
+    setCurrentPage={setCurrentPage}
+    nextPage={nextPage}
+    prevPage={prevPage}
+  />
+</section>
+
   );
 };
 

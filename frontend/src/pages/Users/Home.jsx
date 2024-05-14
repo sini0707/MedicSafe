@@ -15,6 +15,8 @@ import About from "../../components/About/About";
 import ServiceList from "../../components/Services/ServiceList";
 import DoctorList from "../../components/Doctors/DoctorList";
 import FaqListComponent from "../../components/Faq/FaqListComponent";
+import  MouseImageTrail  from "../../components/Slider/MouseImageTrail.jsx";
+
 
 
 
@@ -22,11 +24,12 @@ const Home = () => {
   return (
     <>
       {/*...........hero section......*/}
-      <section className="hero_section pt-[60px] 2xl:h-[800px]">
-        <div className="container">
-          <div className="flex flex-col lg:flex-row gap-[90px] items-center justify-center">
+      <MouseImageTrail />
+      {/* <section className="hero_section pt-[60px] 2xl:h-[800px]"> */}
+        {/* <div className="container">
+          <div className="flex flex-col lg:flex-row gap-[90px] items-center justify-center"> */}
             {/*.........hero content.........*/}
-            <div>
+            {/* <div>
             <div className="lg:w-[570px]">
                 <h1 className="text-[36px] leading-[46px] text-headingColor font-[800] md:text-[60px] md:leading-[70px]">
                   we help patients live a healthy, longer life
@@ -42,10 +45,10 @@ const Home = () => {
 
                 <button className="btn">Request an appointment</button>
               </div>
-            </div>
+            </div> */}
 
             {/*................hero counter...........*/}
-            <div className="mt-[30px] lg:mt-[70px] flex flex-col lg:flex-row lg:items-center gap-5 lg:gap-[30px]">
+            {/* <div className="mt-[30px] lg:mt-[70px] flex flex-col lg:flex-row lg:items-center gap-5 lg:gap-[30px]">
               
               <div>
                 <h2 className="text-[36px] leading-[56px] lg:text-[44px] lg:leading-[54px] font [700] text-headingColor">
@@ -70,10 +73,10 @@ const Home = () => {
                 <span className="w-[100px] h-2 bg-irisBlueColor rounded full block mt-[-14px]"></span>
                 <p className="text_para">patient of satisfaction</p>
               </div>
-            </div>
+            </div> */}
 
             {/*...........hero content.......*/}
-            <div className="flex gap-[30px] justify-end">
+            {/* <div className="flex gap-[30px] justify-end">
               <div>
                 <img className="w-full" src={heroImg01} alt="" />
               </div>
@@ -81,10 +84,10 @@ const Home = () => {
                 <img src={heroImg02} alt="" className="w-full mb-[30px]" />
                 <img src={heroImg03} alt="" className="w-full mb-[30px]" />
               </div>
-            </div>
-          </div>
+            </div> */}
+          {/* </div>
         </div>
-      </section>
+      </section> */}
       {/*...........hero section end......*/}
 
       <section>

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { baseURL } from "../../../../backend/config/db";
 import { useNavigate, useLocation } from "react-router-dom";
+import { toast } from 'react-toastify';
 
 export const ResetPassword = () => {
   const [password, setPassword] = useState("");
@@ -11,6 +12,18 @@ export const ResetPassword = () => {
   const submitHandler = async (e) => {
     e.preventDefault();
     try {
+      if (password === "" || confirmPass === "") {
+        toast.error("Please enter both new password and confirm password");
+        return;
+      }
+  
+      // Check if password and confirm password match
+      if (password !== confirmPass) {
+        toast.error("New password and confirm password do not match");
+        return;
+      }
+  
+     
       const response = await fetch(`${baseURL}/users/reset-password`, {
         method: "post",
         headers: {

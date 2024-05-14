@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import Pagination from "../../components/pagination/Pagination";
+import Pagination from "../../components/Pagination/Pagination";
 import { baseURL } from "../../../../backend/config/db";
 import { adminToken } from "../../../config";
 import { toast } from "react-toastify";
@@ -135,7 +135,7 @@ const PaymentBooking = () => {
     <div className="md:px-32 py-8 w-full">
        <div className="relative mx-5 overflow-x-auto shadow-md sm:rounded-lg">
         <table className="min-w-full bg-white">
-          <thead className="bg-gray-800 text-white">
+          <thead className="bg-yellow-600 text-white">
             <tr>
               <th className="w-1/6 text-left py-3 px-4 uppercase font-semibold text-sm">
                 Doctor
@@ -194,7 +194,7 @@ const PaymentBooking = () => {
                     ) : (
                       <button
                         onClick={() => cancelBooking(booking._id)}
-                        className="bg-red-500 p-2 text-white rounded-md hover:scale-110 transition duration-100 ease-in-out cursor-pointer "
+                        className="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 shadow-lg shadow-red-500/50 dark:shadow-lg dark:shadow-red-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 "
                       >
                         Cancel
                       </button>

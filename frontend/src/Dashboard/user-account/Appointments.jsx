@@ -87,6 +87,38 @@ const Appointments = ({ appointment }) => {
    
   });
 
+
+  const handleViewPrescription = async (appointmentId) => {
+    try {
+      const res = await fetch(`${baseURL}/prescription/${appointmentId}`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      });
+      const prescription = await res.json();
+
+      if (res.ok) {
+        // Handle prescription display or download
+        console.log("Prescription fetched:", prescription);
+        // Example: You can show the prescription in a modal or allow downloading
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Failed to fetch prescription",
+          text: prescription.error,
+        });
+      }
+    } catch (error) {
+      console.log(error);
+      Swal.fire({
+        icon: "error",
+        title: "Failed to fetch prescription",
+        text: "An error occurred while fetching the prescription.",
+      });
+    }
+  };
+
   return (
     <div>
       {activeAppointments.map((value, index) => (
@@ -122,17 +154,22 @@ const Appointments = ({ appointment }) => {
                 Cancel Appointment
               </button>
             )}
-
-            
-
-            <button
+ {/* <button
               type="button"
               className="text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-7 py-.5 text-center mr-2 mb-2"
               onClick={() => MakeVideoCall(value.user)}
               style={{ marginLeft: "10px" }}
             >
               Make Video Call
-            </button>
+            </button> */}
+          <button
+  type="button"
+  className="text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2"
+  onClick={() => handleViewPrescription(value._id)}
+>
+  View Prescription
+</button>
+
           </div>
         </div>
       ))}

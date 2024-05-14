@@ -20,6 +20,7 @@ export default function OAuth() {
             method:'POST',
             headers:{
                 'Content-Type':'application/json',
+                
             },
             body:JSON.stringify({
                 name:result.user.displayName,
@@ -40,7 +41,7 @@ export default function OAuth() {
   return (
     <div className='OAuth'>
         
-    <button type='button' onClick={handleGoogleClick} className='w-full bg-red-700 text-white rounded-lg px-4 py-3 uppercase hover:opacity-95'>
+    <button type='button' onClick={handleGoogleClick} className='w-full bg-red-700 text-white rounded-lg px-4 py-3 uppercase hover:opacity-95 mt-4'>
     Continue with Google
   </button>
     </div>  

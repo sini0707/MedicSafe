@@ -3,7 +3,7 @@ import Doctor from "../models/DoctorSchema.js";
 import bcrypt from "bcryptjs";
 import nodemailer from "nodemailer";
 import asyncHandler from "express-async-handler";
-import generateToken from "../utils/generateToken.js";
+import generateToken from "../utils/GenerateToken.js";
 import Booking from "../models/BookingSchema.js";
 import generateDoctorToken from "../utils/DoctorgenToken.js";
 import { v4 as uuidv4 } from "uuid";

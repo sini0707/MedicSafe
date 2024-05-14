@@ -37,9 +37,13 @@ const bookingSchema = new mongoose.Schema(
     isCancelled:{
       type:Boolean,
       default:false,
+    },
+    prescription: { 
+      type: String, 
     }
+
   },
-  { timestamps: true }  // This line should be inside the main Schema object
+  { timestamps: true }  
 );
 // bookingSchema.pre(/^find,function(next){
 //   this.populate("user").populate({

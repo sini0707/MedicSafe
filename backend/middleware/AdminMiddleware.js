@@ -3,26 +3,30 @@ import asyncHandler from 'express-async-handler';
 import User from '../models/userModel.js';
 import Admin from '../models/adminModel.js';
 
+
 const protect = asyncHandler(async (req, res, next) => {
 
     const Authtoken=req.headers.authorization;
+  
     if (Authtoken) {
       try {
-  
+ 
         const token = Authtoken.split(" ")[1];
+       
+       const decoded = jwt.verify(token, process.env.ADMIN_JWT_SECRET);
+       
+        req.userId=decoded.adminId
+         
+         req.role = decoded.role;
+       
         
-    
-         const decoded = jwt.verify(token, process.env.ADMIN_JWT_SECRET);
-      
-         const userId=decoded.adminId
-        
-      //   if(decoded.role!=='admin'){
-      //     res.status(401).json({error:"Not authorized,admin not found"})
-      //     throw new Error("Not authorized,user not found")
-      //   }else{
-          req.userId = userId; 
-                next();
-      //   }
+        if(decoded.role!=='admin'){
+          res.status(401).json({error:"Not authorized,admin not found"})
+          throw new Error("Not authorized,user not found")
+        }else{
+          req.userId = decoded.adminId; 
+               next();
+        }
       
       } catch (error) {
         console.error(error,'errrrrorrrr');
