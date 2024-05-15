@@ -99,12 +99,12 @@ const Login = () => {
      
       {showPassword ? (
         <FiEyeOff
-          className="text-primaryColor cursor-pointer"
+          className="text-primaryColor cursor-pointer pr-.9"
           onClick={() => setShowPassword(false)}
         />
       ) : (
         <FiEye
-          className="text-primaryColor cursor-pointer"
+          className="text-primaryColor cursor-pointer pr-.9"
           onClick={() => setShowPassword(true)}
         />
       )}

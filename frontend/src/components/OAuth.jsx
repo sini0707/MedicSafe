@@ -41,7 +41,7 @@ export default function OAuth() {
   return (
     <div className='OAuth'>
         
-    <button type='button' onClick={handleGoogleClick} className='w-full bg-red-700 text-white rounded-lg px-4 py-3 uppercase hover:opacity-95 mt-4'>
+    <button type='button' onClick={handleGoogleClick} className='w-full bg-yellow-500 text-white rounded-lg px-4 py-3 uppercase hover:opacity-95 mt-4'>
     Continue with Google
   </button>
     </div>  
@@ -50,3 +50,4 @@ export default function OAuth() {
 }
 
 
+// 

@@ -6,7 +6,7 @@ import apiInstance from "../../axiosApi/axiosInstance";
 import HashLoader from "react-spinners/HashLoader";
 import { setDoctorCredentials } from "../../slices/doctorSlices/doctorAuthSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { FiMail, FiLock } from 'react-icons/fi';
+import { FiMail, FiLock,FiEye, FiEyeOff} from 'react-icons/fi';
 
 const DoctorLogin = () => {
   const doctor = useSelector((state) => state.docAuth.doctorInfo);
@@ -16,6 +16,8 @@ const DoctorLogin = () => {
     password: "",
   });
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  
 
   useEffect(() => {
     if (doctor) {
@@ -73,15 +75,26 @@ const DoctorLogin = () => {
           </div>
           <div className="mb-5 flex items-center">
           <FiLock className="text-primaryColor mr-2" /> 
-            <input
-              type="password"
-              name="password"
-              placeholder="password"
-              value={formData.password}
-              onChange={(e) => handleInputChange(e)}
-              className="w-full py-3 border-b border-solid border-[#0066ff61] focus:border-b-primaryColor text-[16px] leading-7 text-headingColor
-            placeholder:text-textColor  cursor-pointer required"
-            />
+          <input
+        type={showPassword ? "text" : "password"} 
+        name="password"
+        placeholder="Password"
+        value={formData.password}
+        onChange={(e) => handleInputChange(e)}
+        className="w-full py-3 border-b border-solid border-[#0066ff61] focus:border-b-primaryColor text-[16px] leading-7 text-headingColor placeholder:text-textColor cursor-pointer required"
+      />
+     
+      {showPassword ? (
+        <FiEyeOff
+          className="text-primaryColor cursor-pointer pr-.9"
+          onClick={() => setShowPassword(false)}
+        />
+      ) : (
+        <FiEye
+          className="text-primaryColor cursor-pointer pr-.9"
+          onClick={() => setShowPassword(true)}
+        />
+      )}
           </div>
 
           <div className="mb-5"></div>

@@ -6,6 +6,7 @@ import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import { baseURL } from "../../../../backend/config/db";
 import { setCredentials } from "../../slices/authSlice.js";
+import { FiUser,FiMail,FiPhone,FiDroplet ,FiUpload} from 'react-icons/fi';
 
 import { token } from "../../../config.js";
 
@@ -14,6 +15,7 @@ const Profile = (user) => {
 
   const [selectedFile, setSelectedFile] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [bloodError, setBloodError] = useState("");
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -60,6 +62,9 @@ const Profile = (user) => {
   const submitHandler = async (event) => {
     event.preventDefault();
     setLoading(true);
+
+   
+  
     try {
       const res = await fetch(`${baseURL}/users/updateUser/${userId}`, {
         method: "POST",
@@ -100,7 +105,8 @@ const Profile = (user) => {
   return (
     <div className="mt-10">
       <form onSubmit={submitHandler}>
-        <div className="mb-5">
+      <div className="mb-5 flex items-center"> 
+              <FiUser className="text-primaryColor mr-2" /> 
         <input
   type="text"
   placeholder="Full Name"
@@ -111,7 +117,8 @@ const Profile = (user) => {
 />
 
         </div>
-        <div className="mb-5">
+        <div className="mb-5 flex items-center"> {/* Email */}
+    <FiMail className="text-primaryColor mr-2"/>
           <input
             type="email"
             placeholder="Enter your email"
@@ -123,7 +130,8 @@ const Profile = (user) => {
           />
         </div>
 
-        <div className="mb-5">
+        <div className="mb-5 flex items-center"> {/* Email */}
+    <FiPhone className="text-primaryColor mr-2"/>
           <input
             type="number"
             placeholder="your mobile"
@@ -134,7 +142,8 @@ const Profile = (user) => {
             placeholder:text-textColor  cursor-pointer "
           />
         </div>
-        <div className="mb-5">
+        <div className="mb-5 flex items-center"> 
+              <FiUser className="text-primaryColor mr-2" /> 
           <input
             type="number"
             placeholder="age"
@@ -145,36 +154,36 @@ const Profile = (user) => {
             placeholder:text-textColor  cursor-pointer "
           />
         </div>
-        <div className="mb-5">
-        {/* <input
-  type="text"
-  placeholder="Blood Type"
-  name="blood"
-  value={formData.blood}
-  onChange={(e) => handleInputChange(e)}
-  className="w-full pr-4 py-3 border-b border-solid border-[#0066ff61] focus:outline-none focus:border-b-primaryColor text-[16px] leading-7 text-headingColor
-  placeholder:text-textColor  cursor-pointer "
-/> */}
-<select
-  name="blood"
-  value={formData.blood}
-  onChange={(e) => handleInputChange(e)}
-  className="w-full pr-4 py-3 border-b border-solid border-[#0066ff61] focus:outline-none focus:border-b-primaryColor text-[16px] leading-7 text-headingColor
-  placeholder:text-textColor  cursor-pointer "
->
-  <option value="">Select Blood Group</option>
-  <option value="A+">A+</option>
-  <option value="A-">A-</option>
-  <option value="B+">B+</option>
-  <option value="B-">B-</option>
-  <option value="O+">O+</option>
-  <option value="O-">O-</option>
-  <option value="AB+">AB+</option>
-  <option value="AB-">AB-</option>
-</select>
-
-        </div>
-        <div className="mb-5">
+        <div className="mb-5 flex items-center"> 
+              <FiDroplet className="text-primaryColor mr-2"/>
+              <select
+                  name="blood"
+                  value={formData.blood}
+                  onChange={(e) => {
+                    handleInputChange(e);
+                    setBloodError("");
+                  }}
+                  className="w-full pr-4 py-3 border-b border-solid border-[#0066ff61] focus:outline-none focus:border-b-primaryColor text-[16px] leading-7 text-headingColor
+            placeholder:text-textColor  cursor-pointer required"
+                >
+                  <option value="">Select Blood Group</option>
+                  <option value="A+">A+</option>
+                  <option value="A-">A-</option>
+                  <option value="B+">B+</option>
+                  <option value="B-">B-</option>
+                  <option value="O+">O+</option>
+                  <option value="O-">O-</option>
+                  <option value="AB+">AB+</option>
+                  <option value="AB-">AB-</option>
+                </select>
+                {bloodError && (
+                  <p className="text-red-500 text-sm">{bloodError}</p>
+                )}
+              </div>
+     
+        <div className="mb-5 flex items-center"> 
+              <FiUser className="text-primaryColor mr-2" /> 
+        
           <input
             type="text"
             placeholder="emergency person"
@@ -185,7 +194,8 @@ const Profile = (user) => {
             placeholder:text-textColor  cursor-pointer "
           />
         </div>
-        <div className="mb-5">
+        <div className="mb-5 flex items-center"> 
+    <FiPhone className="text-primaryColor mr-2"/>
           <input
             type="number"
             placeholder="emergency contact"
@@ -235,6 +245,9 @@ const Profile = (user) => {
               htmlFor="customFile"
               className="absolute top-0 left-0 w-full h-full flex items-center px-[0.75rem] py-[0.375rem] text-[15px] leading-6 overflow-hidden bg-[#0066ff46] text-headingColor font semibold rounded-lg truncate cursor-pointer"
             >
+              <span className="mr-2">
+    <FiUpload /> {/* Assuming FiUpload is the icon for upload */}
+  </span>
               {selectedFile ? selectedFile.name : "Upload Photo"}
             </label>
           </div>
@@ -243,7 +256,7 @@ const Profile = (user) => {
           <button
             disabled={loading && true}
             type="submit"
-            className="w-full bg-primaryColor text-white text-[18px] leading-[30px] rounded-lg px-4 py-3"
+            className="  text-white bg-gradient-to-r from-purple-500 to-pink-500 hover:bg-gradient-to-l focus:ring-4 focus:outline-none focus:ring-purple-200 dark:focus:ring-purple-800 font-medium rounded-lg text-sm px-20 py-3 text-center me-2 mb-4"
           >
             {/* {loading ? (<HashLoader size={25} color="#ffffff"/>):"Update"} */}
             Update
