@@ -27,7 +27,11 @@ export const getRoom = async (req, res) => {
 
     const room = await ChatRoom.findOne({ doctor: doctorId, user: userId })
       .populate('doctor', '_id name email') 
-      .populate('user', '_id name email');   
+      .populate('user', '_id name email') 
+      .populate({
+        path: 'messages',
+        options: { sort: { createdAt: -1 }, limit: 1 }
+      });    
 
       console.log(room); 
     if (room) {
