@@ -54,19 +54,19 @@ const DoctorChat = () => {
           throw new Error(result.message);
         }
 
-        const sortedRooms = result.map((room) => ({
-          ...room,
-          latestMessageTimestamp: room.messages.length > 0 ? new Date(room.messages[0].createdAt) : new Date(0),
-          lastMessage: room.messages.length > 0 ? {
-            content: room.messages[0].content,
-            createdAt: room.messages[0].createdAt,
-          } : null,
-        }));
-    
-        sortedRooms.sort((a, b) => b.latestMessageTimestamp - a.latestMessageTimestamp);
-    
-        setRooms(sortedRooms);
-        console.log(sortedRooms); 
+        console.log(result,'sort rslt')
+
+
+
+        const sortedRooms = result
+       
+        const test = result.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+
+        console.log('test',test);
+        
+        setRooms(test);
+        console.log(sortedRooms);
+        
       } catch (error) {
         setError(error);
         console.log("error", error);
