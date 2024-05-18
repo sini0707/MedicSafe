@@ -311,6 +311,7 @@ export const bookingDetails = asyncHandler(async (req, res) => {
 
 
         const bookingDetail = {
+          id:booking._id,
           user:user._id,
           doctor:doctor._id,
           name: user.name,
@@ -515,31 +516,20 @@ export const  DoctorChangePassword = asyncHandler(async (req, res) => {
   }
 });
 
-export const generatePrescription = async (req, res) => {
-  console.log("hello")
-  // try {
-  //   console.log("Starting prescription generation...");
-    
-  
-  //   const { prescriptionText } = req.body; 
-  //   console.log("Prescription text:", prescriptionText);
+export const generatePrescription = asyncHandler(async (req, res) => { 
+  const { id } = req.params;
+  const {prescriptionText}=req.body
+  try{
 
-   
-  //   const newBooking = new Booking({
-  //     prescription: prescriptionText,
-  //   });
-  //   console.log("New booking object:", newBooking);
+    await Booking.updateOne({_id:id},{prescription:prescriptionText},{new:true})
 
-   
-  //   await newBooking.save();
-  //   console.log("New booking saved successfully.");
+ res.status(200).json({success:true,message:'Prescription Generated Successfully'}) 
 
-  
-  //   res.status(200).json({ message: 'Prescription submitted successfully!' });
-  //   console.log("Prescription submitted successfully!");
-  // } catch (error) {
-  
-  //   console.error('Error submitting prescription:', error);
-  //   res.status(500).json({ message: 'Internal server error' });
-  // }
-};
+    }
+    catch(error){
+        console.error('Error generating prescription:',error)
+        res.status(500).json({ success: false, message: 'Internal server error' });
+    }
+
+ 
+});

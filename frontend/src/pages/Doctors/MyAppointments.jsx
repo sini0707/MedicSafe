@@ -4,30 +4,33 @@ import { baseURL } from "../../../../backend/config/db";
 import { FcVideoCall } from "react-icons/fc";
 import Swal from "sweetalert2";
 import moment from "moment";
-import Modal from "../../components/Modal/Modal";
-
+import PrescriptionModal from "../../components/Modal/PrescriptionModal.jsx";
 import apiInstance from "../../axiosApi/axiosInstance";
-
 import { useSelector } from "react-redux";
 import { doctoken } from "../../../config";
 import { useNavigate } from "react-router-dom";
 import Pagination from "../../components/Pagination/Pagination";
 import { ConsoleLevel } from "@zegocloud/zego-uikit-prebuilt";
 import { FaCropSimple } from "react-icons/fa6";
+import { useDisclosure } from "@chakra-ui/react";
+import {  toast } from 'react-toastify';
 
 const MyAppointments = () => {
   const navigate = useNavigate();
 
   const [bookingDetails, setBookingDetails] = useState([]);
-
   const [currentPage, setCurrentPage] = useState(1);
   const [appointmentsPerPage] = useState(6);
   const [totalAppointments, setTotalAppointments] = useState(0);
   const [showModal, setShowModal] = useState(false);
-  const [prescriptionText, setPrescriptionText] = useState("");
+  const [prescriptionText, setPrescriptionText] = useState(""); 
+  const [bookingId,setBookkingId]=useState(null);
   const [prescriptionSubmitted, setPrescriptionSubmitted] = useState(false);
-  const [prescriptionError, setPrescriptionError] = useState(null);
+  const [prescriptionError, setPrescriptionError] = useState('');
+  console.log(bookingId)
 
+  
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const { id } = useParams();
   const doctorInfo = useSelector((state) => state.docAuth.doctorInfo);
 
@@ -145,58 +148,52 @@ const MyAppointments = () => {
     setPrescriptionText(text);
   };
 
-  const handleSubmitPrescription = async () => {
-    console.log("handleSubmitPrescription called");
-    // try {
-    //   console.log("Sending POST request to generate prescription...");
-    //   const response = await apiInstance.post(
-    //     `${baseURL}/generate-prescription`,
-    //     {
-    //       prescriptionText: prescriptionText,
-    //     },
-    //     {
-    //       headers: {
-    //         Authorization: `Bearer ${doctoken}`,
-    //       },
-    //     }
-    //   );
-    //   console.log("Received response from the server:", response);
+  const handleSubmitPrescription = async (text) => {
+    console.log("handleSubmitPrescription called",text);
+    try {
+      console.log("Sending POST request to generate prescription...");
+      const response = await apiInstance.post(
+        `${baseURL}/doctors/generate-prescription/${bookingId}`,
+        {
+          prescriptionText: text,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${doctoken}`,
+          },
+        }
+      );
+     
 
-    //   if (response.status === 200) {
-    //     console.log("Prescription submitted successfully!");
-    //     setPrescriptionSubmitted(true);
-    //     setPrescriptionError(null);
-    //   } else {
-    //     console.error("Error submitting prescription:", response.data);
-    //     setPrescriptionError(response.data.message);
-    //     console.error("Error submitting prescription:", response.data);
-    //   }
-    // } catch (error) {
-    //   console.error("Error submitting prescription:", error);
-    //   setPrescriptionError("Internal server error. Please try again later.");
-    // } finally {
-    //   setShowModal(false);
-    // }
+      if (response.status === 200) {
+        
+        setPrescriptionSubmitted(true);
+        setPrescriptionError(null);
+        toast.success("Prescription submitted successfully!");
+      } else {
+        console.error("Error submitting prescription:", response.data);
+        setPrescriptionError(response.data.message);
+        console.error("Error submitting prescription:", response.data);
+      }
+    } catch (error) {
+      console.error("Error submitting prescription:", error);
+      // setPrescriptionError("Internal server error. Please try again later.");
+    } finally {
+      setShowModal(false);
+    }
   };
-  const handleGeneratePrescription = () => {
-    setShowModal(true);
+  const handleGeneratePrescription = (id) => {
+    
+    onOpen();
+    setBookkingId(id) 
+    
   };
 
   return (
     <>
-      {/* <div>
-      <input className="text"  type="email" placeholder="typed here" onChange={(e)=>handleInputChange(e)}  />
-    </div> */}
+     
 
-      {prescriptionSubmitted && (
-        <div className="text-green-500 mb-4">
-          Prescription submitted successfully!
-        </div>
-      )}
-
-      {prescriptionError && (
-        <div className="text-red-500 mb-4">{prescriptionError}</div>
-      )}
+     
       <div className="container mx-auto">
         <div className="relative my-5 overflow-x-auto shadow-md sm:rounded-lg">
           <table className="w-full text-sm text-left text-pink-500 dark:text-gray-400">
@@ -275,7 +272,7 @@ const MyAppointments = () => {
                           </button>
                           <button
                             className="text-gray-900 bg-gradient-to-r from-teal-200 to-lime-200 hover:bg-gradient-to-l hover:from-teal-200 hover:to-lime-200 focus:ring-4 focus:outline-none focus:ring-lime-200 dark:focus:ring-teal-700 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
-                            onClick={() => handleGeneratePrescription(item._id)}
+                            onClick={() => handleGeneratePrescription(item.id)}
                           >
                             Generate Prescription
                           </button>
@@ -315,13 +312,7 @@ const MyAppointments = () => {
         currentPage={currentPage}
         setCurrentPage={setCurrentPage}
       />
-      <Modal
-        addPre={setPrescriptionText}
-        submit={handleSubmitPrescription}
-        show={showModal}
-        title="Generate Prescription"
-        onClose={() => setShowModal(false)}
-      />
+       <PrescriptionModal isOpen={isOpen} onClose={onClose} onSubmit={handleSubmitPrescription}  />
     </>
   );
 };

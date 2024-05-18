@@ -11,6 +11,7 @@ const MyBookings = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [appointmentsPerPage] = useState(2);
   const [MyAppointments, setAppointments] = useState([]);
+  
 
   const {
     data: appointments,
@@ -40,7 +41,7 @@ const MyBookings = () => {
     indexOfLastAppointment
   );
   
-  
+ 
 
   return (
     <div>

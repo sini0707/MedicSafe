@@ -54,7 +54,7 @@ router.get("/booking-details/:docId", bookingDetails);
 router.post("/approveVideoCall/:id", approveVideoCall);
 router.put("/submitreply/:id",submitReply);
 router.post("/changepassword",DoctorChangePassword);
-router.post('/generate-prescription',protect,generatePrescription)
+router.post('/generate-prescription/:id',protect,generatePrescription)
 
 
 

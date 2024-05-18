@@ -167,7 +167,7 @@ const Home = () => {
 
       <section>
         <div className="container">
-          <div className="xl:w-[470px]mx-auto">
+          <div className="xl:w-[370px]mx-auto">
             <h2 className="heading text-center">Our medical services</h2>
             <p className="text_para text-center">
               world-class care for everyone.our health system offers

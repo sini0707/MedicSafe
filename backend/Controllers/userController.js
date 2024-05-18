@@ -575,6 +575,24 @@ export const UserBookings = asyncHandler(async (req, res) => {
   }
 });
 
+
+export const getPrescription = async (req, res) => {
+
+ 
+  try {
+    const booking = await Booking.findOne({ _id: req.params.appointmentId });
+    console.log(booking)
+    if (!booking) {
+      return res.status(404).json({ success: false, message: 'Prescription not found' });
+    }
+    const prescription=booking.prescription
+    console.log(prescription,"pres")
+    res.status(200).json({ success: true,prescription });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: 'Server Error' });
+  }
+};
 export {
   login,
   register,

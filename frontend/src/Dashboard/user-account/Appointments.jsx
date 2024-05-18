@@ -10,9 +10,12 @@ import { useNavigate } from "react-router-dom";
 const Appointments = ({ appointment }) => {
   const navigate = useNavigate();
   const user = useSelector((state) => state.auth.userInfo);
+  const [prescriptions, setPrescriptions] = useState([]);
 
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const activeAppointments = appointment.filter((value) => !value.isCancelled);
+  console.log(activeAppointments,"active appointments")
+  
 
   const handleCancelButton = async (id) => {
     Swal.fire({
@@ -89,19 +92,25 @@ const Appointments = ({ appointment }) => {
 
 
   const handleViewPrescription = async (appointmentId) => {
+
     try {
-      const res = await fetch(`${baseURL}/prescription/${appointmentId}`, {
+      const res = await fetch(`${baseURL}/users/prescription/${appointmentId}`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${user.token}`,
         },
       });
       const prescription = await res.json();
+      console.log(prescription,'doctor prescription')
 
       if (res.ok) {
-        // Handle prescription display or download
+       
         console.log("Prescription fetched:", prescription);
-        // Example: You can show the prescription in a modal or allow downloading
+        Swal.fire({
+          icon: "success",
+          title: "See yourPrescription",
+          text: prescription.prescription,
+        });
       } else {
         Swal.fire({
           icon: "error",
@@ -122,9 +131,11 @@ const Appointments = ({ appointment }) => {
   return (
     <div>
       {activeAppointments.map((value, index) => (
+
         
         
         <div key={index} className="flex items-center justify-center mt-5">
+          {console.log(value)}
           <div className="bg-white font-semibold text-center rounded-3xl border shadow-lg p-10 max-w-xs">
             <div>
               <img src={value?.doctor?.imagePath} className="w-full" alt="#" />

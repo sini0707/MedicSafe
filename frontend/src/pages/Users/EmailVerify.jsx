@@ -12,7 +12,7 @@ import {
 const EmailVerify = () => {
   const [otp, setOtp] = useState([]);
   const [minutes, setMinutes] = useState(0);
-  const [seconds, setSeconds] = useState(5);
+  const [seconds, setSeconds] = useState(30);
 
   const inputRef1 = useRef();
   const inputRef2 = useRef();

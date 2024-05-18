@@ -23,6 +23,7 @@ import {
   getUserWallet,
   checkFeedback,
   UserBookings,
+  getPrescription,
  
   
 } from "../Controllers/userController.js";
@@ -95,6 +96,7 @@ router.post(
 
 router.post("/getUserNotifications",protect,getNotification);
 router.post("/clearNotification",protect,clearNotification);
+router.get("/prescription/:appointmentId",protect,getPrescription)
 
  
 

@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import { doctoken } from "../../../config";
+import { FiUser,FiMail,FiPhone,FiUpload, FiMapPin, FiDollarSign} from 'react-icons/fi';
 
 const DoctorProfile = (doctor) => {
   const docId = doctor.doctor._id;
@@ -84,8 +85,7 @@ const DoctorProfile = (doctor) => {
 
       const { message, data } = responseData;
 
-      // data.token = doctor.doctor.token;
-      // setFormData(data);
+      
       dispatch(setDoctorCredentials(data));
       toast.success(message || "Profile successfully updated");
 
@@ -112,7 +112,8 @@ const DoctorProfile = (doctor) => {
           className="md:flex md:justify-between md:mx-[60px] items-center"
         >
           <div className="px-2 m-2">
-            <div className="mb-5 flex items-center gap-3">
+          <div className="mb-5 flex items-center"> 
+              <FiUpload className="text-primaryColor mr-2" /> 
               {formData.photo && (
                 <figure className="w-[60px] h-[60px] rounded-full border-2 border-solid border-primaryColor flex items-center justify-center">
                   <img
@@ -140,7 +141,8 @@ const DoctorProfile = (doctor) => {
               </div>
             </div>
 
-            <div className="mb-5">
+            <div className="mb-5 flex items-center"> 
+              <FiUser className="text-primaryColor mr-2" /> 
               <input
                 type="text"
                 placeholder="Full Name"
@@ -152,7 +154,8 @@ const DoctorProfile = (doctor) => {
               />
             </div>
 
-            <div className="mb-5">
+            <div className="mb-5 flex items-center">
+    <FiMail className="text-primaryColor mr-2"/>
               <input
                 type="email"
                 placeholder="Enter your email"
@@ -164,7 +167,8 @@ const DoctorProfile = (doctor) => {
               />
             </div>
 
-            <div className="mb-5">
+            <div className="mb-5 flex items-center"> 
+    <FiPhone className="text-primaryColor mr-2"/>
               <input
                 type="number"
                 placeholder="your mobile"
@@ -188,7 +192,8 @@ const DoctorProfile = (doctor) => {
               />
             </div>
 
-            <div className="mb-5">
+            <div className="mb-5 flex items-center"> 
+              <FiMapPin className="text-primaryColor mr-2" /> 
               <input
                 type="text"
                 placeholder=" Your Address"
@@ -223,7 +228,8 @@ const DoctorProfile = (doctor) => {
             </div>
           </div>
           <div className="px-2">
-            <div className="mb-5">
+            <div className="mb-5 flex items-center"> 
+              <FiDollarSign className="text-primaryColor mr-2" /> 
               <input
                 type="number"
                 placeholder="enter fees"
@@ -268,7 +274,7 @@ const DoctorProfile = (doctor) => {
             <div className="flex items-center justify-center">
               <button
                 type="submit"
-                className="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-1.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+                className="text-white bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-teal-300 dark:focus:ring-teal-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
               >
                 Save Changes
               </button>

@@ -97,10 +97,7 @@ const Profile = (user) => {
     }
   };
 
-  // useEffect(() => {
-  //   // Update the parent component (MyAccount) with the updated user data
-  //   onUpdateUser(formData);
-  // }, [formData]);
+  
 
   return (
     <div className="mt-10">
@@ -117,7 +114,7 @@ const Profile = (user) => {
 />
 
         </div>
-        <div className="mb-5 flex items-center"> {/* Email */}
+        <div className="mb-5 flex items-center">
     <FiMail className="text-primaryColor mr-2"/>
           <input
             type="email"
@@ -130,7 +127,7 @@ const Profile = (user) => {
           />
         </div>
 
-        <div className="mb-5 flex items-center"> {/* Email */}
+        <div className="mb-5 flex items-center"> 
     <FiPhone className="text-primaryColor mr-2"/>
           <input
             type="number"
