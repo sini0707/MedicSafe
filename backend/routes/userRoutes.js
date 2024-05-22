@@ -25,7 +25,7 @@ import {
   UserBookings,
   getPrescription,
 } from "../Controllers/userController.js";
-import { protect } from "../middleware/AuthMiddleware.js";
+import { protect } from "../middleware/authMiddleware.js";
 import { getCheckoutSession } from "../Controllers/bookingController.js";
 
 import {
