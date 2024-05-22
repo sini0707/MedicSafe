@@ -27,7 +27,7 @@ const MyAppointments = () => {
   const [bookingId,setBookkingId]=useState(null);
   const [prescriptionSubmitted, setPrescriptionSubmitted] = useState(false);
   const [prescriptionError, setPrescriptionError] = useState('');
-  console.log(bookingId)
+  
 
   
   const { isOpen, onOpen, onClose } = useDisclosure();

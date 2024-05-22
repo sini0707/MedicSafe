@@ -12,8 +12,6 @@ import { IoIosNotifications } from "react-icons/io";
 import DoctorNotification from "../Notification/DoctorNotification";
 import io from "socket.io-client";
 
-
-
 const navLinks = [
   {
     path:'/doctors/home',
@@ -41,19 +39,10 @@ const navLinks = [
 const DoctorHeader = () => {
 
   const [notification, setNotification] = useState(false);
-  
-  
   const doctor=useSelector((state)=>state.docAuth.doctorInfo);
-
-  
- 
-  
- 
-
-
   const headerRef=useRef(null)
   const menuRef=useRef(null)
- const dispatch=useDispatch()
+  const dispatch=useDispatch()
 
  useEffect(() => {
   const socket = io("http://localhost:8000"); 
@@ -119,9 +108,7 @@ const DoctorHeader = () => {
     }
   };
 
-
-
-  return (
+ return (
     <header className='header flex items-center' ref={headerRef}>
       <div className='container'>
         <div className='flex items-center justify-between'>

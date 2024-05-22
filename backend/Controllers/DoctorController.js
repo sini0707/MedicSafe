@@ -3,13 +3,11 @@ import Doctor from "../models/DoctorSchema.js";
 import asyncHandler from "express-async-handler";
 import Booking from "../models/BookingSchema.js";
 import DoctorgenToken from "../utils/DoctorgenToken.js";
-import User from "../models/userModel.js"
+import User from "../models/userModel.js";
 import bcrypt from "bcryptjs";
 import nodemailer from "nodemailer";
 import generateDoctorToken from "../utils/DoctorgenToken.js";
-import { Pagination } from "react-bootstrap";
 import { v4 as uuidv4 } from "uuid";
-import pdf from 'pdfkit';
 import Specialization from "../models/SpecializationModel.js";
 
 const sendOtpLink = (email, otp) => {
@@ -96,15 +94,12 @@ export const register = async (req, res) => {
   }
 };
 
-
- export const GetSpecialization = asyncHandler(async (req, res) => {
+export const GetSpecialization = asyncHandler(async (req, res) => {
   try {
-   
-    const specializations = await Specialization.find({}, 'name');
+    const specializations = await Specialization.find({}, "name");
 
     res.json(specializations);
   } catch (error) {
-   
     console.error("Error fetching specializations:", error);
     res.status(500).json({ message: "Internal server error" });
   }
@@ -125,16 +120,14 @@ export const DoctorOtpVerify = asyncHandler(async (req, res) => {
     doctorExists.verified = true;
     doctorExists = await doctorExists.save();
     DoctorgenToken(res, doctorExists._id);
-    res
-      .status(200)
-      .json({
-        success: true,
-        message: "Otp verified successfully",
-        _id: doctorExists._id,
-        name: doctorExists.name,
-        email: doctorExists.email,
-        blocked: doctorExists.blocked,
-      });
+    res.status(200).json({
+      success: true,
+      message: "Otp verified successfully",
+      _id: doctorExists._id,
+      name: doctorExists.name,
+      email: doctorExists.email,
+      blocked: doctorExists.blocked,
+    });
   } else {
     res.status(404).json({ error: "Doctor not found" });
   }
@@ -204,16 +197,14 @@ export const forgotOtpVerify = asyncHandler(async (req, res) => {
     doctorExists.verified = true;
     doctorExists = await doctorExists.save();
     DoctorgenToken(res, doctorExists._id);
-    res
-      .status(200)
-      .json({
-        success: true,
-        message: "Otp verified successfully",
-        _id: doctorExists._id,
-        name: doctorExists.name,
-        email: doctorExists.email,
-        blocked: doctorExists.blocked,
-      });
+    res.status(200).json({
+      success: true,
+      message: "Otp verified successfully",
+      _id: doctorExists._id,
+      name: doctorExists.name,
+      email: doctorExists.email,
+      blocked: doctorExists.blocked,
+    });
   } else {
     res.status(404).json({ error: "Doctor not found" });
   }
@@ -231,15 +222,12 @@ export const updatedDoctor = async (req, res) => {
     );
     const { password, ...rest } = updatedDoctor._doc;
     const existingToken = req.headers.authorization.split(" ")[1];
-    console.log(existingToken,'exist');
-    
+
     res.status(200).json({
       sucess: true,
       message: "Successfully updated",
-      data: {...rest,token:existingToken},
+      data: { ...rest, token: existingToken },
     });
-  
-
   } catch (err) {
     res.status(500).json({ sucess: false, message: "Failed to update" });
   }
@@ -285,14 +273,11 @@ export const getTimings = asyncHandler(async (req, res) => {
   }
 });
 
-
-
 export const bookingDetails = asyncHandler(async (req, res) => {
   const { docId } = req.params;
 
   try {
     let bookings = await Booking.find({ doctor: docId });
-   
 
     const doctor = await Doctor.findById(docId);
     if (!doctor) {
@@ -304,16 +289,14 @@ export const bookingDetails = asyncHandler(async (req, res) => {
     for (let i = 0; i < bookings.length; i++) {
       const booking = bookings[i];
 
-      // Find the user by ID from the current booking
+     
       const user = await User.findById(booking.user);
 
       if (user) {
-
-
         const bookingDetail = {
-          id:booking._id,
-          user:user._id,
-          doctor:doctor._id,
+          id: booking._id,
+          user: user._id,
+          doctor: doctor._id,
           name: user.name,
           email: user.email,
           blood: user.blood,
@@ -329,13 +312,11 @@ export const bookingDetails = asyncHandler(async (req, res) => {
       }
     }
 
-  
     res.status(200).json(Appointment);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
-
 
 export const deleteDoctor = async (req, res) => {
   const id = req.params.id;
@@ -351,12 +332,9 @@ export const deleteDoctor = async (req, res) => {
 };
 export const getDoctor = asyncHandler(async (req, res) => {
   const userId = req.userId;
- 
-  
+
   try {
-    const user = await Doctor.findById(userId)
-    
-   
+    const user = await Doctor.findById(userId);
 
     if (!user) {
       return res
@@ -365,7 +343,6 @@ export const getDoctor = asyncHandler(async (req, res) => {
     }
 
     const { password, ...rest } = user._doc;
-   
 
     res.status(200).json({
       success: true,
@@ -456,12 +433,8 @@ export const logoutDoctor = (req, res) => {
 
 export const approveVideoCall = async (req, res) => {
   const userId = req.params.id;
- 
-
 
   const status = req.query.status;
- 
-
 
   try {
     const changeStatus = await User.findByIdAndUpdate(
@@ -469,17 +442,14 @@ export const approveVideoCall = async (req, res) => {
       { $set: { VideoCallApprove: status } },
       { new: true }
     );
-   
 
     if (!changeStatus) {
-
-     
       return res.status(404).json({ message: "User not found" });
     }
     const roomId = `${uuidv4()}-${userId}`;
-  
+
     const doctor = await Doctor.findOne();
-   
+
     res
       .status(200)
       .json({ status: true, message: "User status changed", roomId });
@@ -488,23 +458,18 @@ export const approveVideoCall = async (req, res) => {
   }
 };
 
-
-export const  DoctorChangePassword = asyncHandler(async (req, res) => {
-
+export const DoctorChangePassword = asyncHandler(async (req, res) => {
   const { email, newpassword } = req.body;
 
-
-
   const salt = await bcrypt.genSalt(10);
- 
 
   const hashPassword = await bcrypt.hash(newpassword, salt);
 
   const doctorExists = await Doctor.findOne({ email: email });
 
-  if (doctorExists ) {
-    doctorExists .password = hashPassword;
-    let doctorChangePassword = await doctorExists .save();
+  if (doctorExists) {
+    doctorExists.password = hashPassword;
+    let doctorChangePassword = await doctorExists.save();
 
     if (doctorChangePassword) {
       res.status(200).json({ message: "Password Changed Successfully" });
@@ -516,20 +481,21 @@ export const  DoctorChangePassword = asyncHandler(async (req, res) => {
   }
 });
 
-export const generatePrescription = asyncHandler(async (req, res) => { 
+export const generatePrescription = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const {prescriptionText}=req.body
-  try{
+  const { prescriptionText } = req.body;
+  try {
+    await Booking.updateOne(
+      { _id: id },
+      { prescription: prescriptionText },
+      { new: true }
+    );
 
-    await Booking.updateOne({_id:id},{prescription:prescriptionText},{new:true})
-
- res.status(200).json({success:true,message:'Prescription Generated Successfully'}) 
-
-    }
-    catch(error){
-        console.error('Error generating prescription:',error)
-        res.status(500).json({ success: false, message: 'Internal server error' });
-    }
-
- 
+    res
+      .status(200)
+      .json({ success: true, message: "Prescription Generated Successfully" });
+  } catch (error) {
+    console.error("Error generating prescription:", error);
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
 });

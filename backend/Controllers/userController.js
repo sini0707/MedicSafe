@@ -342,7 +342,7 @@ const getMyAppointments = async (req, res) => {
 const updateUser = async (req, res) => {
   try {
     const id = req.params.id;
-    console.log("User ID:", id);
+   
     const { name, email, mobile, gender, age, blood, role, photo } = req.body;
 
     const updatedUser = await User.findByIdAndUpdate(
@@ -363,7 +363,7 @@ const updateUser = async (req, res) => {
     );
     const { password, ...rest } = updatedUser._doc;
     const existingToken = req.headers.authorization.split(" ")[1];
-    console.log(existingToken, "exis");
+    
 
     res.status(200).json({
       success: true,
@@ -536,7 +536,7 @@ export const getUserWallet = asyncHandler(async (req, res) => {
   }
 });
 
-/** checking user have any Booking */
+
 
 const checkFeedback = asyncHandler(async (req, res) => {
   try {
@@ -581,12 +581,12 @@ export const getPrescription = async (req, res) => {
  
   try {
     const booking = await Booking.findOne({ _id: req.params.appointmentId });
-    console.log(booking)
+    
     if (!booking) {
       return res.status(404).json({ success: false, message: 'Prescription not found' });
     }
     const prescription=booking.prescription
-    console.log(prescription,"pres")
+   
     res.status(200).json({ success: true,prescription });
   } catch (error) {
     console.error(error);

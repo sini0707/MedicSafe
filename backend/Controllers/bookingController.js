@@ -2,7 +2,6 @@ import User from "../models/userModel.js";
 import Doctor from "../models/DoctorSchema.js";
 import Booking from "../models/BookingSchema.js";
 import Stripe from "stripe";
-// import moment from "moment";
 
 const stripe = new Stripe(
   `sk_test_51Oom7QSFYJijlikWHxn3w46LTvEB79JVPRxR8KS6D6ipNaZDb5z68AjAnU9GAdZFSEImK5ikxnDfQZ1vs2MSzLSJ00nTkcWu9k`
@@ -22,7 +21,6 @@ const getCheckoutSession = async (req, res) => {
 
   const indianDate = req.body.date;
   const indianTime = req.body.time;
-  // const indianDateFormat = moment(indianDate, "DD/MM/YYYY").toISOString();
 
   try {
     const doctor = await Doctor.findById(doctorId);

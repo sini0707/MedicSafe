@@ -191,7 +191,12 @@ const AdminHome = () => {
       try {
         const response = await fetch(`${baseURL}/admin/YearlyBooking`, {
           method: "get",
+          headers: {
+            "Authorization": `Bearer ${adminToken}`, 
+            "Content-Type": "application/json", 
+          },
         });
+        console.log(adminToken,"admin token is here")
 
         const result = await response.json();
         setYearlyBookings(result.data);

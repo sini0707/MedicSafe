@@ -7,7 +7,6 @@ import { RiCheckDoubleFill } from "react-icons/ri";
 import { IoCheckmark } from "react-icons/io5";
 import { GrSend } from "react-icons/gr";
 import AnimationTyping from "../AnimationTyping/AnimationTyping.jsx";
-import { RiDeleteBinLine } from 'react-icons/ri';
 
 const ENDPOINT = "http://localhost:8000";
 let socket, selectedChatCompare;
@@ -19,8 +18,6 @@ const ChatUser = ({ onClose, doctor, user, photo, doctorPic, userName }) => {
   const [chats, setChats] = useState([]);
   const [content, setContent] = useState("");
   const [messageSent, setMessageSent] = useState(false);
-  const [deletedMessages, setDeletedMessages] = useState([]);
-  
   const [isTyping, setIsTyping] = useState(false);
   const typingTimeoutRef = useRef(null);
 
@@ -63,8 +60,6 @@ const ChatUser = ({ onClose, doctor, user, photo, doctorPic, userName }) => {
     }
   }, [user, doctor]);
 
-  ///fetch all messages
-
   useEffect(() => {
     const fetchMessage = async () => {
       try {
@@ -92,7 +87,6 @@ const ChatUser = ({ onClose, doctor, user, photo, doctorPic, userName }) => {
     };
     fetchMessage();
   }, [room._id, messageSent]);
-  
 
   const sendHandler = async () => {
     if (content === "") {
@@ -154,8 +148,6 @@ const ChatUser = ({ onClose, doctor, user, photo, doctorPic, userName }) => {
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
-  
-  
 
   const formatChatTime = (createdAt) => {
     const date = new Date(createdAt);
@@ -176,26 +168,16 @@ const ChatUser = ({ onClose, doctor, user, photo, doctorPic, userName }) => {
 
   useEffect(() => {
     socket.on("typing", ({ roomID, isTyping }) => {
-     
       if (roomID === room._id && !selectedChatCompare) {
         setIsTyping(isTyping);
       }
     });
   }, [room._id, selectedChatCompare]);
 
-
-
-  
-
-
-
   return (
     <div className="flex flex-col items-center justify-center w-[500px] min-h-[540px] text-gray-800 p-10">
-       
       <div className="flex flex-col flex-grow w-full max-w-xl bg-white shadow-xl rounded-lg overflow-hidden">
-      
         <div className="flex flex-col flex-grow h-0 p-4 overflow-auto">
-        
           {chats && chats.length > 0 ? (
             chats.map((chat, index) => (
               <div
@@ -204,10 +186,6 @@ const ChatUser = ({ onClose, doctor, user, photo, doctorPic, userName }) => {
                   chat.senderType === "User" ? "ml-auto justify-end" : ""
                 }`}
               >
-                
-
-
-
                 {chat.senderType === "User" ? (
                   <div className="flex w-full mt-2 space-x-3 max-w-xl ml-auto justify-end">
                     <div>
@@ -238,10 +216,10 @@ const ChatUser = ({ onClose, doctor, user, photo, doctorPic, userName }) => {
                   <div className={`flex w-full mt-2 space-x-3 max-w-xs`}>
                     <div className="flex-shrink-0 h-10 w-10 rounded-full bg-gray-300">
                       <img
-                      src={doctorPic}
-                      alt=""
-                      className=" rounded-full h-full w-full object-cover"
-                    />
+                        src={doctorPic}
+                        alt=""
+                        className=" rounded-full h-full w-full object-cover"
+                      />
                     </div>
                     <div>
                       <div className="bg-gray-300 p-3 rounded-r-lg rounded-bl-lg">
@@ -277,18 +255,13 @@ const ChatUser = ({ onClose, doctor, user, photo, doctorPic, userName }) => {
             onClick={() => sendHandler()}
             className="rounded-full flex items-center ml-2 hover:scale-105 transition duration-100 ease-in-out cursor-pointer justify-center w-1/5 bg-[#8b5cf6]"
           >
-
-
-            {/* Include your send icon component or SVG here */}
             <GrSend className="text-[22px]" />
           </button>
         </div>
       </div>
-     
-      
+
       <div className="absolute top-2 left-5 cursor-pointer">
         <svg
-          // onClick={onClose}
           xmlns="http://www.w3.org/2000/svg"
           className="h-6 w-6"
           fill="none"

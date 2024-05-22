@@ -5,17 +5,15 @@ import User from "../models/userModel.js";
 import bcrypt from "bcryptjs";
 import Doctor from "../models/DoctorSchema.js";
 import Specialization from "../models/SpecializationModel.js";
-import Booking from "../models/BookingSchema.js"
+import Booking from "../models/BookingSchema.js";
 
 const adminLogin = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
   try {
     const admin = await Admin.findOne({ email: email.trim() });
-  
-   
+
     if (admin && (await admin.matchPassword(password))) {
-       const token = adminGenToken(res, admin._id);
-    
+      const token = adminGenToken(res, admin._id);
 
       res.status(201).json({
         success: true,
@@ -28,7 +26,6 @@ const adminLogin = asyncHandler(async (req, res) => {
           token: token,
         },
       });
-    
     } else {
       res.status(400);
       throw new Error("Invalid email or password");
@@ -120,8 +117,8 @@ const approveDoctors = asyncHandler(async (req, res) => {
 });
 
 const rejectDoctors = asyncHandler(async (req, res) => {
-  const  docId = req.params.id;
-  let  doctor = await Doctor.findById(docId);
+  const docId = req.params.id;
+  let doctor = await Doctor.findById(docId);
 
   if (!doctor) {
     return res.status(400).json({ error: "Invalid doctor ID" });
@@ -133,18 +130,13 @@ const rejectDoctors = asyncHandler(async (req, res) => {
   res.status(200).json(doctor);
 });
 
-
 const getDoctors = asyncHandler(async (req, res) => {
   try {
-   
     const doctors = await Doctor.find({}, { password: 0 });
- 
 
     if (doctors) {
-    
       res.status(200).json({ doctorsData: doctors });
     } else {
-   
       res.status(400).json("Error in Fetching");
     }
   } catch (error) {
@@ -152,8 +144,6 @@ const getDoctors = asyncHandler(async (req, res) => {
     res.status(500).json({ error: "Server Error" });
   }
 });
-
-
 
 const addSpecialization = asyncHandler(async (req, res) => {
   try {
@@ -167,7 +157,7 @@ const addSpecialization = asyncHandler(async (req, res) => {
 
     if (specialization) {
       res.status(409).json({ error: "Specialization already exists" });
-      return; 
+      return;
     }
 
     const newSpecialization = await Specialization.create({
@@ -185,7 +175,6 @@ const addSpecialization = asyncHandler(async (req, res) => {
   }
 });
 
-
 const getAllSpecialization = asyncHandler(async (req, res) => {
   const specializations = await Specialization.find();
 
@@ -193,7 +182,6 @@ const getAllSpecialization = asyncHandler(async (req, res) => {
 });
 
 const adminLogoutUser = (req, res) => {
-
   res.cookie("adminJwt", "", {
     httpOnly: true,
     expires: new Date(0),
@@ -202,29 +190,14 @@ const adminLogoutUser = (req, res) => {
   res.status(200).json({ message: "Logged out successfully" });
 };
 
-
 export const getBooking = async (req, res) => {
   try {
-    // const bookings = await Booking.find(
-    //   {},
-    //   {
-    //     user: 1,
-    //     doctor: 1,
-    //     paymentStatus: 1,
-    //     IndianDate: 1,
-    //     slotDate: 1,
-    //     slotTime:1,
-    //     ticketPrice:1,
-    //     status:1,
-       
-    //   }
-    // );
     const bookings = await Booking.find({})
-  .populate('user', 'name') 
-  .populate('doctor', 'name')
-  .select('user doctor paymentStatus IndianDate slotDate slotTime ticketPrice status isPaid isCancelled createdAt updatedAt');
-
-
+      .populate("user", "name")
+      .populate("doctor", "name")
+      .select(
+        "user doctor paymentStatus IndianDate slotDate slotTime ticketPrice status isPaid isCancelled createdAt updatedAt"
+      );
 
     if (bookings.length === 0) {
       throw new Error("Not have any Bookings");
@@ -234,15 +207,12 @@ export const getBooking = async (req, res) => {
       .status(200)
       .json({ status: true, message: "getting the users", data: bookings });
   } catch (error) {
-    console.log(error); 
+    console.log(error);
     res
       .status(404)
       .json({ status: false, message: "Unable to retrieve doctors" });
   }
 };
-
-
-
 
 export const getMonthlyBooking = async (req, res) => {
   try {
@@ -262,10 +232,10 @@ export const getMonthlyBooking = async (req, res) => {
   }
 };
 
-//// getting yearly Data   /////
-
 export const YearlyBooking = async (req, res) => {
   try {
+    console.log("Starting YearlyBooking aggregation...");
+
     const yearlyData = await Booking.aggregate([
       {
         $project: {
@@ -277,7 +247,6 @@ export const YearlyBooking = async (req, res) => {
               },
             },
           },
-
           fee: 1,
         },
       },
@@ -290,16 +259,14 @@ export const YearlyBooking = async (req, res) => {
       },
     ]);
 
+    console.log("Aggregation successful, data:", yearlyData);
+
     res.status(200).json({ data: yearlyData });
   } catch (error) {
+    console.error("Error during aggregation:", error);
     res.status(404).json({ message: "Data not found" });
   }
 };
-
-// ///// getting the user Data
-
-
-////Cancel Booking ////////
 
 export const cancelBooking = async (req, res) => {
   try {
@@ -325,31 +292,26 @@ export const cancelBooking = async (req, res) => {
   }
 };
 
-
 export const creditUserWallet = asyncHandler(async (req, res) => {
   try {
     const { userId, amount } = req.body;
 
-    // Find the user by ID
     const user = await User.findById(userId);
 
     if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+      return res.status(404).json({ message: "User not found" });
     }
 
-    // Add the credited amount to the wallet balance
     user.walletBalance += amount;
 
-    // Save the updated user object
     await user.save();
 
-    return res.status(200).json({ message: 'Wallet credited successfully' });
+    return res.status(200).json({ message: "Wallet credited successfully" });
   } catch (error) {
-    console.error('Error crediting wallet:', error);
-    return res.status(500).json({ message: 'Internal server error' });
+    console.error("Error crediting wallet:", error);
+    return res.status(500).json({ message: "Internal server error" });
   }
 });
-
 
 export {
   adminLogin,

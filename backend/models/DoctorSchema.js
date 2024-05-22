@@ -77,7 +77,7 @@ const DoctorSchema= new mongoose.Schema({
             {
               userId: {
                 type: mongoose.Schema.Types.ObjectId,
-                ref: 'User', // Reference to the User model
+                ref: 'User', 
               },
             },
           ],
@@ -86,16 +86,16 @@ const DoctorSchema= new mongoose.Schema({
       available: [
         {
           date: {
-            type: Date, // You can use Date for the date field
+            type: Date, 
           },
           fromTime: {
-            type: String, // You can use String for the time fields
+            type: String, 
           },
           toTime: {
             type: String,
           },
           expiresAt: {
-            type: Date, // This field will be used for automatic expiration
+            type: Date, 
           },
         },
       ],

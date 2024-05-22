@@ -55,9 +55,6 @@ router.post("/approveVideoCall/:id", approveVideoCall);
 router.put("/submitreply/:id",submitReply);
 router.post("/changepassword",DoctorChangePassword);
 router.post('/generate-prescription/:id',protect,generatePrescription)
-
-
-
 router.get("/get-doctor-rooms/:id", getDoctorRooms);
 router.get("/get-rooms-messages/:roomId", getRoomMessages);
 router.post("/sendChat/:roomId/:sender/:type/:Id/:senderName",sendChat);

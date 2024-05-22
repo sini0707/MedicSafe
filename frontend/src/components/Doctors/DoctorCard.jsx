@@ -1,17 +1,16 @@
 import starIcon from "../../assets/images/Star.png";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { BiSolidRightArrow } from "react-icons/bi";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { baseURL } from "../../../../backend/config/db";
 import { useState } from "react";
-import { toast } from "react-toastify";
+
 
 
 const DoctorCard = ({ doctor }) => {
   const userInfo = useSelector((state) => state.auth.userInfo);
   const urlSearchParams = new URLSearchParams(window.location.search);
-  const [user, setUser] = useState(null);
+ 
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -38,11 +37,11 @@ const DoctorCard = ({ doctor }) => {
 
   const getColorClass = (rating) => {
     if (rating >= 4) {
-      return "text-green-500"; // Green color for high ratings
+      return "text-green-500"; 
     } else if (rating >= 3) {
-      return "text-yellow-500"; // Yellow color for moderate ratings
+      return "text-yellow-500"; 
     } else {
-      return "text-red-500"; // Red color for low ratings
+      return "text-red-500"; 
     }
   };
 
