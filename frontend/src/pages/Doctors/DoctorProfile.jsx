@@ -6,7 +6,14 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import { doctoken } from "../../../config";
-import { FiUser,FiMail,FiPhone,FiUpload, FiMapPin, FiDollarSign} from 'react-icons/fi';
+import {
+  FiUser,
+  FiMail,
+  FiPhone,
+  FiUpload,
+  FiMapPin,
+  FiDollarSign,
+} from "react-icons/fi";
 
 const DoctorProfile = (doctor) => {
   const docId = doctor.doctor._id;
@@ -85,7 +92,6 @@ const DoctorProfile = (doctor) => {
 
       const { message, data } = responseData;
 
-      
       dispatch(setDoctorCredentials(data));
       toast.success(message || "Profile successfully updated");
 
@@ -112,8 +118,8 @@ const DoctorProfile = (doctor) => {
           className="md:flex md:justify-between md:mx-[60px] items-center"
         >
           <div className="px-2 m-2">
-          <div className="mb-5 flex items-center"> 
-              <FiUpload className="text-primaryColor mr-2" /> 
+            <div className="mb-5 flex items-center">
+              <FiUpload className="text-primaryColor mr-2" />
               {formData.photo && (
                 <figure className="w-[60px] h-[60px] rounded-full border-2 border-solid border-primaryColor flex items-center justify-center">
                   <img
@@ -141,8 +147,8 @@ const DoctorProfile = (doctor) => {
               </div>
             </div>
 
-            <div className="mb-5 flex items-center"> 
-              <FiUser className="text-primaryColor mr-2" /> 
+            <div className="mb-5 flex items-center">
+              <FiUser className="text-primaryColor mr-2" />
               <input
                 type="text"
                 placeholder="Full Name"
@@ -155,7 +161,7 @@ const DoctorProfile = (doctor) => {
             </div>
 
             <div className="mb-5 flex items-center">
-    <FiMail className="text-primaryColor mr-2"/>
+              <FiMail className="text-primaryColor mr-2" />
               <input
                 type="email"
                 placeholder="Enter your email"
@@ -167,8 +173,8 @@ const DoctorProfile = (doctor) => {
               />
             </div>
 
-            <div className="mb-5 flex items-center"> 
-    <FiPhone className="text-primaryColor mr-2"/>
+            <div className="mb-5 flex items-center">
+              <FiPhone className="text-primaryColor mr-2" />
               <input
                 type="number"
                 placeholder="your mobile"
@@ -192,8 +198,8 @@ const DoctorProfile = (doctor) => {
               />
             </div>
 
-            <div className="mb-5 flex items-center"> 
-              <FiMapPin className="text-primaryColor mr-2" /> 
+            <div className="mb-5 flex items-center">
+              <FiMapPin className="text-primaryColor mr-2" />
               <input
                 type="text"
                 placeholder=" Your Address"
@@ -228,8 +234,8 @@ const DoctorProfile = (doctor) => {
             </div>
           </div>
           <div className="px-2">
-            <div className="mb-5 flex items-center"> 
-              <FiDollarSign className="text-primaryColor mr-2" /> 
+            <div className="mb-5 flex items-center">
+              <FiDollarSign className="text-primaryColor mr-2" />
               <input
                 type="number"
                 placeholder="enter fees"

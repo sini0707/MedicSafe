@@ -87,7 +87,6 @@ const ForgotVerify = () => {
                 >
                   Reset password
                 </button>
-                
               </div>
             </form>
           </div>

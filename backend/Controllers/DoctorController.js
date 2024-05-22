@@ -307,7 +307,7 @@ export const bookingDetails = asyncHandler(async (req, res) => {
           createdAt: booking.createdAt,
         };
 
-        // Push the booking detail to the array
+     
         Appointment.push(bookingDetail);
       }
     }

@@ -11,8 +11,8 @@ const AdminHome = () => {
 
   const [booking, setBookings] = useState([]);
 
-   const [chartPie, setChartPie] = useState(null);
-   const [yearlyBookings, setYearlyBookings] = useState([]);
+  const [chartPie, setChartPie] = useState(null);
+  const [yearlyBookings, setYearlyBookings] = useState([]);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -160,31 +160,27 @@ const AdminHome = () => {
     };
   }, [chartBar, adminToken, baseURL]);
 
-
-
   useEffect(() => {
     const totalBookings = async () => {
       try {
-       
+        
         const res = await fetch(`${baseURL}/admin/getBooking`, {
           method: "get",
           headers: {
             Authorization: `Bearer ${adminToken}`,
           },
         });
-       
+        console.log("Response received:", res);
         const result = await res.json();
-       
-        setBookings(result.data);
 
-       
+        setBookings(result.data);
       } catch (error) {
         console.log(error, "error");
       }
     };
-    
+
     totalBookings();
-  }, []);
+  }, [baseURL, adminToken]);
 
   useEffect(() => {
     const fetchYearlyData = async () => {
@@ -192,11 +188,11 @@ const AdminHome = () => {
         const response = await fetch(`${baseURL}/admin/YearlyBooking`, {
           method: "get",
           headers: {
-            "Authorization": `Bearer ${adminToken}`, 
-            "Content-Type": "application/json", 
+            Authorization: `Bearer ${adminToken}`,
+            "Content-Type": "application/json",
           },
         });
-        console.log(adminToken,"admin token is here")
+        console.log(adminToken, "admin token is here");
 
         const result = await response.json();
         setYearlyBookings(result.data);

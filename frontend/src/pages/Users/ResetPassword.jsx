@@ -17,7 +17,7 @@ export const ResetPassword = () => {
         return;
       }
   
-      // Check if password and confirm password match
+    
       if (password !== confirmPass) {
         toast.error("New password and confirm password do not match");
         return;

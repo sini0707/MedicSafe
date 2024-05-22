@@ -28,9 +28,9 @@ const EmailVerify = () => {
 
     const updatedOtp = [...otp];
     updatedOtp[index] = inputValue;
-    setOtp(updatedOtp.join("")); // Join all digits into a single string
+    setOtp(updatedOtp.join(""));
     if (inputValue.length === 1 && nextInputRef.current) {
-      nextInputRef.current.focus(); // Move focus to the next input field
+      nextInputRef.current.focus();
     }
   };
 

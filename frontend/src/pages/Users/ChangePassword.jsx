@@ -1,10 +1,9 @@
 import { useState } from "react";
 import apiInstance from "../../axiosApi/axiosInstance";
 import { useNavigate } from "react-router-dom";
-
 import { baseURL } from "../../../../backend/config/db";
 import { token } from "../../../config";
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
 
 const ChangePasswordForm = ({ email }) => {
   const [currentPassword, setcurrentPassword] = useState("");
@@ -20,7 +19,6 @@ const ChangePasswordForm = ({ email }) => {
     e.preventDefault();
 
     try {
-
       if (!currentPassword || !newpassword || !confirmPass) {
         toast.error("Please fill in all fields.");
         return;
@@ -32,18 +30,22 @@ const ChangePasswordForm = ({ email }) => {
 
       setLoading(true);
 
-      const res = await apiInstance.post(`${baseURL}/users/changepassword`, {
-        email,
-        currentPassword,
-        newpassword,
-        confirmPass,
-    }, {
-        headers: {
-            'Authorization': `Bearer ${token}`
+      const res = await apiInstance.post(
+        `${baseURL}/users/changepassword`,
+        {
+          email,
+          currentPassword,
+          newpassword,
+          confirmPass,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
-    });
-    setPasswordChanged(true);
-    toast.success("Password changed successfully"); 
+      );
+      setPasswordChanged(true);
+      toast.success("Password changed successfully");
       window.location.reload();
     } catch (error) {
       console.log(error);
