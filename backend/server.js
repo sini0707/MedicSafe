@@ -30,7 +30,8 @@ app.use(cookieParser());
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    // origin: "http://localhost:5173",
+    origin:"https://medicsafe.online , https://www.medicsafe.online",
     credentials: true,
   })
 );
