@@ -1,4 +1,4 @@
-import { useEffect,useState } from "react";
+import { useEffect, useState } from "react";
 import logo from "../../assets/images/logo.png";
 import { NavLink } from "react-router-dom";
 import { BiMenu } from "react-icons/bi";
@@ -8,6 +8,8 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { baseURL } from "../../../../backend/config/db";
 import { logout } from "../../slices/authSlice";
+import { IoIosNotifications } from "react-icons/io";
+import UserNotification from "../Notification/UserNotification";
 
 const navLinks = [
   {
@@ -29,16 +31,13 @@ const navLinks = [
 ];
 
 const Header = () => {
-   const user = useSelector((state) => state.auth.userInfo);
-  
-   
+  const user = useSelector((state) => state.auth.userInfo);
 
-  console.log(user, "user");
+  const [notification, setNotification] = useState(false);
+  
   const headerRef = useRef(null);
   const menuRef = useRef(null);
   const dispatch = useDispatch();
-
-  
 
   const handleStickyHeader = () => {
     window.addEventListener("scroll", () => {
@@ -62,7 +61,6 @@ const Header = () => {
     }
   };
   const navigate = useNavigate();
-  // const{ dispatch} = useDispatch(authContext);
 
   const logoutHandler = async () => {
     try {
@@ -80,8 +78,6 @@ const Header = () => {
       await response.json();
 
       dispatch(logout());
-
-      // Clearing local storage here directly for debugging
 
       navigate("/");
     } catch (err) {
@@ -115,8 +111,14 @@ const Header = () => {
             </ul>
           </div>
           <div className="flex items-center gap-4">
-            {user && user.token ? ( // Check if user and token exist
-              <div>
+            {user && user.token ? (
+              <div className="flex">
+                <div
+                  onClick={() => setNotification(true)}
+                  className="flex items-center mr-6 cursor-pointer"
+                >
+                  <IoIosNotifications className="text-[20px]" />
+                </div>
                 <NavLink to="/users/profile/me" className="flex items-center">
                   <figure className="w-[35px] h-[35px] rounded-full cursor-pointer">
                     <img
@@ -133,6 +135,9 @@ const Header = () => {
                     Logout
                   </button>
                 </NavLink>
+                {notification && (
+                  <UserNotification setNotification={setNotification} />
+                )}
               </div>
             ) : (
               <NavLink to="/login">
@@ -141,13 +146,7 @@ const Header = () => {
                 </button>
               </NavLink>
             )}
-            {/* <NavLink to="/wallet" className="flex items-center">
-              <span className="text-[16px] leading-7 font-[500] hover:text-primaryColor">
-                Wallet
-              </span> */}
-              {/* <span className="ml-1">{wallet.balance}</span> */}
-              {/* <img src="" alt="Wallet" className="ml-1 w-6 h-6" />
-            </NavLink> */}
+
             <span className="md:hidden" onClick={toggleMenu}>
               <BiMenu className="w-6 h-6 cursor-pointer" />
             </span>

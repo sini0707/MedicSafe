@@ -1,60 +1,121 @@
-import express  from 'express';
-import dotenv from 'dotenv';
+import express from "express";
+import dotenv from "dotenv";
 dotenv.config();
-import cookieParser from 'cookie-parser';
-import cors from'cors'
-import { notFound, errorHandler } from './middleware/errorMiddleware.js';
-import connectDB from './config/db.js';
+import cookieParser from "cookie-parser";
+import cors from "cors";
+import { notFound, errorHandler } from "./middleware/errorMiddleware.js";
+import connectDB from "./config/db.js";
 const port = process.env.PORT || 5000;
 connectDB();
-import userRoutes from './routes/userRoutes.js';
+import userRoutes from "./routes/userRoutes.js";
 import doctorRoute from "./routes/doctor.js";
-import adminRoutes from './routes/adminRoutes.js'
- import path from 'path';
-  import ChatRoute from './routes/ChatRoute.js'
-import MessageRoute from "./routes/MessageRoute.js"
+import adminRoutes from "./routes/adminRoutes.js";
+import path from "path";
 
-
-
-
+import { Server } from "socket.io";
+import { createServer } from "http";
 
 const app = express();
 
-const corsOptions={
-    origin:true,
-    credentials:true
-}
+const corsOptions = {
+  origin: true,
+  credentials: true,
+};
 
 // middleware
-app.use(cors(corsOptions))
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-// app.use(cors(corsOptions));
-app.use(cors({
-    origin: 'http://localhost:5173', // Replace with your frontend domain
+
+app.use(
+  cors({
+    origin: "http://localhost:5173",
     credentials: true,
-  }));
-app.use('/api/v1/users', userRoutes);
-app.use('/api/v1/doctors', doctorRoute);
-app.use("/api/v1/admin",adminRoutes);
- app.use("/chat",ChatRoute);
- app.use('/message',MessageRoute)
+  })
+);
+app.use("/api/v1/users", userRoutes);
+app.use("/api/v1/doctors", doctorRoute);
+app.use("/api/v1/admin", adminRoutes);
 
-
-// app.get('/', (req, res) => res.send('API running'));
-if (process.env.NODE_ENV === 'production') {
+if (process.env.NODE_ENV === "production") {
   const __dirname = path.resolve();
-  app.use(express.static(path.join(__dirname, '/frontend/dist')));
+  app.use(express.static(path.join(__dirname, "/frontend/dist")));
 
-  app.get('*', (req, res) =>
-    res.sendFile(path.resolve(__dirname, 'frontend', 'dist', 'index.html'))
+  app.get("*", (req, res) =>
+    res.sendFile(path.resolve(__dirname, "frontend", "dist", "index.html"))
   );
 } else {
-  app.get('/', (req, res) => {
-    res.send('API is running....');
+  app.get("/", (req, res) => {
+    res.send("API is running....");
   });
 }
 app.use(notFound);
 app.use(errorHandler);
-app.listen(port, () => console.log(`Server started on port ${port}`));
+
+const server = app.listen(port, () => {
+  try {
+    connectDB();
+    console.log("Server is running on port", port);
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+const io = new Server(server, {
+  pingTimeout: 60000,
+  cors: {
+    origin: "*",
+  },
+});
+let users = [];
+io.on("connection", (socket) => {
+  let typingTimeoutRef = null;
+  socket.on("setup", (user) => {
+    socket.join(user);
+    users.push(user);
+
+    socket.emit("connected");
+  });
+  socket.on("join_chat", (room) => {
+    socket.join(room);
+  });
+
+  socket.on("new Message", (newMessageRecived) => {
+    var chat = newMessageRecived.room;
+
+    if (!chat.user || !chat.doctor) {
+      return console.log("chat.users  not defined  ");
+    }
+
+    socket.in(chat._id).emit("message received", newMessageRecived);
+
+    if (chat.user._id === newMessageRecived.sender._id) {
+      socket.to(chat._id).emit("message recevied", newMessageRecived);
+    }
+
+    if (chat.doctor._id === newMessageRecived.sender._id) {
+      socket.to(chat._id).emit("message recevied", newMessageRecived);
+    }
+  });
+
+  socket.on("typing", ({ roomID, isTyping }) => {
+    
+    socket.to(roomID).emit("typing", { roomID, isTyping });
+
+   
+    if (typingTimeoutRef !== null) {
+      clearTimeout(typingTimeoutRef);
+    }
+
+   
+    typingTimeoutRef = setTimeout(() => {
+      socket.to(roomID).emit("typing", { roomID, isTyping: false });
+      typingTimeoutRef = null; 
+    }, 3000);
+  });
+  socket.off("setup", () => {
+    console.log("User Disconnected");
+    socket.leave(user);
+  });
+});

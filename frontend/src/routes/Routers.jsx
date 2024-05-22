@@ -5,15 +5,16 @@ import Signup from "../pages/Users/Signup";
 import Contact from "../pages/Users/Contact";
 import Doctors from "../pages/Doctors/DoctorsHome.jsx";
 import DoctorDetails from "../pages/Users/DoctorDetails.jsx";
-import MyAccount from "../Dashboard/user-account/MyAccount";
+import MyAccount from "../Dashboard/user-account/MyAccount.jsx";
 import { Routes, Route } from "react-router-dom";
 import Dashboard from "../Dashboard/user-account/doctor-account/Dashboard";
 import ProtectedRoute from "./ProtectedRoute";
+
 import AdminLogin from "../pages/Admin/adminLogin.jsx";
 import AdminHome from "../pages/Admin/AdminHome.jsx";
 import AdminUsers from "../pages/Admin/AdminUsers.jsx";
 import AdminDoctors from "../pages/Admin/AdminDoctors.jsx";
-import AdminBookings from "../pages/Admin/AdminBookings.jsx";
+import PaymentBooking from "../pages/Admin/PaymentBooking.jsx";
 import EmailVerify from "../pages/Users/EmailVerify.jsx";
 import ForgotVerify from "../pages/Users/ForgotVerify.jsx";
 import { ResetPassword } from "../pages/Users/ResetPassword.jsx";
@@ -35,16 +36,36 @@ import MyBookings from "../Dashboard/user-account/MyBookings.jsx";
 import UserVideoCallRoom from "../pages/Users/UserVideoCallRoom.jsx";
 import DoctorVideoCallRoom from "../pages/Doctors/DoctorVideoCallRoom.jsx";
 import Specialization from "../pages/Admin/Specialization.jsx";
-import Chat from "../pages/Users/Chat/Chat.jsx";
-import WalletComponent from "../pages/Users/WalletComponent.jsx";
 
+import WalletComponent from "../pages/Users/WalletComponent.jsx";
+import DoctorChat from "../pages/Doctors/DoctorChat.jsx";
+// import ErrorPage from "../components/ErrorPage/ErrorPage.jsx";
+import ProtectedAdminRoute from "./ProtectedAdminRoute.jsx";
+import { ChakraProvider } from "@chakra-ui/react";
 
 function Routers() {
   return (
+
     <Routes>
       <Route path="/" element={<Home />} />
-      <Route path="/home" element={<Home />} />
-      <Route path="/finddoctors" element={<Doctorss />} />
+
+      <Route
+        path="/home"
+        element={
+          <ProtectedRoute allowedRoles={["patient"]}>
+            <Home />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/finddoctors"
+        element={
+          <ProtectedRoute allowedRoles={["patient"]}>
+            <Doctorss />
+          </ProtectedRoute>
+        }
+      />
+
       <Route path="/users/doctorDetails/:id" element={<DoctorDetails />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Signup />} />
@@ -54,7 +75,16 @@ function Routers() {
 
       <Route path="/contact" element={<Contact />} />
       <Route path="/services" element={<Services />} />
-      <Route path="/changepassword" element={<ChangePassword />} />
+
+      <Route
+        path="/changepassword"
+        element={
+          <ProtectedRoute allowedRoles={["patient"]}>
+            <ChangePassword />
+          </ProtectedRoute>
+        }
+      />
+
       <Route
         path="/users/profile/me"
         element={
@@ -63,17 +93,49 @@ function Routers() {
           </ProtectedRoute>
         }
       />
-<Route path="/wallet" element={<WalletComponent/>} />
 
+      <Route
+        path="/users/wallet"
+        element={
+          <ProtectedRoute allowedRoles={["patient"]}>
+            <WalletComponent />
+          </ProtectedRoute>
+        }
+      />
 
-<Route path="/users/room/:roomId" element={<UserVideoCallRoom  />} />
+      <Route
+        path="/users/room/:roomId"
+        element={
+          <ProtectedRoute allowedRoles={["patient"]}>
+            <UserVideoCallRoom />
+          </ProtectedRoute>
+        }
+      />
 
-      <Route path="/checkout-success" element={<SuccessPayment />} />
+      <Route
+        path="/checkout-success"
+        element={
+          <ProtectedRoute allowedRoles={["patient"]}>
+            <SuccessPayment />
+          </ProtectedRoute>
+        }
+      />
 
-      <Route path='/bookings' element={<MyBookings/>}/>
+      <Route
+        path="/bookings"
+        element={
+          <ProtectedRoute allowedRoles={["patient"]}>
+            <MyBookings />
+          </ProtectedRoute>
+        }
+      />
+
+      {/*** **************Doctors Route start******************** */}
 
       <Route path="/doctors/profile/me" element={<Dashboard />} />
 
+      <Route path="/doctors/finddoctors" element={<Doctorss />} />
+      <Route path="/doctors/doctorDetails/:id" element={<DoctorDetails />} />
       <Route path="/doctors/signup" element={<DoctorRegister />} />
       <Route path="/doctors/otp" element={<DoctorOtpVerify />} />
       <Route path="/doctors/login" element={<DoctorLogin />} />
@@ -90,18 +152,58 @@ function Routers() {
         path="/doctors/changepassword"
         element={<DoctorChangePassword />}
       />
-       <Route path="/doctors/room/:roomId" element={<DoctorVideoCallRoom />} />
-     
-       <Route path="/chat" element={<Chat />} />
 
+      <Route path="/doctors/room/:roomId" element={<DoctorVideoCallRoom />} />
+
+      <Route path="/doctors/chat" element={<DoctorChat />} />
 
       <Route path="/admin" element={<AdminLogin />} />
-      <Route path="/admin/home" element={<AdminHome />} />
-      <Route path="/admin/userlist" element={<AdminUsers />} />
-      <Route path="/admin/doctorslist" element={<AdminDoctors />} />
-      <Route path="/admin/bookings" element={<AdminBookings />} />
-      <Route path="/admin/specializations" element={<Specialization />} />
-     
+
+      <Route
+        path="/admin/home"
+        element={
+          <ProtectedAdminRoute allowedRoles={["admin"]}>
+            <AdminHome />
+          </ProtectedAdminRoute>
+        }
+      />
+
+      <Route
+        path="/admin/userlist"
+        element={
+          <ProtectedAdminRoute allowedRoles={["admin"]}>
+            <AdminUsers />
+          </ProtectedAdminRoute>
+        }
+      />
+      <Route
+        path="/admin/doctorslist"
+        element={
+          <ProtectedAdminRoute allowedRoles={["admin"]}>
+            <AdminDoctors />
+          </ProtectedAdminRoute>
+        }
+      />
+
+      <Route
+        path="/admin/bookings"
+        element={
+          <ProtectedAdminRoute allowedRoles={["admin"]}>
+            <PaymentBooking />
+          </ProtectedAdminRoute>
+        }
+      />
+
+      <Route
+        path="/admin/specializations"
+        element={
+          <ProtectedAdminRoute allowedRoles={["admin"]}>
+            <Specialization />
+          </ProtectedAdminRoute>
+        }
+      />
+
+      {/* <Route path="*" element={<ErrorPage />} /> */}
     </Routes>
   );
 }

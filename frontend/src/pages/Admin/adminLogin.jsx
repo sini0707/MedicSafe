@@ -1,12 +1,15 @@
 import { useState,useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { baseURL } from "../../../../backend/config/db";
 import {toast} from "react-toastify";
-//  import {authContext} from "../../context/AuthContext.jsx";
- import { useDispatch,useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
+
+
+ import { useDispatch } from 'react-redux';
  
  import  HashLoader from "react-spinners/HashLoader.js";
  import { setadminCredentials } from '../../slices/adminSlices/adminAuthSlice.js';
+import { adminToken } from '../../../config.js';
 
 
 const adminLogin = () => {
@@ -36,18 +39,19 @@ useEffect(()=>{
       setLoading(true);
     
       try {
-        console.log(formData.email, formData.password);
+        
         const res = await fetch(`${baseURL}/admin/login`, {
           method: 'post',
           headers: {
             'Content-Type': 'application/json',
+           
           },
           credentials: 'include',
           body: JSON.stringify(formData),
         });
     
         const result = await res.json();
-        console.log(result); // Log the response details
+       
     
         if (!res.ok) {
           throw new Error(result.message);
@@ -55,10 +59,10 @@ useEffect(()=>{
     
         const { data } = result;
         if (data.success === false) {
-          dispatch(setadminCredentials(data)); // Dispatch an action with data payload
+          dispatch(setadminCredentials(data)); 
           return;
         }
-        dispatch(setadminCredentials(data)); // Dispatch an action with data payload
+        dispatch(setadminCredentials(data)); 
         navigate('/admin/home');
         toast.success(result.message);
       } catch (err) {
@@ -71,31 +75,7 @@ useEffect(()=>{
         
           
         
-    // console.log(data,token,'resultttttttttttttttttttttttttt');
-    //     if (!data) {
-    //       throw new Error("Admin data not found in the server response.");
-    //     }
     
-        // dispatch({
-        //   type: "LOGIN_SUCCESS",
-        //   payload: {
-        //     user: data,
-        //     token: token || null, // Ensure that token is not undefined
-        //     role: data.role || null,   // Ensure that role is not undefined
-        //   },
-        // });
-    
-        // console.log(result, "login data");
-    
-        //  setLoading(false);
-        // toast.success(result.message);
-    //     // navigate('/admin/home');
-    //   } catch (err) {
-    //     console.log(err);
-    //     toast.error(err.message);
-    //      setLoading(false);
-    //   }
-    // }
       return (
         <section className="px-5 lg:px-0">
           <div className="w-full max-w-[570px] mx-auto rounded-lg shadow-md md:p-10">

@@ -1,5 +1,4 @@
-import mongoose from 'mongoose';
-
+import mongoose from "mongoose";
 
 const connectDB = async () => {
   try {
@@ -10,7 +9,6 @@ const connectDB = async () => {
     process.exit(1);
   }
 };
-export const baseURL="http://localhost:8000/api/v1";
-// export const token= localStorage.getItem("token");
+export const baseURL = "http://localhost:8000/api/v1";
 
 export default connectDB;

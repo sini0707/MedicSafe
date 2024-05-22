@@ -1,6 +1,6 @@
-import { useState,useEffect } from 'react';
+import { useState } from 'react';
  import { useNavigate } from 'react-router-dom';
- import { baseURL } from '../../../../backend/config/db';
+
  import { useDispatch } from 'react-redux';
 
 
@@ -17,7 +17,7 @@ const DoctorForgotVerify = () => {
    
 const handleInputChange = (e) => {
         const enteredEmail = e.target.value; 
-        console.log(enteredEmail); 
+       
         setEmail(enteredEmail); 
     };
     const submitHandler = async (e) => {
@@ -64,26 +64,7 @@ const handleInputChange = (e) => {
                         >
                             Reset password
                         </button>
-{/* 
-                        {resendCooldown === 0 && resendCount < 3 && (
-                            <button
-                                type="button"
-                                className="py-3 px-4 inline-flex justify-center items-center gap-2 rounded-md border border-transparent font-semibold bg-blue-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all text-sm dark:focus:ring-offset-gray-800"
-                                onClick={resendOTP}
-                            >
-                                Resend OTP
-                            </button>
-                        )}
-                        {resendCooldown > 0 && (
-                            <span className="text-sm text-gray-500">
-                                Resend cooldown: {resendCooldown} seconds
-                            </span>
-                        )}
-                        {resendCount >= 3 && (
-                            <span className="text-sm text-red-600">
-                                Maximum resend attempts reached
-                            </span>
-                        )} */}
+
                     </div>
                 </form>
             </div>

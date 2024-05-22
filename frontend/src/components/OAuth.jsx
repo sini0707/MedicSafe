@@ -20,6 +20,7 @@ export default function OAuth() {
             method:'POST',
             headers:{
                 'Content-Type':'application/json',
+                
             },
             body:JSON.stringify({
                 name:result.user.displayName,
@@ -28,7 +29,7 @@ export default function OAuth() {
             }),
            });
            const data= await res.json();
-           console.log(data,"zzzzz")
+           
            dispatch(setCredentials(data.data));
            navigate("/home");
 
@@ -40,7 +41,7 @@ export default function OAuth() {
   return (
     <div className='OAuth'>
         
-    <button type='button' onClick={handleGoogleClick} className='w-full bg-red-700 text-white rounded-lg px-4 py-3 uppercase hover:opacity-95'>
+    <button type='button' onClick={handleGoogleClick} className='w-full bg-yellow-500 text-white rounded-lg px-4 py-3 uppercase hover:opacity-95 mt-4'>
     Continue with Google
   </button>
     </div>  
@@ -48,4 +49,5 @@ export default function OAuth() {
   )
 }
 
-// export default OAuth
+
+// 

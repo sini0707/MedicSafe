@@ -1,12 +1,13 @@
-import { createContext, useContext, useEffect, useReducer } from "react";
+import { createContext, useEffect, useReducer } from "react";
 
 const initialState = {
-  user: localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : null,
-  role: localStorage.getItem('role') || null,
-  token: localStorage.getItem('token') || null,
+  
 };
 
+
 export const authContext = createContext(initialState);
+
+
 
 const authReducer = (state, action) => {
   switch (action.type) {
@@ -17,18 +18,21 @@ const authReducer = (state, action) => {
         token: null,
       };
     case "LOGIN_SUCCESS":
+      
       return {
         user: action.payload.user,
         token: action.payload.token,
         role: action.payload.role,
       };
     case "LOGOUT":
+      
       return {
         user: null,
         role: null,
         token: null,
       };
     default:
+   
       return state;
   }
 };
@@ -36,16 +40,21 @@ const authReducer = (state, action) => {
 export const AuthContextProvider = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
 
+
   useEffect(() => {
-    // Save to local storage only if the state values are not null
+    
+   
     if (state.user !== null) {
       localStorage.setItem('user', JSON.stringify(state.user));
+      
     }
     if (state.token !== null) {
       localStorage.setItem('token', state.token);
+      
     }
     if (state.role !== null) {
       localStorage.setItem('role', state.role);
+      
     }
   }, [state]);
 

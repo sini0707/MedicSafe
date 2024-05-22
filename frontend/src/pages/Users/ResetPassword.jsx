@@ -1,36 +1,46 @@
-import { useState } from 'react';
-import { baseURL } from '../../../../backend/config/db';
-import { useNavigate ,useLocation} from 'react-router-dom';
+import { useState } from "react";
+import { baseURL } from "../../../../backend/config/db";
+import { useNavigate, useLocation } from "react-router-dom";
+import { toast } from 'react-toastify';
 
 export const ResetPassword = () => {
-  const [password, setPassword] = useState('');
-  const [confirmPass, setConfirmPass] = useState('');
+  const [password, setPassword] = useState("");
+  const [confirmPass, setConfirmPass] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
-    const email = location.state.email;
+  const email = location.state.email;
   const submitHandler = async (e) => {
     e.preventDefault();
     try {
+      if (password === "" || confirmPass === "") {
+        toast.error("Please enter both new password and confirm password");
+        return;
+      }
+  
+      // Check if password and confirm password match
+      if (password !== confirmPass) {
+        toast.error("New password and confirm password do not match");
+        return;
+      }
+  
+     
       const response = await fetch(`${baseURL}/users/reset-password`, {
         method: "post",
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({ password,email }), 
+        body: JSON.stringify({ password, email }),
       });
 
       if (response.status !== 200) {
-        throw new Error('Failed to verify');
+        throw new Error("Failed to verify");
       }
 
-    
-    
-      navigate('/home');
+      navigate("/home");
     } catch (err) {
-      console.error('Error:', err.message);
- 
+      console.error("Error:", err.message);
     }
-  }
+  };
 
   return (
     <div className="bg-gray-100 flex items-center justify-center h-screen">
@@ -46,7 +56,11 @@ export const ResetPassword = () => {
         <p className="text-sm text-gray-600 mb-6">
           Update password for enhanced account security.
         </p>
-        <form onSubmit={submitHandler} id="changePasswordForm" className="space-y-6">
+        <form
+          onSubmit={submitHandler}
+          id="changePasswordForm"
+          className="space-y-6"
+        >
           <div>
             <label
               htmlFor="newPassword"
@@ -78,12 +92,7 @@ export const ResetPassword = () => {
             />
           </div>
           <div className="flex justify-between">
-            <button
-              type="button"
-              className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 focus:outline-none focus:ring focus:border-blue-300"
-            >
-              Discard
-            </button>
+           
             <button
               type="submit"
               className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring focus:border-blue-300"
@@ -94,5 +103,5 @@ export const ResetPassword = () => {
         </form>
       </div>
     </div>
-  )
-}
+  );
+};

@@ -40,8 +40,7 @@ const useFetchData = (url) => {
 
             }
         }
-    //     fetchData()
-    // },[url])
+   
 
     useEffect(()=>{
         fetchData()

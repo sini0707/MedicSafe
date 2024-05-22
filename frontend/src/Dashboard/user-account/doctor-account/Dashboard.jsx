@@ -7,7 +7,7 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { baseURL } from "../../../../../backend/config/db";
 import doctorGetProfile from '../../../hooks/docFetchData';
-import {logout} from "../../../slices/doctorSlices/doctorAuthSlice";
+
 import DoctorChangePassword from "../../../pages/Doctors/DoctorChangePassword";
 const Dashboard = () => {
   const [tab, setTab] = useState("appointments");
@@ -20,7 +20,7 @@ const Dashboard = () => {
     error,
    
   } = doctorGetProfile(`${baseURL}/doctors/profile/me`);
-  
+ 
 
   useEffect(() => {
     if (error) {
@@ -30,9 +30,7 @@ const Dashboard = () => {
     }
   }, [error,  loading, doctorData]);
 
-  const handleLogout = () => {
-    dispatch(logout());
-  };
+  
   
 
 
@@ -40,9 +38,7 @@ const Dashboard = () => {
   return (
     <section>
       <div className="max-w-[1170px] px-5 mx-auto">
-        {/* {loading && !error && <Loading />} */}
-        {/* {error && !loading && <Error errMessage={error} />} */}
-        {/* {!loading && !error && ( */}
+        
         <div className="grid md:grid-cols-3 gap-10">
           <div className="pb-[50px] px-[30px] rounded-md">
             <div className="flex items-center justify-center">
@@ -64,30 +60,44 @@ const Dashboard = () => {
               </p>
               <p className="text-textColor text-[15px] leading-6 font-medium">
                
-                <span className="ml-2 text-headingColor text-[22px] leading-8">
-                 {doctorData.education}
+                <span className="text-textColor text-[15px] leading-6 font-medium">
+                 {doctorData.specialization}
                 </span>
               </p>
+
+              <p className="text-textColor text-[15px] leading-6 font-medium">
+               
+               <span className="text-textColor text-[15px] leading-6 font-medium">
+                {doctorData.qualification}
+               </span>
+             </p>
+              
             </div>
 
-            <div className="mt-[50px] md:mt-[100px]">
+            {/* <div className="md:col-span-2 md:px-[30px]"> */}
+            <button 
+  onClick={() => setTab("settings")}
+  className={`
+  
+      " w-full bg-gradient-to-br from-pink-500 to-orange-400 text-white font-medium"
+    } flex justify-center p-3 mt-4 px-5 rounded-md text-headingColor font-semibold text-[16px] leading-7 border border-solid border-lime-400 hover:bg-lime-500 focus:ring-4 focus:outline-none focus:ring-lime-300 dark:focus:ring-lime-800`}
+>
+  Profile Settings
+</button>
+
               <button
-                 onClick={handleLogout}
-                className="w-full bg-[#181A1E] p-3 text-[16px] leading-7 rounded-md text-white"
-              >
-                Logout
-              </button>
-              <button
-                onClick={() => setTab("changePassword")}
-                className="w-full bg-red-600 mt-4 p-3 text-[16px] leading-7 rounded-md text-white"
-              >
-                Change Password
-              </button>
+  onClick={() => setTab("changePassword")}
+  className=" w-full bg-gradient-to-br from-green-400 to-blue-600 mt-4 p-3 text-[16px] leading-7 rounded-md text-white hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
+>
+  Change Password
+</button>
+
+             
             </div>
-          </div>
+          {/* </div> */}
           <div className="md:col-span-2 md:px-[30px]">
             <div>
-              <button
+              {/* <button
                 onClick={() => setTab("appointments")}
                 className={`${
                   tab === "appointments" &&
@@ -96,24 +106,18 @@ const Dashboard = () => {
                   p-2 mr-5 px-5 rounded-md text-headingColor font-semibold text-[16px] leading-7 border border-solid border-primaryColor`}
               >
                 My Appointments
-              </button>
+              </button> */}
 
-              <button
-                onClick={() => setTab("settings")}
-                className={`${
-                  tab === "settings" &&
-                  "bg-primaryColor text-white font-normal"
-                } p-2 mr-5 px-5 rounded-md text-headingColor font-semibold text-[16px] leading-7 border border-solid border-primaryColor`}
-              >
-                Profile Settings
-              </button>
+             
              
             </div>
 
-            {tab === "appointments" && <MyAppointments />}
+            {/* {tab === "appointments" && <MyAppointments />} */}
             {tab === "settings" && <DoctorProfile doctor={doctorData} />}
            
-            {tab === "changePassword" && <DoctorChangePassword />} {/* Render ChangePassword component if tab is set to changePassword */}
+
+           
+            {tab === "changePassword" && <DoctorChangePassword  email={doctorData.email}  />} 
 
           </div>
         </div>

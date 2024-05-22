@@ -1,14 +1,11 @@
 import jwt from "jsonwebtoken";
 
-const DoctorgenToken = (res, doctorId) => {
+const generateDoctorToken = (res, doctorId) => {
   const token = jwt.sign({ doctorId ,role:'doctor'}, process.env.DOCTOR_JWT_SECRET, {
     expiresIn: "30d",
   });
+  console.log(token,"tokennnnn")
 
-  console.log("Generated Token:", token); 
-
- 
-  console.log("NODE_ENV value:", process.env.NODE_ENV);
 
   res.cookie("docjwt", token, {
     httpOnly: true,
@@ -17,9 +14,8 @@ const DoctorgenToken = (res, doctorId) => {
     maxAge: 30 * 24 * 60 * 60 * 1000, 
   });
 
-  console.log("Cookie Set:", res.getHeaders()['set-cookie']); // Log the set-cookie header
-
+ 
   return token;
 };
 
-export default DoctorgenToken;
+export default generateDoctorToken

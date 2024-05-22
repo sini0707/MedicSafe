@@ -59,6 +59,15 @@ const DoctorSchema= new mongoose.Schema({
         type: Array 
       },
       reviews: [{ type: mongoose.Types.ObjectId, ref: "Review" }],
+
+      averageRating: {
+        type: Number,
+        default: 0,
+      },
+      totalRating: {
+        type: Number,
+        default: 0,
+      },
       bookings: [
         {
           date: {
@@ -68,7 +77,7 @@ const DoctorSchema= new mongoose.Schema({
             {
               userId: {
                 type: mongoose.Schema.Types.ObjectId,
-                ref: 'User', // Reference to the User model
+                ref: 'User', 
               },
             },
           ],
@@ -77,16 +86,16 @@ const DoctorSchema= new mongoose.Schema({
       available: [
         {
           date: {
-            type: Date, // You can use Date for the date field
+            type: Date, 
           },
           fromTime: {
-            type: String, // You can use String for the time fields
+            type: String, 
           },
           toTime: {
             type: String,
           },
           expiresAt: {
-            type: Date, // This field will be used for automatic expiration
+            type: Date, 
           },
         },
       ],
@@ -98,10 +107,9 @@ const DoctorSchema= new mongoose.Schema({
   );
   
 DoctorSchema.methods.matchPassword = async function (enteredPassword) {
-  console.log('match ');
-  console.log(enteredPassword,this.password,'got passwords');
+ 
 let res=await bcrypt.compare(enteredPassword, this.password);
-console.log(res,'resss');
+
 return res
   };
   DoctorSchema.pre('save', function (next) {

@@ -1,16 +1,17 @@
 import Admin from "../models/adminModel.js";
-import adminGenToken from "../utils/adminGentoken.js";
+import adminGenToken from "../utils/AdminGentoken.js";
 import asyncHandler from "express-async-handler";
 import User from "../models/userModel.js";
 import bcrypt from "bcryptjs";
 import Doctor from "../models/DoctorSchema.js";
-import Specialization from "../models/SpecializationModel.js"
-
+import Specialization from "../models/SpecializationModel.js";
+import Booking from "../models/BookingSchema.js";
 
 const adminLogin = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
   try {
     const admin = await Admin.findOne({ email: email.trim() });
+
     if (admin && (await admin.matchPassword(password))) {
       const token = adminGenToken(res, admin._id);
 
@@ -25,7 +26,6 @@ const adminLogin = asyncHandler(async (req, res) => {
           token: token,
         },
       });
-     
     } else {
       res.status(400);
       throw new Error("Invalid email or password");
@@ -40,7 +40,7 @@ const adminLogin = asyncHandler(async (req, res) => {
 });
 
 const getUsers = asyncHandler(async (req, res) => {
-  let users = await User.find({}, { password: 0 });
+  const users = await User.find({}, { password: 0 });
 
   if (users) {
     res.status(200).json({ userData: users });
@@ -51,7 +51,7 @@ const getUsers = asyncHandler(async (req, res) => {
 
 const blockUsers = asyncHandler(async (req, res) => {
   try {
-    let userId = req.params.id;
+    const userId = req.params.id;
 
     let user = await User.findById(userId);
 
@@ -75,7 +75,7 @@ const blockUsers = asyncHandler(async (req, res) => {
 });
 const unblockUser = asyncHandler(async (req, res) => {
   try {
-    let userId = req.params.id;
+    const userId = req.params.id;
     let user = await User.findById(userId);
 
     if (!user) {
@@ -99,7 +99,7 @@ const unblockUser = asyncHandler(async (req, res) => {
 
 const approveDoctors = asyncHandler(async (req, res) => {
   try {
-    let docId = req.params.id;
+    const docId = req.params.id;
     let doctor = await Doctor.findById(docId);
 
     if (!doctor) {
@@ -117,7 +117,7 @@ const approveDoctors = asyncHandler(async (req, res) => {
 });
 
 const rejectDoctors = asyncHandler(async (req, res) => {
-  let docId = req.params.id;
+  const docId = req.params.id;
   let doctor = await Doctor.findById(docId);
 
   if (!doctor) {
@@ -131,50 +131,186 @@ const rejectDoctors = asyncHandler(async (req, res) => {
 });
 
 const getDoctors = asyncHandler(async (req, res) => {
-  let doctors = await Doctor.find({}, { password: 0 });
-  if (doctors) {
-    res.status(200).json({ doctorsData: doctors });
-  } else {
-   
-    res.status(400).json("Error in Fetching");
+  try {
+    const doctors = await Doctor.find({}, { password: 0 });
+
+    if (doctors) {
+      res.status(200).json({ doctorsData: doctors });
+    } else {
+      res.status(400).json("Error in Fetching");
+    }
+  } catch (error) {
+    console.error("Error fetching doctors:", error.message);
+    res.status(500).json({ error: "Server Error" });
   }
 });
 
-
 const addSpecialization = asyncHandler(async (req, res) => {
-  const { name, description } = req.body;
-  console.log("Name:", name);
-  console.log("Description:", description);
+  try {
+    const { name, description } = req.body;
 
-  let specializationRegx = new RegExp(name, "i");
-  console.log("Regular Expression:", specializationRegx);
+    let specializationRegx = new RegExp(name, "i");
 
-  const specialization = await Specialization.findOne({
-    name: specializationRegx,
-  });
-  console.log("Specialization found:", specialization);
+    const specialization = await Specialization.findOne({
+      name: specializationRegx,
+    });
 
-  if (specialization) {
-    res.status(409);
-    throw new Error("Specialization already existing");
+    if (specialization) {
+      res.status(409).json({ error: "Specialization already exists" });
+      return;
+    }
+
+    const newSpecialization = await Specialization.create({
+      name,
+      description,
+    });
+
+    res.status(200).json({
+      message: "Specialization created...",
+      data: newSpecialization,
+    });
+  } catch (error) {
+    console.error("Error adding specialization:", error);
+    res.status(500).json({ error: "Internal server error" });
   }
-
-  const newSpecialization = await Specialization.create({
-    name,
-    description,
-  });
-  console.log("New Specialization created:", newSpecialization);
-
-  res.status(200).json({
-    message: "Specialization created...",
-    data: newSpecialization,
-  });
 });
 
 const getAllSpecialization = asyncHandler(async (req, res) => {
   const specializations = await Specialization.find();
-  console.log("Specializations:", specializations);
+
   res.status(200).json(specializations);
+});
+
+const adminLogoutUser = (req, res) => {
+  res.cookie("adminJwt", "", {
+    httpOnly: true,
+    expires: new Date(0),
+  });
+
+  res.status(200).json({ message: "Logged out successfully" });
+};
+
+export const getBooking = async (req, res) => {
+  try {
+    const bookings = await Booking.find({})
+      .populate("user", "name")
+      .populate("doctor", "name")
+      .select(
+        "user doctor paymentStatus IndianDate slotDate slotTime ticketPrice status isPaid isCancelled createdAt updatedAt"
+      );
+
+    if (bookings.length === 0) {
+      throw new Error("Not have any Bookings");
+    }
+
+    res
+      .status(200)
+      .json({ status: true, message: "getting the users", data: bookings });
+  } catch (error) {
+    console.log(error);
+    res
+      .status(404)
+      .json({ status: false, message: "Unable to retrieve doctors" });
+  }
+};
+
+export const getMonthlyBooking = async (req, res) => {
+  try {
+    const montlyData = await Booking.aggregate([
+      {
+        $group: {
+          _id: { $month: { $toDate: "$createdAt" } },
+          totalBookings: { $sum: 1 },
+          totalAmount: { $sum: "$fee" },
+        },
+      },
+    ]);
+
+    res.status(200).json({ data: montlyData });
+  } catch (error) {
+    res.status(404).json({ message: "Data not found" });
+  }
+};
+
+export const YearlyBooking = async (req, res) => {
+  try {
+    console.log("Starting YearlyBooking aggregation...");
+
+    const yearlyData = await Booking.aggregate([
+      {
+        $project: {
+          year: {
+            $year: {
+              $dateFromString: {
+                dateString: "$IndianDate",
+                format: "%d/%m/%Y",
+              },
+            },
+          },
+          fee: 1,
+        },
+      },
+      {
+        $group: {
+          _id: "$year",
+          totalBookings: { $sum: 1 },
+          totalAmount: { $sum: "$fee" },
+        },
+      },
+    ]);
+
+    console.log("Aggregation successful, data:", yearlyData);
+
+    res.status(200).json({ data: yearlyData });
+  } catch (error) {
+    console.error("Error during aggregation:", error);
+    res.status(404).json({ message: "Data not found" });
+  }
+};
+
+export const cancelBooking = async (req, res) => {
+  try {
+    const bookingId = req.params.id;
+    const cancel = await Booking.findByIdAndUpdate(
+      bookingId,
+      { $set: { isCancelled: true } },
+      { new: true }
+    );
+
+    if (!cancel) {
+      return res.status(404).json({ message: "Booking not found" });
+    } else {
+      res
+        .status(200)
+        .json({ status: true, message: "Booking cancelled successfullly" });
+    }
+  } catch (error) {
+    console.log(error);
+    res
+      .status(500)
+      .json({ status: false, message: "Booking cancellation failed" });
+  }
+};
+
+export const creditUserWallet = asyncHandler(async (req, res) => {
+  try {
+    const { userId, amount } = req.body;
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    user.walletBalance += amount;
+
+    await user.save();
+
+    return res.status(200).json({ message: "Wallet credited successfully" });
+  } catch (error) {
+    console.error("Error crediting wallet:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
 });
 
 export {
@@ -187,4 +323,5 @@ export {
   rejectDoctors,
   addSpecialization,
   getAllSpecialization,
+  adminLogoutUser,
 };

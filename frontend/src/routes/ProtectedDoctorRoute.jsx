@@ -2,24 +2,24 @@
 
 import { Navigate } from 'react-router-dom';
 
-const ProtectedRoute = ({ children, allowedRoles }) => {
+const ProtectedDoctorRoute = ({ children, allowedRoles }) => {
  
-  const doctor=JSON.parse( localStorage.getItem("doctorInfo"));
+  const user=JSON.parse( localStorage.getItem("doctorInfo"));
 
-  if(doctor){
+  if(user){
    
-    const role=doctor.role
+    const role=user.role
     
-    const token=doctor.token
+    const token=user.token
    
     const isAllowed = allowedRoles.includes(role);
    
-     const accessibleRoute = token && isAllowed ? children : <Navigate to="/login" replace={true} />;
+     const accessibleRoute = token && isAllowed ? children : <Navigate to="doctors/login" replace={true} />;
 
        return accessibleRoute;
   }
 };
 
-export default ProtectedRoute;
+export default ProtectedDoctorRoute ;
 
 
