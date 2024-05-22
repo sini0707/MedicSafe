@@ -15,7 +15,7 @@ import {
   getMonthlyBooking,
   YearlyBooking,
   cancelBooking,
-} from "../Controllers/AdminController.js";
+} from "../Controllers/adminController.js";
 
 const router = express.Router();
 
