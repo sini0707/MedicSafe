@@ -39,11 +39,16 @@ app.use("/api/v1/doctors", doctorRoute);
 app.use("/api/v1/admin", adminRoutes);
 
 if (process.env.NODE_ENV === "production") {
+  console.log(process.env.NODE_ENV,'producton');
   const __dirname = path.resolve();
-  app.use(express.static(path.join(__dirname, "/frontend/dist")));
+  console.log(__dirname,'directory');
+  app.use(express.static(path.join(__dirname, "../frontend/dist")));
+  const frontendPath = path.join(__dirname, "../frontend/dist");
+  console.log(frontendPath, 'frontend path');
 
   app.get("*", (req, res) =>
-    res.sendFile(path.resolve(__dirname, "frontend", "dist", "index.html"))
+    
+    res.sendFile(path.resolve( frontendPath,"index.html"))
   );
 } else {
   app.get("/", (req, res) => {
