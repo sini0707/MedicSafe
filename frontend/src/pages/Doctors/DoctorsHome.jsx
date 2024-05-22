@@ -1,22 +1,9 @@
-// import FuzzyOverlay from "../../components/Slider/FuzzyOverlay.jsx";
-import  MouseImageTrail  from "../../components/Slider/MouseImageTrail.jsx";
-
+import MouseImageTrail from "../../components/Slider/MouseImageTrail.jsx";
 
 const DoctorsHome = () => {
   return (
     <div>
-      {/* <div className="md:block md:flex md:flex-col md:items-center w-full md:h-screen">
-        <img
-          className="w-full h-5/6"
-          src="https://img.freepik.com/free-vector/thank-you-doctors-nurses_52683-36501.jpg?w=740&t=st=1696156393~exp=1696156993~hmac=8103fb070d895653e14f15dc3653d62f673c2848bf22bd70b78be46a8c4f893d"
-          alt="doctor-banner"
-        />
-      </div> */}
-       <MouseImageTrail />
-       
-      {/* <FuzzyOverlay/> */}
-
-
+      <MouseImageTrail />
 
       <div className="flex flex-col md:flex-row w-full pb-5 mb-5 justify-evenly">
         <div className="mx-5 md:w-1/2 my-3 md:my-0 bg-blue-400 rounded-lg p-5 text-center text-white">

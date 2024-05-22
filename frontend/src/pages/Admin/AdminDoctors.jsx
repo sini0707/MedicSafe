@@ -116,7 +116,7 @@ const AdminDoctors = () => {
               <td className="px-6 py-4 whitespace-nowrap">{index + 1}</td>
               <td className="px-6 py-4 whitespace-nowrap">{doctor.name}</td>
               <td className="px-6 py-4 whitespace-nowrap">{doctor.email}</td>
-              {/* <td className="px-6 py-4 whitespace-nowrap">{doctor.address}</td> */}
+            
               <textarea
                 className="px-6 py-4 whitespace-nowrap resize-none overflow-hidden"
                 value={doctor.address}   />

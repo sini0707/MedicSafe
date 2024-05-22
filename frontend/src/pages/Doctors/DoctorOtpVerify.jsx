@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useRef } from "react";
 import { doctoken } from "../../../config";
-
 import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
@@ -9,7 +8,6 @@ import { useVerifyMutation } from "../../slices/doctorSlices/doctorsApiSlice";
 
 const DoctorOtpVerify = () => {
   const [otp, setOtp] = useState([]);
-
   const inputRef1 = useRef();
   const inputRef2 = useRef();
   const inputRef3 = useRef();

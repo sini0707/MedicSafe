@@ -4,7 +4,6 @@ import moment from "moment-timezone";
 import { useNavigate, useParams } from "react-router-dom";
 import apiInstance from "../../axiosApi/axiosInstance";
 import { baseURL } from "../../../../backend/config/db";
-
 import { toast } from "react-toastify";
 import { token } from "../../../config";
 import { useSelector } from "react-redux";
@@ -12,7 +11,6 @@ import DoctorAbout from "../Doctors/DoctorAbout.jsx";
 import Feedback from "../Doctors/Feedback.jsx";
 import "react-datepicker/dist/react-datepicker.css";
 import formatDateToUTC from "../../utils/inputDateConvert";
-
 import ChatUser from "../../components/chat/ChatUser.jsx";
 import { FaCommentDots } from "react-icons/fa6";
 
@@ -30,8 +28,6 @@ const DoctorDetails = () => {
 
   const [bookedSlots, setBookedSlots] = useState([]);
 
-  console.log(bookedSlots,"itanu")
-
   let { id } = useParams();
   const doctorId = id;
 
@@ -46,8 +42,8 @@ const DoctorDetails = () => {
         `${baseURL}/doctors/getdoctor/${doctorId}`,
         {
           headers: {
-            Authorization: `Bearer ${token}`
-          }
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
       setDetails(res.data.data);
@@ -63,14 +59,11 @@ const DoctorDetails = () => {
 
   const fetchUserBookings = async () => {
     try {
-      const res = await apiInstance.get(
-        `${baseURL}/users/bookings/${userId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
-      );
+      const res = await apiInstance.get(`${baseURL}/users/bookings/${userId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       const userBookedSlots = res.data.bookings.map((booking) => ({
         date: booking.slotDate,
         time: booking.slotTime,
@@ -115,8 +108,8 @@ const DoctorDetails = () => {
         },
         {
           headers: {
-            Authorization: `Bearer ${token}`
-          }
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
 
@@ -140,39 +133,23 @@ const DoctorDetails = () => {
     //Date converter
     function formatDateToIndian(dateString) {
       const date = new Date(dateString); // Convert string to Date object
-      const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
-      const indianDate = date.toLocaleDateString('en-IN', options);
+      const options = { day: "2-digit", month: "2-digit", year: "numeric" };
+      const indianDate = date.toLocaleDateString("en-IN", options);
       return indianDate;
-  }
-
+    }
 
     let selectedDate = e.target.value;
 
-   
     let formattedDate = formatDateToUTC(selectedDate);
-    console.log(formattedDate,"formatted datae")
-  
-      // for(let slot of available){
-      //   //  console.log(time,"kfdmvklf")
-      //   let availableDate=formatDateToIndian(slot.date)
-       
-      // }
-
-      console.log(available,"available")
-      console.log(bookedSlots,"booked slots")
-
-     
-     
-
-
-      
 
     let availavleTimings = available.filter(
       (item) => item.date === formattedDate
     );
 
-    let bookedTimings = bookedSlots.filter((item) => item.date === formattedDate);
-    console.log(bookedTimings,"booked timings")
+    let bookedTimings = bookedSlots.filter(
+      (item) => item.date === formattedDate
+    );
+    console.log(bookedTimings, "booked timings");
     const timings = availavleTimings.map((elem) => {
       return elem.fromTime;
     });
@@ -183,15 +160,8 @@ const DoctorDetails = () => {
     setTime("");
   };
 
-  
-
   const handleTime = (selectedTime) => {
-    if (
-      console.log(bookedSlots,"booked slots")
-      // bookedSlots.some(
-      //   (slot) => slot.date === date && slot.time === selectedTime
-      // )  
-    ) {
+    if (console.log(bookedSlots, "booked slots")) {
       toast.error("This time slot is already booked by you");
       return;
     }
@@ -230,8 +200,10 @@ const DoctorDetails = () => {
     return bookedSlots.some((slot) => slot.time === timeSlot);
   };
 
-  const filteredAvailableTime = availableTime.filter((timeSlot) => !isSlotBooked(timeSlot));
- 
+  const filteredAvailableTime = availableTime.filter(
+    (timeSlot) => !isSlotBooked(timeSlot)
+  );
+
   return (
     <section className="container flex-col h-5/6">
       <div className="flex flex-col lg:flex-row md:justify-start items-center">
@@ -247,24 +219,25 @@ const DoctorDetails = () => {
           <div className="details text-center mx-5 md:text-left h-full">
             <div className="flex justify-center md:justify-start py-2">
               <h1 className="px-2 font-bold text-3xl">{details.name}</h1>
-              
+
               <div className="flex items-center gap-[6px]">
                 <span className="flex items-center gap-[6px] text-[14px] leading-5 lg:text-[16px] lg:leading-7 font-semibold text-headingColor">
                   {formattedRating}
                   <img src={starIcon} alt="" />
                 </span>
-                
+
                 <span className="text-[14px] leading-5 lg:text-[16px] lg:leading-7 font-[400] text-textColor">
                   {}
                 </span>
-                
               </div>
-              
             </div>
-            
-              <h3 className="p-2 font-medium ">
+
+            <h3 className="p-2 font-medium ">
               Specialization :{" "}
-              <span className="text-blue-500 font-bold"> {details.specialization}</span>
+              <span className="text-blue-500 font-bold">
+                {" "}
+                {details.specialization}
+              </span>
             </h3>
             <h3 className="p-2 font-medium ">
               Experience :{" "}
@@ -285,86 +258,58 @@ const DoctorDetails = () => {
               Consulting fee :{" "}
               <span className="text-blue-500 font-bold"> {details.fees}</span>
             </h3>
-
-           
           </div>
         </div>
 
         <div className="h-60 w-full lg:w-2/5">
-        <div className="flex h-fit my-3">
-              <div className="mx-2 flex border-2 items-center px-2 h-fit border-blue-300 rounded">
-                <label htmlFor="from" className="w-1/3">
-                  Date :
-                </label>
-                <input
-                  type="date"
-                  value={date}
-                  onChange={(e) => {
-                    dateHandler(e);
-                  }}
-                  className="w-2/3 py-1 outline-none focus:outline-none"
-                  name="time"
-                  id="from"
-                />
-              </div>
+          <div className="flex h-fit my-3">
+            <div className="mx-2 flex border-2 items-center px-2 h-fit border-blue-300 rounded">
+              <label htmlFor="from" className="w-1/3">
+                Date :
+              </label>
+              <input
+                type="date"
+                value={date}
+                onChange={(e) => {
+                  dateHandler(e);
+                }}
+                className="w-2/3 py-1 outline-none focus:outline-none"
+                name="time"
+                id="from"
+              />
             </div>
-          
+          </div>
 
-          {/* {availableTime.map((timeSlot) => (
-            
+          {filteredAvailableTime.map((timeSlot) => (
             <button
               key={timeSlot}
               onClick={() => handleTime(timeSlot)}
               className={`${
                 timeSlot === time && "bg-blue-500 text-white"
-              } mx-3 my-2 px-4 py-2 ${
-                isSlotBooked(timeSlot) ? "bg-gray-400 cursor-not-allowed" : "bg-green-500 hover:bg-green-300 text-black-500 font-bold"
-              } rounded`}
-              disabled={isSlotBooked(timeSlot)}
+              } mx-3 my-2 px-4 py-2 bg-green-500 hover:bg-green-300 text-black-500 font-bold rounded`}
             >
               {timeSlot}
             </button>
-          ))} 
-          */}
-       {filteredAvailableTime.map((timeSlot) => (
-      <button
-        key={timeSlot}
-        onClick={() => handleTime(timeSlot)}
-        className={`${
-          timeSlot === time && "bg-blue-500 text-white"
-        } mx-3 my-2 px-4 py-2 bg-green-500 hover:bg-green-300 text-black-500 font-bold rounded`}
-      >
-        {timeSlot}
-      </button>
-    ))}
+          ))}
 
-    {availableTime.length > 0 && (
-      <button
-        className="focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900"
-        onClick={() => bookHandler(date, time)}
-        disabled={
-          !time ||
-          bookedSlots.some(
-            (slot) => slot.date === date && slot.time === time
-          )
-        }
-      >
-        Book Now
-      </button>
-    )}
+          {availableTime.length > 0 && (
+            <button
+              className="focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900"
+              onClick={() => bookHandler(date, time)}
+              disabled={
+                !time ||
+                bookedSlots.some(
+                  (slot) => slot.date === date && slot.time === time
+                )
+              }
+            >
+              Book Now
+            </button>
+          )}
         </div>
       </div>
 
       <div className="mt-[50px] border-b border-solid border-[#0066ff34]">
-        {/* <button
-          onClick={() => setTab("about")}
-          className={`${
-            tab === "about" && "border-b border-solid border-primaryColor"
-          } py-2 px-5 mr-5 text-[16px] leading-7 text-headingColor  font-semibold`}
-        >
-          About
-        </button> */}
-
         <button
           onClick={() => setTab("feedback")}
           className={`${
@@ -379,7 +324,6 @@ const DoctorDetails = () => {
         {tab === "feedback" && <Feedback details={details} />}
       </div>
 
-      {/* {isScrolled && ( */}
       <div className="fixed bottom-10 right-6">
         <button
           onClick={() => chatHandler()}
@@ -388,17 +332,14 @@ const DoctorDetails = () => {
           <FaCommentDots size={24} />
         </button>
       </div>
-      {/* // )} */}
 
       {isChatOpen && (
         <>
-         
           <div
             className="fixed inset-0 bg-black opacity-50"
             onClick={() => setIsChatOpen(false)}
           ></div>
 
-          {/* Chat Popup */}
           <div className="fixed bottom-0 right-[100px] w-96">
             <ChatUser
               doctor={details._id}
@@ -406,7 +347,6 @@ const DoctorDetails = () => {
               photo={userInfo.photo}
               doctorPic={details.photo}
               userName={userInfo.name}
-             
             />
           </div>
         </>

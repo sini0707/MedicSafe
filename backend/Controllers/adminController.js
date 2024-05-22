@@ -2,7 +2,6 @@ import Admin from "../models/adminModel.js";
 import adminGenToken from "../utils/AdminGentoken.js";
 import asyncHandler from "express-async-handler";
 import User from "../models/userModel.js";
-import bcrypt from "bcryptjs";
 import Doctor from "../models/DoctorSchema.js";
 import Specialization from "../models/SpecializationModel.js";
 import Booking from "../models/BookingSchema.js";
@@ -221,7 +220,7 @@ export const getMonthlyBooking = async (req, res) => {
         $group: {
           _id: { $month: { $toDate: "$createdAt" } },
           totalBookings: { $sum: 1 },
-          totalAmount: { $sum: "$fee" },
+          totalAmount: { $sum: "$ticketPrice" },
         },
       },
     ]);
@@ -233,8 +232,9 @@ export const getMonthlyBooking = async (req, res) => {
 };
 
 export const YearlyBooking = async (req, res) => {
+
   try {
-    console.log("Starting YearlyBooking aggregation...");
+    
 
     const yearlyData = await Booking.aggregate([
       {
@@ -247,14 +247,14 @@ export const YearlyBooking = async (req, res) => {
               },
             },
           },
-          fee: 1,
+          ticketPrice: 1,
         },
       },
       {
         $group: {
           _id: "$year",
           totalBookings: { $sum: 1 },
-          totalAmount: { $sum: "$fee" },
+          totalAmount: { $sum: "$ticketPrice" },
         },
       },
     ]);
@@ -292,26 +292,6 @@ export const cancelBooking = async (req, res) => {
   }
 };
 
-export const creditUserWallet = asyncHandler(async (req, res) => {
-  try {
-    const { userId, amount } = req.body;
-
-    const user = await User.findById(userId);
-
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    user.walletBalance += amount;
-
-    await user.save();
-
-    return res.status(200).json({ message: "Wallet credited successfully" });
-  } catch (error) {
-    console.error("Error crediting wallet:", error);
-    return res.status(500).json({ message: "Internal server error" });
-  }
-});
 
 export {
   adminLogin,

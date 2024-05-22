@@ -4,11 +4,9 @@ import { toast } from "react-toastify";
 import { FaTrash } from "react-icons/fa";
 import convertTo12HourFormat from "../../utils/convertTime";
 import formatDate from "../../utils/convertDate";
-
 import apiInstance from "../../axiosApi/axiosInstance";
 import { baseURL } from "../../../../backend/config/db";
 import { doctoken } from "../../../config";
-
 import Pagination from "../../components/Pagination/Pagination";
 
 const DoctorTimeManagement = () => {

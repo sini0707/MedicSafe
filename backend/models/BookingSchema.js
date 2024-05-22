@@ -17,6 +17,10 @@ const bookingSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    IndianDate: {
+      type: String,
+      required: true,
+    },
     slotDate:{
       type:String,
       required:true

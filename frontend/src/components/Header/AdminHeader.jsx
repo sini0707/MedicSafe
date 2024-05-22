@@ -28,7 +28,7 @@ const navlinks = [
   },
   {
     path: "/admin/bookings",
-    display: "Payment Management",
+    display: "Booking Details",
   },
 ];
 

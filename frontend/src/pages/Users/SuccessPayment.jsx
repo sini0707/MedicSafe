@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 const SuccessPayment = () => {
   return (
     <div className="bg-gray-100 h-screen">

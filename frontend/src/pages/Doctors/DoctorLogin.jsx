@@ -6,7 +6,7 @@ import apiInstance from "../../axiosApi/axiosInstance";
 import HashLoader from "react-spinners/HashLoader";
 import { setDoctorCredentials } from "../../slices/doctorSlices/doctorAuthSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { FiMail, FiLock,FiEye, FiEyeOff} from 'react-icons/fi';
+import { FiMail, FiLock, FiEye, FiEyeOff } from "react-icons/fi";
 
 const DoctorLogin = () => {
   const doctor = useSelector((state) => state.docAuth.doctorInfo);
@@ -17,7 +17,6 @@ const DoctorLogin = () => {
   });
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  
 
   useEffect(() => {
     if (doctor) {
@@ -48,7 +47,6 @@ const DoctorLogin = () => {
       toast.success(res.data.message);
       navigate("/doctors/home");
     } catch (err) {
-      // toast.error(err.message, "VFdvd");
       toast.error("Please select Correct email and password!!!");
       setLoading(false);
     }
@@ -61,8 +59,8 @@ const DoctorLogin = () => {
           Hello! <span className="text-primaryColor">Welcome</span>Back
         </h3>
         <form className="py-4 md:py-0" onSubmit={submitHandler}>
-        <div className="mb-5 flex items-center">
-          <FiMail className="text-primaryColor mr-2" />
+          <div className="mb-5 flex items-center">
+            <FiMail className="text-primaryColor mr-2" />
             <input
               type="email"
               placeholder="Enter your email"
@@ -74,27 +72,27 @@ const DoctorLogin = () => {
             />
           </div>
           <div className="mb-5 flex items-center">
-          <FiLock className="text-primaryColor mr-2" /> 
-          <input
-        type={showPassword ? "text" : "password"} 
-        name="password"
-        placeholder="Password"
-        value={formData.password}
-        onChange={(e) => handleInputChange(e)}
-        className="w-full py-3 border-b border-solid border-[#0066ff61] focus:border-b-primaryColor text-[16px] leading-7 text-headingColor placeholder:text-textColor cursor-pointer required"
-      />
-     
-      {showPassword ? (
-        <FiEyeOff
-          className="text-primaryColor cursor-pointer pr-.9"
-          onClick={() => setShowPassword(false)}
-        />
-      ) : (
-        <FiEye
-          className="text-primaryColor cursor-pointer pr-.9"
-          onClick={() => setShowPassword(true)}
-        />
-      )}
+            <FiLock className="text-primaryColor mr-2" />
+            <input
+              type={showPassword ? "text" : "password"}
+              name="password"
+              placeholder="Password"
+              value={formData.password}
+              onChange={(e) => handleInputChange(e)}
+              className="w-full py-3 border-b border-solid border-[#0066ff61] focus:border-b-primaryColor text-[16px] leading-7 text-headingColor placeholder:text-textColor cursor-pointer required"
+            />
+
+            {showPassword ? (
+              <FiEyeOff
+                className="text-primaryColor cursor-pointer pr-.9"
+                onClick={() => setShowPassword(false)}
+              />
+            ) : (
+              <FiEye
+                className="text-primaryColor cursor-pointer pr-.9"
+                onClick={() => setShowPassword(true)}
+              />
+            )}
           </div>
 
           <div className="mb-5"></div>
@@ -114,7 +112,6 @@ const DoctorLogin = () => {
             >
               Register
             </Link>
-          
           </p>
         </form>
       </div>

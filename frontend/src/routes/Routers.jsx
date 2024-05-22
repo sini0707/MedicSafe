@@ -14,7 +14,7 @@ import AdminLogin from "../pages/Admin/adminLogin.jsx";
 import AdminHome from "../pages/Admin/AdminHome.jsx";
 import AdminUsers from "../pages/Admin/AdminUsers.jsx";
 import AdminDoctors from "../pages/Admin/AdminDoctors.jsx";
-import PaymentBooking from "../pages/Admin/PaymentBooking.jsx";
+import Booking from "../pages/Admin/Booking.jsx"
 import EmailVerify from "../pages/Users/EmailVerify.jsx";
 import ForgotVerify from "../pages/Users/ForgotVerify.jsx";
 import { ResetPassword } from "../pages/Users/ResetPassword.jsx";
@@ -41,7 +41,7 @@ import WalletComponent from "../pages/Users/WalletComponent.jsx";
 import DoctorChat from "../pages/Doctors/DoctorChat.jsx";
 // import ErrorPage from "../components/ErrorPage/ErrorPage.jsx";
 import ProtectedAdminRoute from "./ProtectedAdminRoute.jsx";
-import { ChakraProvider } from "@chakra-ui/react";
+
 
 function Routers() {
   return (
@@ -189,7 +189,7 @@ function Routers() {
         path="/admin/bookings"
         element={
           <ProtectedAdminRoute allowedRoles={["admin"]}>
-            <PaymentBooking />
+            <Booking />
           </ProtectedAdminRoute>
         }
       />

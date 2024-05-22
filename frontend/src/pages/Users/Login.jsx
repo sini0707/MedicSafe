@@ -7,7 +7,7 @@ import HashLoader from "react-spinners/HashLoader.js";
 import { setCredentials } from "../../slices/authSlice.js";
 import { useDispatch, useSelector } from "react-redux";
 import OAuth from "../../components/OAuth.jsx";
-import { FiMail, FiLock , FiEye, FiEyeOff} from 'react-icons/fi';
+import { FiMail, FiLock, FiEye, FiEyeOff } from "react-icons/fi";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -25,8 +25,7 @@ const Login = () => {
   });
   const [loading, setLoading] = useState(false);
   const [role, setRole] = useState("patient");
-  const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
- 
+  const [showPassword, setShowPassword] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -74,8 +73,8 @@ const Login = () => {
           Hello! <span className="text-primaryColor">Welcome</span>Back
         </h3>
         <form className="py-4 md:py-0" onSubmit={submitHandler}>
-        <div className="mb-5 flex items-center">
-          <FiMail className="text-primaryColor mr-2" />
+          <div className="mb-5 flex items-center">
+            <FiMail className="text-primaryColor mr-2" />
             <input
               type="email"
               placeholder="Enter your email"
@@ -87,40 +86,30 @@ const Login = () => {
             />
           </div>
           <div className="mb-5 flex items-center">
-          <FiLock className="text-primaryColor mr-2" /> 
-          <input
-        type={showPassword ? "text" : "password"} 
-        name="password"
-        placeholder="Password"
-        value={formData.password}
-        onChange={(e) => handleInputChange(e)}
-        className="w-full py-3 border-b border-solid border-[#0066ff61] focus:border-b-primaryColor text-[16px] leading-7 text-headingColor placeholder:text-textColor cursor-pointer required"
-      />
-     
-      {showPassword ? (
-        <FiEyeOff
-          className="text-primaryColor cursor-pointer pr-.9"
-          onClick={() => setShowPassword(false)}
-        />
-      ) : (
-        <FiEye
-          className="text-primaryColor cursor-pointer pr-.9"
-          onClick={() => setShowPassword(true)}
-        />
-      )}
+            <FiLock className="text-primaryColor mr-2" />
+            <input
+              type={showPassword ? "text" : "password"}
+              name="password"
+              placeholder="Password"
+              value={formData.password}
+              onChange={(e) => handleInputChange(e)}
+              className="w-full py-3 border-b border-solid border-[#0066ff61] focus:border-b-primaryColor text-[16px] leading-7 text-headingColor placeholder:text-textColor cursor-pointer required"
+            />
+
+            {showPassword ? (
+              <FiEyeOff
+                className="text-primaryColor cursor-pointer pr-.9"
+                onClick={() => setShowPassword(false)}
+              />
+            ) : (
+              <FiEye
+                className="text-primaryColor cursor-pointer pr-.9"
+                onClick={() => setShowPassword(true)}
+              />
+            )}
           </div>
 
-          <div className="mb-5">
-            {/* <label>
-              <input type="" value="patient" checked={role === 'patient'} onChange={handleRoleChange} />
-              Patient
-            </label>
-            <span style={{ marginRight: '20px' }}></span>  */}
-            {/* <label>
-              <input type="radio" value="doctor" checked={role === 'doctor'} onChange={handleRoleChange} />
-              Doctor
-            </label> */}
-          </div>
+          <div className="mb-5"></div>
           <div className="mt-7">
             <button
               type="submit"

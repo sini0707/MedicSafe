@@ -13,7 +13,7 @@ import Pagination from "../../components/Pagination/Pagination";
 import { ConsoleLevel } from "@zegocloud/zego-uikit-prebuilt";
 import { FaCropSimple } from "react-icons/fa6";
 import { useDisclosure } from "@chakra-ui/react";
-import {  toast } from 'react-toastify';
+import { toast } from "react-toastify";
 
 const MyAppointments = () => {
   const navigate = useNavigate();
@@ -23,13 +23,11 @@ const MyAppointments = () => {
   const [appointmentsPerPage] = useState(6);
   const [totalAppointments, setTotalAppointments] = useState(0);
   const [showModal, setShowModal] = useState(false);
-  const [prescriptionText, setPrescriptionText] = useState(""); 
-  const [bookingId,setBookkingId]=useState(null);
+  const [prescriptionText, setPrescriptionText] = useState("");
+  const [bookingId, setBookkingId] = useState(null);
   const [prescriptionSubmitted, setPrescriptionSubmitted] = useState(false);
-  const [prescriptionError, setPrescriptionError] = useState('');
-  
+  const [prescriptionError, setPrescriptionError] = useState("");
 
-  
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { id } = useParams();
   const doctorInfo = useSelector((state) => state.docAuth.doctorInfo);
@@ -149,9 +147,9 @@ const MyAppointments = () => {
   };
 
   const handleSubmitPrescription = async (text) => {
-    console.log("handleSubmitPrescription called",text);
+  
     try {
-      console.log("Sending POST request to generate prescription...");
+     
       const response = await apiInstance.post(
         `${baseURL}/doctors/generate-prescription/${bookingId}`,
         {
@@ -163,10 +161,8 @@ const MyAppointments = () => {
           },
         }
       );
-     
 
       if (response.status === 200) {
-        
         setPrescriptionSubmitted(true);
         setPrescriptionError(null);
         toast.success("Prescription submitted successfully!");
@@ -183,17 +179,12 @@ const MyAppointments = () => {
     }
   };
   const handleGeneratePrescription = (id) => {
-    
     onOpen();
-    setBookkingId(id) 
-    
+    setBookkingId(id);
   };
 
   return (
     <>
-     
-
-     
       <div className="container mx-auto">
         <div className="relative my-5 overflow-x-auto shadow-md sm:rounded-lg">
           <table className="w-full text-sm text-left text-pink-500 dark:text-gray-400">
@@ -312,7 +303,11 @@ const MyAppointments = () => {
         currentPage={currentPage}
         setCurrentPage={setCurrentPage}
       />
-       <PrescriptionModal isOpen={isOpen} onClose={onClose} onSubmit={handleSubmitPrescription}  />
+      <PrescriptionModal
+        isOpen={isOpen}
+        onClose={onClose}
+        onSubmit={handleSubmitPrescription}
+      />
     </>
   );
 };

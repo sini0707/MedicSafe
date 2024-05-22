@@ -3,6 +3,7 @@ import Doctor from "../models/DoctorSchema.js";
 import Booking from "../models/BookingSchema.js";
 import Stripe from "stripe";
 
+
 const stripe = new Stripe(
   `sk_test_51Oom7QSFYJijlikWHxn3w46LTvEB79JVPRxR8KS6D6ipNaZDb5z68AjAnU9GAdZFSEImK5ikxnDfQZ1vs2MSzLSJ00nTkcWu9k`
 );
@@ -23,6 +24,9 @@ const getCheckoutSession = async (req, res) => {
   const indianTime = req.body.time;
 
   try {
+    // const date = parseISO(req.body.appointmentDate);
+    // const IndianDate = format(date, "dd/MM/yyyy");
+
     const doctor = await Doctor.findById(doctorId);
 
     const user = await User.findById(req.userId);
@@ -53,15 +57,19 @@ const getCheckoutSession = async (req, res) => {
       user: userId,
       doctor: doctor._id,
       ticketPrice: doctor.fees,
+      IndianDate: indianDate.toString(),
       session: session.id,
       slotTime: indianTime,
       slotDate: indianDate,
     });
 
     await booking.save();
-    res
-      .status(200)
-      .json({ success: true, message: "Successfully paid", session });
+    res.status(200).json({
+      success: true,
+      message: "<span style='color: green;'>Successfully paid</span>",
+      session
+    });
+    
   } catch (err) {
     console.log(err);
     res

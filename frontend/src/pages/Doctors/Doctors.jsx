@@ -63,7 +63,7 @@ const Doctorss = () => {
   } else if (sortted === "high-low") {
     filterdDoctors = filterdDoctors.sort((a, b) => b.fees - a.fees);
   }
-  
+
   if (filter !== "") {
     filterdDoctors = filterdDoctors.filter(
       (item) => item.specialization === filter
