@@ -1,5 +1,5 @@
 import asyncHandler from "express-async-handler";
-import generateToken from "../utils/GenerateToken.js";
+import generateToken from "../utils/generateToken.js";
 import Review from "../models/ReviewSchema.js";
 import Doctor from "../models/DoctorSchema.js";
 
