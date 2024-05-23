@@ -130,9 +130,9 @@ const DoctorDetails = () => {
       return;
     }
 
-    //Date converter
+   
     function formatDateToIndian(dateString) {
-      const date = new Date(dateString); // Convert string to Date object
+      const date = new Date(dateString);
       const options = { day: "2-digit", month: "2-digit", year: "numeric" };
       const indianDate = date.toLocaleDateString("en-IN", options);
       return indianDate;

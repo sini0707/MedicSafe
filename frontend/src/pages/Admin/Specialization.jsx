@@ -2,9 +2,7 @@ import { useState, useEffect,useRef } from "react";
 import { baseURL } from "../../../../backend/config/db";
 import apiInstance from "../../axiosApi/axiosInstance";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
 import { adminToken } from "../../../config";
-
 import Pagination from "../../components/Pagination/Pagination.jsx";
 
 const Specialization = () => {
@@ -12,13 +10,10 @@ const Specialization = () => {
   const [description, setDescription] = useState("");
   const [specializationList, setSpecializationList] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
- 
+  const [totalPages, setTotalPages] = useState(0);
+  const [postsPerPage] = useState(4);
   
-  const [totalPages, setTotalPages] = useState(0);const [postsPerPage] = useState(4);
-  console.log(postsPerPage)
-
-  const navigate = useNavigate();
-  const addButtonRef = useRef(null);
+   const addButtonRef = useRef(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -44,14 +39,17 @@ const Specialization = () => {
 
 
       toast.success("Specialization created successfully");
-      navigate("/admin/specializations");
+      const newSpecialization = res.data;
+      setSpecializationList((prevList) => [...prevList, newSpecialization]);
+      setTotalPages(Math.ceil((specializationList.length + 1) / postsPerPage));
+      setName("");
+      setDescription("");
     } catch (err) {
       toast.error(err?.data?.message || err?.error);
       toast.error("It is Duplicate");
     }
 
-    setName("");
-    setDescription("");
+   
   };
 
   useEffect(() => {
@@ -68,7 +66,7 @@ const Specialization = () => {
       }
     };
     fetchSpecializations();
-  }, []);
+  }, [postsPerPage]);
   const nextPage = () => {
     if (currentPage < totalPages) {
       setCurrentPage(currentPage + 1);
@@ -83,7 +81,7 @@ const Specialization = () => {
 
   const indexOfLastSpecialization = currentPage * postsPerPage;
   const indexOfFirstSpecialization = indexOfLastSpecialization - postsPerPage;
-  // Slice the specializationList based on current page
+
   const currentSpecializations = specializationList.slice(indexOfFirstSpecialization, indexOfLastSpecialization);
   
   console.log("Current Specializations on Current Page:", currentSpecializations);

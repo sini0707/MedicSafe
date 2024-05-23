@@ -170,7 +170,7 @@ const AdminHome = () => {
             Authorization: `Bearer ${adminToken}`,
           },
         });
-        console.log("Response received:", res);
+      
         const result = await res.json();
 
         setBookings(result.data);
@@ -192,7 +192,7 @@ const AdminHome = () => {
             "Content-Type": "application/json",
           },
         });
-        console.log(adminToken, "admin token is here");
+      
 
         const result = await response.json();
         setYearlyBookings(result.data);
