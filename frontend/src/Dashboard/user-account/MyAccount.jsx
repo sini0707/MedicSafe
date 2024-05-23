@@ -6,7 +6,6 @@ import useGetProfile from "../../hooks/useFetchData";
 import { baseURL } from "../../../../backend/config/db";
 import Loading from "../../components/Loader/Loading";
 import Error from "../../components/Error/Error";
-
 import { useNavigate } from "react-router-dom";
 import ChangePasswordForm from "../../pages/Users/ChangePassword.jsx";
 import { BsFillWalletFill } from "react-icons/bs";
