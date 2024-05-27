@@ -3,7 +3,6 @@ import Doctor from "../models/DoctorSchema.js";
 import Booking from "../models/BookingSchema.js";
 import Stripe from "stripe";
 
-
 const stripe = new Stripe(
   `sk_test_51Oom7QSFYJijlikWHxn3w46LTvEB79JVPRxR8KS6D6ipNaZDb5z68AjAnU9GAdZFSEImK5ikxnDfQZ1vs2MSzLSJ00nTkcWu9k`
 );
@@ -67,9 +66,8 @@ const getCheckoutSession = async (req, res) => {
     res.status(200).json({
       success: true,
       message: "<span style='color: green;'>Successfully paid</span>",
-      session
+      session,
     });
-    
   } catch (err) {
     console.log(err);
     res

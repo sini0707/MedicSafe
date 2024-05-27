@@ -368,7 +368,8 @@ const updateUser = async (req, res) => {
     res.status(200).json({
       success: true,
       message: "Successfully updated",
-      data: { ...rest, token: existingToken },
+    
+       data: { ...rest, token: existingToken },
     });
   } catch (err) {
     console.error(err);

@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { baseURL } from "../../../../backend/config/db";
 import Swal from "sweetalert2";
@@ -7,19 +6,16 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import AppointmentDetails from "./AppointmentDetails";
 
-
 const Appointments = ({ appointment }) => {
   const navigate = useNavigate();
   const user = useSelector((state) => state.auth.userInfo);
 
-
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [selectedAppointment, setSelectedAppointment] = useState(null);
   const [selectedPrescription, setSelectedPrescription] = useState(null);
-  
+
   const activeAppointments = appointment.filter((value) => !value.isCancelled);
-  console.log(activeAppointments,"active appointments")
-  
+  console.log(activeAppointments, "active appointments");
 
   const handleCancelButton = async (id) => {
     Swal.fire({
@@ -32,7 +28,6 @@ const Appointments = ({ appointment }) => {
       confirmButtonText: "Yes, cancel it!",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        
         try {
           const res = await fetch(`${baseURL}/users/cancelBooking/${id}`, {
             method: "PUT",
@@ -47,7 +42,6 @@ const Appointments = ({ appointment }) => {
               text: "Your appointment has been cancelled.",
               icon: "success",
             });
-           
           }
         } catch (error) {
           console.log(error);
@@ -65,28 +59,55 @@ const Appointments = ({ appointment }) => {
     const userId = user._id;
   }
 
-
-  appointment.map((value) => {
-   
-  });
-
-
-  const handleViewPrescription = async (appointmentId) => {
+  
+  const MakeVideoCall = async (userId) => {
     try {
-      const res = await fetch(`${baseURL}/users/prescription/${appointmentId}`, {
-        method: "GET",
+      const res = await fetch(`${baseURL}/users/makeVideoCall/${userId}`, {
+        method: "get",
         headers: {
           Authorization: `Bearer ${user.token}`,
         },
       });
+      const result = await res.json();
+      if (!res.ok) {
+        Swal.fire({
+          icon: "error",
+          title: "Something Went Wrong ",
+          text: result.error,
+        });
+      } else {
+        // createRoom();
+        navigate(`/users/room/${result.roomId}`);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  appointment.map((value) => {
+   
+  });
+
+  // appointment.map((value) => {});
+
+  const handleViewPrescription = async (appointmentId) => {
+    try {
+      const res = await fetch(
+        `${baseURL}/users/prescription/${appointmentId}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+          },
+        }
+      );
       const prescription = await res.json();
-      console.log(prescription, 'doctor prescription');
+      console.log(prescription, "doctor prescription");
 
       if (res.ok) {
-        // Handle prescription display or download
+       
 
         console.log("Prescription fetched:", prescription);
-        // Example: You can show the prescription in a modal or allow downloading
+      
         Swal.fire({
           icon: "success",
           title: "See yourPrescription",
@@ -110,33 +131,36 @@ const Appointments = ({ appointment }) => {
   };
 
   const handleViewDetails = (appointmentId) => {
-    const selected = appointment.find(app => app._id === appointmentId);
+    const selected = appointment.find((app) => app._id === appointmentId);
     setSelectedAppointment(selected);
   };
   const handleBack = () => {
     setSelectedAppointment(null);
     setSelectedPrescription(null);
   };
-  
+
   return (
-    
-       <div>
+    <div>
       {selectedAppointment ? (
-        <AppointmentDetails appointment={selectedAppointment} onBack={handleBack} />
+        <AppointmentDetails
+          appointment={selectedAppointment}
+          onBack={handleBack}
+        />
       ) : (
         activeAppointments.map((value, index) => (
           <div key={index} className="flex items-center justify-center mt-5">
-           
             <div className="bg-white font-semibold text-center rounded-3xl border shadow-lg p-10 max-w-xs">
               <div>
-                <img src={value?.doctor?.imagePath} className="w-full" alt="#" />
+                <img
+                  src={value?.doctor?.imagePath}
+                  className="w-full"
+                  alt="#"
+                />
               </div>
-              <h1 className="text-lg text-gray-700">{value.doctor.name}</h1>
-              <h1 className="text-sm text-gray-400">{value.slotDate}</h1>
-              <h1 className="text-sm text-gray-400">{value.slotTime}</h1> 
-              {/* <h3 className="text-sm text-gray-400">
-                {value.doctor.specialization}
-              </h3> */}
+              <h1 className="text-lg text-gray-700">{value?.doctor?.name}</h1>
+              <h1 className="text-sm text-gray-400">{value?.slotDate}</h1>
+              <h1 className="text-sm text-gray-400">{value?.slotTime}</h1>
+             
 
               {value.isCancelled ? (
                 <button
@@ -163,13 +187,7 @@ const Appointments = ({ appointment }) => {
               >
                 Appointment Details
               </button>
-              {/* <button
-                type="button"
-                className="text-gray-900 bg-gradient-to-r from-red-200 via-red-300 to-yellow-200 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2"
-                onClick={() => handleViewPrescription(value._id)}
-              >
-            View Prescription
-              </button> */}
+              
             </div>
           </div>
         ))
@@ -179,4 +197,3 @@ const Appointments = ({ appointment }) => {
 };
 
 export default Appointments;
-

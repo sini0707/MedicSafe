@@ -11,52 +11,72 @@ import userRoutes from "./routes/userRoutes.js";
 import doctorRoute from "./routes/doctor.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import path from "path";
-
 import { Server } from "socket.io";
 import { createServer } from "http";
+import { log } from "console";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
 
+const __filename=fileURLToPath(import.meta.url);
+console.log(__filename,"filname");
+const __dirname=dirname(__filename);
+console.log(__dirname,"dirname");
+
+// middleware
 const app = express();
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+
+app.use(express.static(path.join(__dirname,"public")));
+
 
 const corsOptions = {
   origin: true,
   credentials: true,
 };
 
-// middleware
+
 app.use(cors(corsOptions));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
+
+const currentWorkingDir=path.resolve();
+console.log(currentWorkingDir,'current');
+const parentDir=path.dirname(currentWorkingDir);
+console.log(parentDir,'parentdir');
+
+
 
 app.use(
   cors({
-    // origin: "http://localhost:5173",
-    origin:"https://www.medicsafe.online, https://medicsafe.online",
+        // origin: "http://localhost:5173",
+      origin: "https://www.medicsafe.online, https://medicsafe.online",
     credentials: true,
     methods: ["GET", "POST"],
   })
 );
+
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/doctors", doctorRoute);
 app.use("/api/v1/admin", adminRoutes);
 
 if (process.env.NODE_ENV === "production") {
-  console.log(process.env.NODE_ENV,'producton');
+  console.log(process.env.NODE_ENV, "producton");
   const __dirname = path.resolve();
-  console.log(__dirname,'directory');
-  app.use(express.static(path.join(__dirname, "../frontend/dist")));
-  const frontendPath = path.join(__dirname, "../frontend/dist");
-  console.log(frontendPath, 'frontend path');
+  console.log(__dirname, "directory");
+
+  app.use(express.static(path.join(parentDir, "/frontend/dist")));
+  // const frontendPath = path.join(__dirname, "../frontend/dist");
+  // console.log(frontendPath, "frontend path");
 
   app.get("*", (req, res) =>
-    
-    res.sendFile(path.resolve( frontendPath,"index.html"))
+    res.sendFile(path.resolve(parentDir,"frontend","dist", "index.html"))
   );
 } else {
   app.get("/", (req, res) => {
     res.send("API is running....");
   });
 }
+
 app.use(notFound);
 app.use(errorHandler);
 
@@ -107,18 +127,15 @@ io.on("connection", (socket) => {
   });
 
   socket.on("typing", ({ roomID, isTyping }) => {
-    
     socket.to(roomID).emit("typing", { roomID, isTyping });
 
-   
     if (typingTimeoutRef !== null) {
       clearTimeout(typingTimeoutRef);
     }
 
-   
     typingTimeoutRef = setTimeout(() => {
       socket.to(roomID).emit("typing", { roomID, isTyping: false });
-      typingTimeoutRef = null; 
+      typingTimeoutRef = null;
     }, 3000);
   });
   socket.off("setup", () => {

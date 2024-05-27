@@ -5,7 +5,7 @@ import Loading from "../../components/Loader/Loading";
 import Error from "../../components/Error/Error";
 import Appointments from "./Appointments";
 import Pagination from "../../components/Pagination/Pagination.jsx";
-// import apiInstance from "../../axiosApi/axiosInstance.js";
+
 
 const MyBookings = () => {
   const [currentPage, setCurrentPage] = useState(1);

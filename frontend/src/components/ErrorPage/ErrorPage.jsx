@@ -1,10 +1,9 @@
-import React from 'react'
+
 
 const ErrorPage = () => {
   return (
     <>
-    {/* component */}
-    {/* This is an example component */}
+   
     <div className="h-screen w-screen bg-gray-50 flex items-center">
       <div className="container flex flex-col md:flex-row items-center justify-between px-5 text-gray-700">
         <div className="w-full lg:w-1/2 mx-8">

@@ -432,6 +432,7 @@ export const logoutDoctor = (req, res) => {
 };
 
 export const approveVideoCall = async (req, res) => {
+  console.log("reached here.....")
   const userId = req.params.id;
 
   const status = req.query.status;
@@ -447,8 +448,6 @@ export const approveVideoCall = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
     const roomId = `${uuidv4()}-${userId}`;
-
-    const doctor = await Doctor.findOne();
 
     res
       .status(200)
