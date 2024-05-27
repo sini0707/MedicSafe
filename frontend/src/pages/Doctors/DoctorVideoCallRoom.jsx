@@ -7,8 +7,8 @@ function DoctorVideoCallRoom() {
   const { roomId } = useParams();
   const user = useSelector((state) => state.docAuth.doctorInfo);
   const myMeeting = async (element) => {
-    const appID = 112231611;
-    const serverSecret = "a1806e931f243b655c5b1ba966aba829";
+    const appID = 324857964;
+    const serverSecret = "e5327265a29b2a12bafcd64286be7ca3";
     const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(
       appID,
       serverSecret,
@@ -23,7 +23,7 @@ function DoctorVideoCallRoom() {
       sharedLinks: [
         {
           name: "Copy Link",
-          url: `http://localhost:5173/users/room/${roomId}`,
+          url: `https://medicsafe.online/users/room/${roomId}`,
         },
       ],
       scenario: {

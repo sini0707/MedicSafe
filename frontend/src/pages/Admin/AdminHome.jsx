@@ -11,7 +11,7 @@ const AdminHome = () => {
 
   const [booking, setBookings] = useState([]);
 
-  const [chartPie, setChartPie] = useState(null);
+   const [chartPie, setChartPie] = useState();
   const [yearlyBookings, setYearlyBookings] = useState([]);
 
   useEffect(() => {
@@ -196,6 +196,7 @@ const AdminHome = () => {
 
         const result = await response.json();
         setYearlyBookings(result.data);
+      
       } catch (error) {
         console.error("Error fetching yearly data:", error);
       }
@@ -208,20 +209,27 @@ const AdminHome = () => {
     if (!yearlyBookings.length) {
       return;
     }
+    
+     // Filter out any null or undefined values
+  const filteredYearlyBookings = yearlyBookings.filter(item => item._id != null && item.totalBookings != null);
+
+  console.log(filteredYearlyBookings,"filtered year")
+    
 
     if (chartPie) {
       chartPie.destroy();
     }
+    
 
     const ctx = document.getElementById("chartPie");
     const newChartPie = new Chart(ctx, {
       type: "pie",
       data: {
-        labels: yearlyBookings.map((item) => item._id),
+        labels: filteredYearlyBookings.map((item) => item._id),
         datasets: [
           {
             label: "Yearly Bookings",
-            data: yearlyBookings.map((item) => item.totalBookings),
+            data: filteredYearlyBookings.map((item) => item.totalBookings),
             backgroundColor: [
               "rgb(255, 99, 132)",
               "rgb(54, 162, 235)",
@@ -369,7 +377,7 @@ const AdminHome = () => {
             </div>
           </div>
         </div>
-        <div className="text-blue-gray-600">
+        <div className="text-blue-gray-400">
           {/* Bar Chart */}
           <div className="relative flex flex-col bg-clip-border rounded-xl bg-white text-gray-700 shadow-md">
             <canvas id="chartBar"></canvas>

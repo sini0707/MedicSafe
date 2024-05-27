@@ -89,6 +89,8 @@ const MyAppointments = () => {
   };
 
   const handleVideoCall = async (userId, status) => {
+   
+
     const confirmResult = await Swal.fire({
       title: "Do you want to approve VideoCall?",
       icon: "warning",
@@ -106,11 +108,13 @@ const MyAppointments = () => {
             method: "post",
             headers: {
               Authorization: `Bearer ${doctoken}`,
-            },
+            },  
           }
         );
 
+        console.log(res,"result")
         let result = await res.json();
+        
 
         if (!res.ok) {
           throw new Error(result.message);
@@ -123,7 +127,7 @@ const MyAppointments = () => {
         });
         const roomId = result.roomId;
 
-        navigate(`/doctors/room/${result.roomId}`);
+        navigate(`/doctors/room/${roomId}`);
       } catch (error) {
         console.log(error);
       }
@@ -173,7 +177,7 @@ const MyAppointments = () => {
       }
     } catch (error) {
       console.error("Error submitting prescription:", error);
-      // setPrescriptionError("Internal server error. Please try again later.");
+     
     } finally {
       setShowModal(false);
     }

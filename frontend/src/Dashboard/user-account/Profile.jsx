@@ -6,8 +6,7 @@ import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import { baseURL } from "../../../../backend/config/db";
 import { setCredentials } from "../../slices/authSlice.js";
-import { FiUser,FiMail,FiPhone,FiDroplet ,FiUpload} from 'react-icons/fi';
-
+import { FiUser, FiMail, FiPhone, FiDroplet, FiUpload } from "react-icons/fi";
 import { token } from "../../../config.js";
 
 const Profile = (user) => {
@@ -19,7 +18,6 @@ const Profile = (user) => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-
     password: "",
     confirmpassword: "",
     mobile: "",
@@ -50,7 +48,7 @@ const Profile = (user) => {
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-  
+
   const handleFileInputChange = async (event) => {
     const file = event.target.files[0];
 
@@ -63,8 +61,6 @@ const Profile = (user) => {
     event.preventDefault();
     setLoading(true);
 
-   
-  
     try {
       const res = await fetch(`${baseURL}/users/updateUser/${userId}`, {
         method: "POST",
@@ -76,6 +72,7 @@ const Profile = (user) => {
       });
 
       const responseData = await res.json();
+     
 
       if (!res.ok) {
         throw new Error(responseData.message || "Failed to update profile");
@@ -85,37 +82,31 @@ const Profile = (user) => {
 
       dispatch(setCredentials(data));
       toast.success(message || "Profile successfully updated");
-      // navigate('/profile');
       setLoading(false);
 
-      toast.success(message || "Profile successfully updated");
-      setLoading(false);
-    } catch (err) {
+} catch (err) {
       console.log(err);
       toast.error(err.message);
       setLoading(false);
     }
   };
 
-  
-
   return (
     <div className="mt-10">
       <form onSubmit={submitHandler}>
-      <div className="mb-5 flex items-center"> 
-              <FiUser className="text-primaryColor mr-2" /> 
-        <input
-  type="text"
-  placeholder="Full Name"
-  name="name"
-  value={formData.name}
-  onChange={handleInputChange}
-  className="w-full pr-4 py-3 border-b border-solid border-[#0066ff61] focus:outline-none focus:border-b-primaryColor text-[16px] leading-7 text-headingColor placeholder:text-textColor cursor-pointer"
-/>
-
+        <div className="mb-5 flex items-center">
+          <FiUser className="text-primaryColor mr-2" />
+          <input
+            type="text"
+            placeholder="Full Name"
+            name="name"
+            value={formData.name}
+            onChange={handleInputChange}
+            className="w-full pr-4 py-3 border-b border-solid border-[#0066ff61] focus:outline-none focus:border-b-primaryColor text-[16px] leading-7 text-headingColor placeholder:text-textColor cursor-pointer"
+          />
         </div>
         <div className="mb-5 flex items-center">
-    <FiMail className="text-primaryColor mr-2"/>
+          <FiMail className="text-primaryColor mr-2" />
           <input
             type="email"
             placeholder="Enter your email"
@@ -127,8 +118,8 @@ const Profile = (user) => {
           />
         </div>
 
-        <div className="mb-5 flex items-center"> 
-    <FiPhone className="text-primaryColor mr-2"/>
+        <div className="mb-5 flex items-center">
+          <FiPhone className="text-primaryColor mr-2" />
           <input
             type="number"
             placeholder="your mobile"
@@ -139,8 +130,8 @@ const Profile = (user) => {
             placeholder:text-textColor  cursor-pointer "
           />
         </div>
-        <div className="mb-5 flex items-center"> 
-              <FiUser className="text-primaryColor mr-2" /> 
+        <div className="mb-5 flex items-center">
+          <FiUser className="text-primaryColor mr-2" />
           <input
             type="number"
             placeholder="age"
@@ -151,36 +142,34 @@ const Profile = (user) => {
             placeholder:text-textColor  cursor-pointer "
           />
         </div>
-        <div className="mb-5 flex items-center"> 
-              <FiDroplet className="text-primaryColor mr-2"/>
-              <select
-                  name="blood"
-                  value={formData.blood}
-                  onChange={(e) => {
-                    handleInputChange(e);
-                    setBloodError("");
-                  }}
-                  className="w-full pr-4 py-3 border-b border-solid border-[#0066ff61] focus:outline-none focus:border-b-primaryColor text-[16px] leading-7 text-headingColor
+        <div className="mb-5 flex items-center">
+          <FiDroplet className="text-primaryColor mr-2" />
+          <select
+            name="blood"
+            value={formData.blood}
+            onChange={(e) => {
+              handleInputChange(e);
+              setBloodError("");
+            }}
+            className="w-full pr-4 py-3 border-b border-solid border-[#0066ff61] focus:outline-none focus:border-b-primaryColor text-[16px] leading-7 text-headingColor
             placeholder:text-textColor  cursor-pointer required"
-                >
-                  <option value="">Select Blood Group</option>
-                  <option value="A+">A+</option>
-                  <option value="A-">A-</option>
-                  <option value="B+">B+</option>
-                  <option value="B-">B-</option>
-                  <option value="O+">O+</option>
-                  <option value="O-">O-</option>
-                  <option value="AB+">AB+</option>
-                  <option value="AB-">AB-</option>
-                </select>
-                {bloodError && (
-                  <p className="text-red-500 text-sm">{bloodError}</p>
-                )}
-              </div>
-     
-        <div className="mb-5 flex items-center"> 
-              <FiUser className="text-primaryColor mr-2" /> 
-        
+          >
+            <option value="">Select Blood Group</option>
+            <option value="A+">A+</option>
+            <option value="A-">A-</option>
+            <option value="B+">B+</option>
+            <option value="B-">B-</option>
+            <option value="O+">O+</option>
+            <option value="O-">O-</option>
+            <option value="AB+">AB+</option>
+            <option value="AB-">AB-</option>
+          </select>
+          {bloodError && <p className="text-red-500 text-sm">{bloodError}</p>}
+        </div>
+
+        <div className="mb-5 flex items-center">
+          <FiUser className="text-primaryColor mr-2" />
+
           <input
             type="text"
             placeholder="emergency person"
@@ -191,8 +180,8 @@ const Profile = (user) => {
             placeholder:text-textColor  cursor-pointer "
           />
         </div>
-        <div className="mb-5 flex items-center"> 
-    <FiPhone className="text-primaryColor mr-2"/>
+        <div className="mb-5 flex items-center">
+          <FiPhone className="text-primaryColor mr-2" />
           <input
             type="number"
             placeholder="emergency contact"
@@ -243,8 +232,8 @@ const Profile = (user) => {
               className="absolute top-0 left-0 w-full h-full flex items-center px-[0.75rem] py-[0.375rem] text-[15px] leading-6 overflow-hidden bg-[#0066ff46] text-headingColor font semibold rounded-lg truncate cursor-pointer"
             >
               <span className="mr-2">
-    <FiUpload /> {/* Assuming FiUpload is the icon for upload */}
-  </span>
+                <FiUpload /> {/* Assuming FiUpload is the icon for upload */}
+              </span>
               {selectedFile ? selectedFile.name : "Upload Photo"}
             </label>
           </div>

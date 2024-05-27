@@ -32,7 +32,13 @@ const navLinks = [
   {
     path:'/doctors/chat',
     display:'Chats'
-  }
+  },
+  {
+    path:'/doctors/dashboard',
+    display:'Dashboard'
+  },
+  
+
 
 ]
 

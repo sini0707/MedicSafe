@@ -145,6 +145,7 @@ const getDoctors = asyncHandler(async (req, res) => {
 });
 
 const addSpecialization = asyncHandler(async (req, res) => {
+
   try {
     const { name, description } = req.body;
 
@@ -232,10 +233,7 @@ export const getMonthlyBooking = async (req, res) => {
 };
 
 export const YearlyBooking = async (req, res) => {
-
   try {
-    
-
     const yearlyData = await Booking.aggregate([
       {
         $project: {
@@ -259,7 +257,7 @@ export const YearlyBooking = async (req, res) => {
       },
     ]);
 
-    console.log("Aggregation successful, data:", yearlyData);
+  
 
     res.status(200).json({ data: yearlyData });
   } catch (error) {
@@ -291,7 +289,6 @@ export const cancelBooking = async (req, res) => {
       .json({ status: false, message: "Booking cancellation failed" });
   }
 };
-
 
 export {
   adminLogin,

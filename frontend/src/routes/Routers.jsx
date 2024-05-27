@@ -26,7 +26,6 @@ import DoctorLogin from "../pages/Doctors/DoctorLogin.jsx";
 import DoctorsHome from "../pages/Doctors/DoctorsHome.jsx";
 import Doctorss from "../pages/Doctors/Doctors.jsx";
 import ChangePassword from "../pages/Users/ChangePassword.jsx";
-
 import DoctorProfile from "../pages/Doctors/DoctorProfile.jsx";
 import DoctorTimeManagement from "../pages/Doctors/DoctorTimeManagement.jsx";
 import DoctorChangePassword from "../pages/Doctors/DoctorChangePassword.jsx";
@@ -36,11 +35,11 @@ import MyBookings from "../Dashboard/user-account/MyBookings.jsx";
 import UserVideoCallRoom from "../pages/Users/UserVideoCallRoom.jsx";
 import DoctorVideoCallRoom from "../pages/Doctors/DoctorVideoCallRoom.jsx";
 import Specialization from "../pages/Admin/Specialization.jsx";
-
 import WalletComponent from "../pages/Users/WalletComponent.jsx";
 import DoctorChat from "../pages/Doctors/DoctorChat.jsx";
-// import ErrorPage from "../components/ErrorPage/ErrorPage.jsx";
+import ErrorPage from "../components/ErrorPage/ErrorPage.jsx";
 import ProtectedAdminRoute from "./ProtectedAdminRoute.jsx";
+import DoctorDashboard from "../pages/Doctors/DoctorDashboard.jsx";
 
 
 function Routers() {
@@ -156,6 +155,7 @@ function Routers() {
       <Route path="/doctors/room/:roomId" element={<DoctorVideoCallRoom />} />
 
       <Route path="/doctors/chat" element={<DoctorChat />} />
+      <Route path="/doctors/dashboard" element={<DoctorDashboard/>}/>
 
       <Route path="/admin" element={<AdminLogin />} />
 
@@ -203,7 +203,7 @@ function Routers() {
         }
       />
 
-      {/* <Route path="*" element={<ErrorPage />} /> */}
+      <Route path="*" element={<ErrorPage />} />
     </Routes>
   );
 }

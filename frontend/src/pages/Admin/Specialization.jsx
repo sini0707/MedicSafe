@@ -16,6 +16,7 @@ const Specialization = () => {
    const addButtonRef = useRef(null);
 
   const handleSubmit = async (e) => {
+    console.log('hyyy')
     e.preventDefault();
     if (!name || !description) {
       toast.error("Please enter specialization name and description");
@@ -37,9 +38,12 @@ const Specialization = () => {
         }
       );
 
+      console.log(res,'add new')
+
 
       toast.success("Specialization created successfully");
       const newSpecialization = res.data;
+      console.log(newSpecialization ,'new')
       setSpecializationList((prevList) => [...prevList, newSpecialization]);
       setTotalPages(Math.ceil((specializationList.length + 1) / postsPerPage));
       setName("");
@@ -55,9 +59,8 @@ const Specialization = () => {
   useEffect(() => {
     const fetchSpecializations = async () => {
       try {
-        const res = await apiInstance.get(`${baseURL}/admin/getspecialization`, {
-          
-        });
+        const res = await apiInstance.get(`${baseURL}/admin/getspecialization`,);
+        console.log(res,'spec')
   
         setSpecializationList(res.data);
         setTotalPages(Math.ceil(res.data.length / postsPerPage));
@@ -66,7 +69,7 @@ const Specialization = () => {
       }
     };
     fetchSpecializations();
-  }, [postsPerPage]);
+  }, [specializationList]);
   const nextPage = () => {
     if (currentPage < totalPages) {
       setCurrentPage(currentPage + 1);
@@ -116,7 +119,6 @@ const Specialization = () => {
             <button
               ref={addButtonRef}
               onClick={handleSubmit}
-              type="submit"
               className="text-gray-900 bg-gradient-to-r from-red-200 via-red-300 to-yellow-200 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-red-100 dark:focus:ring-red-400 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
             >
               Create
