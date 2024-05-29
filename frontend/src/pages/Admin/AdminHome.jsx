@@ -6,13 +6,11 @@ import { baseURL } from "../../../../backend/config/db";
 const AdminHome = () => {
   const [chartBar, setChartBar] = useState();
   const [users, setUsers] = useState([]);
-
   const [doctors, setDoctors] = useState([]);
-
-  const [booking, setBookings] = useState([]);
-
-   const [chartPie, setChartPie] = useState();
+   const [booking, setBookings] = useState([]);
+    const [chartPie, setChartPie] = useState();
   const [yearlyBookings, setYearlyBookings] = useState([]);
+  
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -378,20 +376,30 @@ const AdminHome = () => {
           </div>
         </div>
         <div className="text-blue-gray-400">
-          {/* Bar Chart */}
-          <div className="relative flex flex-col bg-clip-border rounded-xl bg-white text-gray-700 shadow-md">
-            <canvas id="chartBar"></canvas>
-          </div>
-        </div>
-        <div className="text-blue-gray-600">
-          {/* Pie Chart */}
-          <div className="relative flex flex-col bg-clip-border rounded-xl bg-white text-gray-700 shadow-md">
-            <canvas
-              id="chartPie"
-              style={{ maxWidth: "400px", margin: "0 auto" }}
-            ></canvas>
-          </div>
-        </div>
+  <div className="flex justify-around">
+    <div className="w-1/2 px-2">
+      {/* Heading */}
+      <h2 className="text-2xl font-bold text-blue-600 mb-4">Monthly Booking</h2>
+      {/* Bar Chart */}
+      <div className="relative flex flex-col bg-clip-border rounded-xl bg-white text-gray-700 shadow-md">
+        <canvas id="chartBar"></canvas>
+      </div>
+    </div>
+    <div className="w-1/2 px-2">
+      {/* Heading */}
+      <h2 className="text-2xl font-bold text-blue-600 mb-4">Yearly Booking</h2>
+      {/* Pie Chart */}
+      <div className="relative flex flex-col bg-clip-border rounded-xl bg-white text-gray-700 shadow-md">
+        <canvas
+          id="chartPie"
+          style={{ maxWidth: "400px", margin: "0 auto" }}
+        ></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
+
       </div>
     </div>
   );

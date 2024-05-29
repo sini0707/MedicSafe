@@ -40,6 +40,7 @@ import DoctorChat from "../pages/Doctors/DoctorChat.jsx";
 import ErrorPage from "../components/ErrorPage/ErrorPage.jsx";
 import ProtectedAdminRoute from "./ProtectedAdminRoute.jsx";
 import DoctorDashboard from "../pages/Doctors/DoctorDashboard.jsx";
+import ProtectedDoctorRoute from "./ProtectedDoctorRoute.jsx";
 
 
 function Routers() {
@@ -153,6 +154,15 @@ function Routers() {
       />
 
       <Route path="/doctors/room/:roomId" element={<DoctorVideoCallRoom />} />
+
+      {/* <Route
+        path="/doctors/room/:roomId"
+        element={
+          <ProtectedDoctorRoute allowedRoles={["doctor"]}>
+            <AdminHome />
+          </ProtectedDoctorRoute>
+        }
+      /> */}
 
       <Route path="/doctors/chat" element={<DoctorChat />} />
       <Route path="/doctors/dashboard" element={<DoctorDashboard/>}/>

@@ -149,7 +149,7 @@ const DoctorDetails = () => {
     let bookedTimings = bookedSlots.filter(
       (item) => item.date === formattedDate
     );
-    console.log(bookedTimings, "booked timings");
+    
     const timings = availavleTimings.map((elem) => {
       return elem.fromTime;
     });
@@ -262,23 +262,26 @@ const DoctorDetails = () => {
         </div>
 
         <div className="h-60 w-full lg:w-2/5">
-          <div className="flex h-fit my-3">
-            <div className="mx-2 flex border-2 items-center px-2 h-fit border-blue-300 rounded">
-              <label htmlFor="from" className="w-1/3">
-                Date :
-              </label>
-              <input
-                type="date"
-                value={date}
-                onChange={(e) => {
-                  dateHandler(e);
-                }}
-                className="w-2/3 py-1 outline-none focus:outline-none"
-                name="time"
-                id="from"
-              />
-            </div>
-          </div>
+        <div className="flex flex-col items-center my-3">
+  <h1 className="text-3xl font-bold mb-4 text-blue-600">Book Your Slot</h1>
+  <div className="flex h-fit">
+    <div className="mx-2 flex border-2 items-center px-2 h-fit border-blue-300 rounded">
+      <label htmlFor="from" className="w-1/3">
+        Date:
+      </label>
+      <input
+        type="date"
+        value={date}
+        onChange={(e) => {
+          dateHandler(e);
+        }}
+        className="w-2/3 py-1 outline-none focus:outline-none"
+        name="time"
+        id="from"
+      />
+    </div>
+  </div>
+</div>
 
           {filteredAvailableTime.map((timeSlot) => (
             <button

@@ -3,17 +3,14 @@ import { AiFillStar } from "react-icons/ai";
 import { useSelector } from "react-redux";
 import useFetchData from "../../hooks/useFetchData";
 import { toast } from "react-toastify";
-
 import { baseURL } from "../../../../backend/config/db";
 
 const FeedbackForm = ({ details, setshowFeedbackForm }) => {
+  
   const [rating, setRating] = useState(0);
-
   const [hover, setHover] = useState(0);
   const [reviewText, setReviewText] = useState("");
-
   const userInfo = useSelector((state) => state.auth.userInfo);
-
   const userId = userInfo._id;
   const token = userInfo.token;
 

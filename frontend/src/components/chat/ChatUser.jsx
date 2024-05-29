@@ -11,10 +11,10 @@ import AnimationTyping from "../AnimationTyping/AnimationTyping.jsx";
 const ENDPOINT = "http://localhost:8000";
 let socket, selectedChatCompare;
 
-const ChatUser = ({ onClose, doctor, user, photo, doctorPic, userName }) => {
+ const ChatUser = ({ onClose, doctor, user, photo, doctorPic, userName ,updateDoctorRooms}) => {
+  
   const [socketConnected, setSocketConnected] = useState(false);
   const [room, setRoom] = useState({});
-
   const [chats, setChats] = useState([]);
   const [content, setContent] = useState("");
   const [messageSent, setMessageSent] = useState(false);
@@ -133,12 +133,15 @@ const ChatUser = ({ onClose, doctor, user, photo, doctorPic, userName }) => {
   useEffect(() => {
     socket.on("message received", (newMessageReceived) => {
       if (!selectedChatCompare || room._id !== newMessageReceived.room._id) {
+        // empty
       } else {
         setChats([...chats, newMessageReceived]);
         scrollToBottom();
+        // Notify the doctor's component about the new message
+        updateDoctorRooms(newMessageReceived.room._id);
       }
     });
-  });
+  }, [chats, room._id]);
 
   useEffect(() => {
     socket.on("typing", ({ isTyping }) => {

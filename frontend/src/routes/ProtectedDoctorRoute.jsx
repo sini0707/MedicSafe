@@ -9,6 +9,7 @@ const ProtectedDoctorRoute = ({ children, allowedRoles }) => {
   if(user){
    
     const role=user.role
+  
     
     const token=user.token
    

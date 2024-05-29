@@ -69,7 +69,7 @@ router.get("/FeedbackCheck/:id", protect, checkFeedback);
 router.get("/get-timings/:doctorId", getDoctorTimings);
 router.post("/checkout-session/:doctorId/:userId", protect, getCheckoutSession);
 router.get("/bookings/:userId", protect, UserBookings);
-router.get("/makeVideoCall/:id", MakeVideoCall);
+router.get("/makeVideoCall/:id",protect, MakeVideoCall);
 router.get("/getRoomMessage/:roomId", protect, getRoomMessages);
 router.get("/getRoom/:doctorId/:userId", protect, getRoom);
 router.post("/createRoom/:doctorId/:userId", createRoom);

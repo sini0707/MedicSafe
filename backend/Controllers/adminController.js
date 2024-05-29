@@ -225,8 +225,9 @@ export const getMonthlyBooking = async (req, res) => {
         },
       },
     ]);
-
+  
     res.status(200).json({ data: montlyData });
+   
   } catch (error) {
     res.status(404).json({ message: "Data not found" });
   }

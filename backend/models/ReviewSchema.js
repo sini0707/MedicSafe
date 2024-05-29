@@ -17,10 +17,7 @@ const reviewSchema=new mongoose.Schema(
         },
 
 
-        replyText: {
-          type: String,
-          default: '', 
-        },
+       
         rating:{
             type:Number,
             required:true,

@@ -23,8 +23,7 @@ const getCheckoutSession = async (req, res) => {
   const indianTime = req.body.time;
 
   try {
-    // const date = parseISO(req.body.appointmentDate);
-    // const IndianDate = format(date, "dd/MM/yyyy");
+  
 
     const doctor = await Doctor.findById(doctorId);
 
@@ -65,7 +64,7 @@ const getCheckoutSession = async (req, res) => {
     await booking.save();
     res.status(200).json({
       success: true,
-      message: "<span style='color: green;'>Successfully paid</span>",
+      message: "Booking saved Successfully",
       session,
     });
   } catch (err) {
