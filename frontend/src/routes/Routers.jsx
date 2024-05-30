@@ -3,7 +3,7 @@ import Services from "../pages/Users/Services";
 import Login from "../pages/Users/Login";
 import Signup from "../pages/Users/Signup";
 import Contact from "../pages/Users/Contact";
-import Doctors from "../pages/Doctors/DoctorsHome.jsx";
+
 import DoctorDetails from "../pages/Users/DoctorDetails.jsx";
 import MyAccount from "../Dashboard/user-account/MyAccount.jsx";
 import { Routes, Route } from "react-router-dom";
@@ -39,8 +39,8 @@ import WalletComponent from "../pages/Users/WalletComponent.jsx";
 import DoctorChat from "../pages/Doctors/DoctorChat.jsx";
 import ErrorPage from "../components/ErrorPage/ErrorPage.jsx";
 import ProtectedAdminRoute from "./ProtectedAdminRoute.jsx";
-import DoctorDashboard from "../pages/Doctors/DoctorDashboard.jsx";
-import ProtectedDoctorRoute from "./ProtectedDoctorRoute.jsx";
+
+
 
 
 function Routers() {
@@ -165,7 +165,7 @@ function Routers() {
       /> */}
 
       <Route path="/doctors/chat" element={<DoctorChat />} />
-      <Route path="/doctors/dashboard" element={<DoctorDashboard/>}/>
+  
 
       <Route path="/admin" element={<AdminLogin />} />
 
@@ -212,7 +212,7 @@ function Routers() {
           </ProtectedAdminRoute>
         }
       />
-
+      <Route path="/error" element={<ErrorPage />} />
       <Route path="*" element={<ErrorPage />} />
     </Routes>
   );

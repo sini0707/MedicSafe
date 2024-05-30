@@ -273,9 +273,7 @@ const AdminHome = () => {
                   </li>
                 </ol>
               </nav>
-              <h6 className="block antialiased tracking-normal font-sans text-base font-semibold leading-relaxed text-gray-900">
-                home
-              </h6>
+             
             </div>
           </div>
         </nav>
