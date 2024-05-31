@@ -208,7 +208,6 @@ const AdminHome = () => {
       return;
     }
     
-     // Filter out any null or undefined values
   const filteredYearlyBookings = yearlyBookings.filter(item => item._id != null && item.totalBookings != null);
 
   console.log(filteredYearlyBookings,"filtered year")

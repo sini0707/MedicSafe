@@ -24,10 +24,12 @@ import {
   checkFeedback,
   UserBookings,
   getPrescription,
+  
 } from "../Controllers/userController.js";
 import { protect } from "../middleware/authMiddleware.js";
-import { getCheckoutSession } from "../Controllers/bookingController.js";
 
+
+import { makepayment,sessionStatus,saveBookingData} from '../Controllers/PaymentController.js';
 import {
   createReview,
   getAllReviews,
@@ -67,7 +69,12 @@ router.get("/getallreviews/:id", protect, getAllReviews);
 router.post("/get-wallet", protect, getUserWallet);
 router.get("/FeedbackCheck/:id", protect, checkFeedback);
 router.get("/get-timings/:doctorId", getDoctorTimings);
-router.post("/checkout-session/:doctorId/:userId", protect, getCheckoutSession);
+
+router.post("/checkout-session/:doctorId/:userId",protect, makepayment);
+
+router.post("/session-status",protect,sessionStatus);
+router.post("/saveBookingData",saveBookingData);
+
 router.get("/bookings/:userId", protect, UserBookings);
 router.get("/makeVideoCall/:id",protect, MakeVideoCall);
 router.get("/getRoomMessage/:roomId", protect, getRoomMessages);

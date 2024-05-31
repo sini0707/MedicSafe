@@ -5,7 +5,8 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import { notFound, errorHandler } from "./middleware/errorMiddleware.js";
 import connectDB from "./config/db.js";
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 8000;
+
 connectDB();
 import userRoutes from "./routes/userRoutes.js";
 import doctorRoute from "./routes/doctor.js";
@@ -16,11 +17,12 @@ import { createServer } from "http";
 import { log } from "console";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
+import { login } from "./Controllers/userController.js";
 
 const __filename=fileURLToPath(import.meta.url);
-console.log(__filename,"filname");
+
 const __dirname=dirname(__filename);
-console.log(__dirname,"dirname");
+
 
 // middleware
 const app = express();
@@ -40,16 +42,16 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 const currentWorkingDir=path.resolve();
-console.log(currentWorkingDir,'current');
+
 const parentDir=path.dirname(currentWorkingDir);
-console.log(parentDir,'parentdir');
+
 
 
 
 app.use(
   cors({
         //  origin: "http://localhost:5173",
-       origin: "https://www.medicsafe.online, https://medicsafe.online",
+        origin: "https://www.medicsafe.online, https://medicsafe.online",
     credentials: true,
     methods: ["GET", "POST"],
   })
@@ -60,13 +62,12 @@ app.use("/api/v1/doctors", doctorRoute);
 app.use("/api/v1/admin", adminRoutes);
 
 if (process.env.NODE_ENV === "production") {
-  console.log(process.env.NODE_ENV, "producton");
+
   const __dirname = path.resolve();
-  console.log(__dirname, "directory");
+
 
   app.use(express.static(path.join(parentDir, "/frontend/dist")));
-  // const frontendPath = path.join(__dirname, "../frontend/dist");
-  // console.log(frontendPath, "frontend path");
+  
 
   app.get("*", (req, res) =>
     res.sendFile(path.resolve(parentDir,"frontend","dist", "index.html"))
@@ -83,7 +84,7 @@ app.use(errorHandler);
 const server = app.listen(port, () => {
   try {
     connectDB();
-    console.log("Server is running on port", port);
+   
   } catch (error) {
     console.log(error);
   }

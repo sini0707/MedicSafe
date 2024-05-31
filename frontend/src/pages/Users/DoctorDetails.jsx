@@ -81,10 +81,21 @@ const DoctorDetails = () => {
   }, [userId]);
 
   const bookHandler = async (date, time) => {
+    const user = JSON.parse(localStorage.getItem("userInfo"));
     if (!date || !time) {
       toast.error("Please select both date and time");
       return;
     }
+    
+    
+      const bookingData = {
+        user: user,
+        doctor: details,
+        date: date,
+        slot: time,
+      };
+
+
 
     const indianDate = moment(date).tz("Asia/Kolkata").format("DD/MM/YYYY");
     const indianTime = moment
@@ -113,17 +124,19 @@ const DoctorDetails = () => {
         }
       );
 
-      window.location.href = res.data.session.url;
-      setSlotBooked(true);
-
-      if (!res.ok) {
-        throw new Error(res.data.message + " Please try again");
+      localStorage.setItem("bookingData", JSON.stringify(bookingData));
+     
+      if (res.data.url) {
+       
+        window.location.href = res.data.url;
+      } else {
+        throw new Error("Failed to create checkout session. Please try again.");
       }
+      setSlotBooked(true);
     } catch (err) {
       toast.error(err.message || "An error occurred while booking appointment");
     }
   };
-
   const dateHandler = (e) => {
     if (new Date(e.target.value) < Date.now()) {
       toast.error("select a future date");
@@ -137,10 +150,13 @@ const DoctorDetails = () => {
       const indianDate = date.toLocaleDateString("en-IN", options);
       return indianDate;
     }
+    
 
     let selectedDate = e.target.value;
+    console.log(selectedDate,'select date');
 
     let formattedDate = formatDateToUTC(selectedDate);
+    console.log(formattedDate,'date confirmation');
 
     let availavleTimings = available.filter(
       (item) => item.date === formattedDate
