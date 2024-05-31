@@ -123,6 +123,10 @@ export const getDoctorRooms = async (req, res) => {
       select: "_id name email",
     });
 
+    rooms.map((room)=>console.log(room.messages[room.messages.length-1]))
+    
+
+
     if (rooms.length > 0) {
       res.status(200).json(rooms);
     } else {
@@ -198,3 +202,4 @@ export const clearNotification = async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
+

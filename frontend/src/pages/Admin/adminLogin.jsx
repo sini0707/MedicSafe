@@ -6,11 +6,14 @@ import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import HashLoader from "react-spinners/HashLoader.js";
 import { setadminCredentials } from "../../slices/adminSlices/adminAuthSlice.js";
-import { adminToken } from "../../../config.js";
+import { FiMail, FiLock, FiEye, FiEyeOff } from "react-icons/fi";
 
 const adminLogin = () => {
-  const navigate = useNavigate();
+  
   const user = useSelector((state) => state.adminAuth.adminInfo);
+
+  const navigate = useNavigate();
+ 
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -24,6 +27,7 @@ const adminLogin = () => {
   });
 
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -70,8 +74,9 @@ const adminLogin = () => {
         <h3 className="text-headingColor text-[22px] leading-9 font-bold mb-10">
           Hello! <span className="text-primaryColor">Welcome</span>Back ,Admin
         </h3>
-        <form className="py-4 md:py-0" onSubmit={(e) => submitHandler(e)}>
-          <div className="mb-5">
+        <form className="py-4 md:py-0" onSubmit={submitHandler}>
+          <div className="mb-5 flex items-center">
+            <FiMail className="text-primaryColor mr-2" />
             <input
               type="email"
               placeholder="Enter your email"
@@ -79,20 +84,34 @@ const adminLogin = () => {
               value={formData.email}
               onChange={(e) => handleInputChange(e)}
               className="w-full py-3 border-b border-solid border-[#0066ff61] focus:border-b-primaryColor text-[16px] leading-7 text-headingColor
-                placeholder:text-textColor  cursor-pointer required"
+            placeholder:text-textColor  cursor-pointer required"
             />
           </div>
-          <div className="mb-5">
+          <div className="mb-5 flex items-center">
+            <FiLock className="text-primaryColor mr-2" />
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               name="password"
-              placeholder="password"
+              placeholder="Password"
               value={formData.password}
               onChange={(e) => handleInputChange(e)}
-              className="w-full py-3 border-b border-solid border-[#0066ff61] focus:border-b-primaryColor text-[16px] leading-7 text-headingColor
-                placeholder:text-textColor  cursor-pointer required"
+              className="w-full py-3 border-b border-solid border-[#0066ff61] focus:border-b-primaryColor text-[16px] leading-7 text-headingColor placeholder:text-textColor cursor-pointer required"
             />
+
+            {showPassword ? (
+              <FiEyeOff
+                className="text-primaryColor cursor-pointer pr-.9"
+                onClick={() => setShowPassword(false)}
+              />
+            ) : (
+              <FiEye
+                className="text-primaryColor cursor-pointer pr-.9"
+                onClick={() => setShowPassword(true)}
+              />
+            )}
           </div>
+
+          <div className="mb-5"></div>
           <div className="mt-7">
             <button
               type="submit"
@@ -101,6 +120,8 @@ const adminLogin = () => {
               {loading ? <HashLoader size={25} color="#fff" /> : "Login"}
             </button>
           </div>
+         
+          
         </form>
       </div>
     </section>

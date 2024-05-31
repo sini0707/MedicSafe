@@ -81,10 +81,21 @@ const DoctorDetails = () => {
   }, [userId]);
 
   const bookHandler = async (date, time) => {
+    const user = JSON.parse(localStorage.getItem("userInfo"));
     if (!date || !time) {
       toast.error("Please select both date and time");
       return;
     }
+    
+    
+      const bookingData = {
+        user: user,
+        doctor: details,
+        date: date,
+        slot: time,
+      };
+
+
 
     const indianDate = moment(date).tz("Asia/Kolkata").format("DD/MM/YYYY");
     const indianTime = moment
@@ -113,17 +124,19 @@ const DoctorDetails = () => {
         }
       );
 
-      window.location.href = res.data.session.url;
-      setSlotBooked(true);
-
-      if (!res.ok) {
-        throw new Error(res.data.message + " Please try again");
+      localStorage.setItem("bookingData", JSON.stringify(bookingData));
+     
+      if (res.data.url) {
+       
+        window.location.href = res.data.url;
+      } else {
+        throw new Error("Failed to create checkout session. Please try again.");
       }
+      setSlotBooked(true);
     } catch (err) {
       toast.error(err.message || "An error occurred while booking appointment");
     }
   };
-
   const dateHandler = (e) => {
     if (new Date(e.target.value) < Date.now()) {
       toast.error("select a future date");
@@ -137,10 +150,13 @@ const DoctorDetails = () => {
       const indianDate = date.toLocaleDateString("en-IN", options);
       return indianDate;
     }
+    
 
     let selectedDate = e.target.value;
+    console.log(selectedDate,'select date');
 
     let formattedDate = formatDateToUTC(selectedDate);
+    console.log(formattedDate,'date confirmation');
 
     let availavleTimings = available.filter(
       (item) => item.date === formattedDate
@@ -149,7 +165,7 @@ const DoctorDetails = () => {
     let bookedTimings = bookedSlots.filter(
       (item) => item.date === formattedDate
     );
-    console.log(bookedTimings, "booked timings");
+    
     const timings = availavleTimings.map((elem) => {
       return elem.fromTime;
     });
@@ -262,23 +278,26 @@ const DoctorDetails = () => {
         </div>
 
         <div className="h-60 w-full lg:w-2/5">
-          <div className="flex h-fit my-3">
-            <div className="mx-2 flex border-2 items-center px-2 h-fit border-blue-300 rounded">
-              <label htmlFor="from" className="w-1/3">
-                Date :
-              </label>
-              <input
-                type="date"
-                value={date}
-                onChange={(e) => {
-                  dateHandler(e);
-                }}
-                className="w-2/3 py-1 outline-none focus:outline-none"
-                name="time"
-                id="from"
-              />
-            </div>
-          </div>
+        <div className="flex flex-col items-center my-3">
+  <h1 className="text-3xl font-bold mb-4 text-blue-600">Book Your Slot</h1>
+  <div className="flex h-fit">
+    <div className="mx-2 flex border-2 items-center px-2 h-fit border-blue-300 rounded">
+      <label htmlFor="from" className="w-1/3">
+        Date:
+      </label>
+      <input
+        type="date"
+        value={date}
+        onChange={(e) => {
+          dateHandler(e);
+        }}
+        className="w-2/3 py-1 outline-none focus:outline-none"
+        name="time"
+        id="from"
+      />
+    </div>
+  </div>
+</div>
 
           {filteredAvailableTime.map((timeSlot) => (
             <button

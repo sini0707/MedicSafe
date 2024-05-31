@@ -17,6 +17,9 @@ import {
   approveVideoCall,
   DoctorChangePassword,
   generatePrescription,
+  getUsers,
+  getDoctors,
+  getBooking,
   
   
 } from "../Controllers/DoctorController.js";
@@ -51,7 +54,7 @@ router.get("/delete-timing/:docId/:id",protect,deleteTimings);
 router.get("/get-timings/:id", getTimings);
 router.get("/getdoctor/:id", getSingleDoctor);
 router.get("/booking-details/:docId", bookingDetails);  
-router.post("/approveVideoCall/:id", approveVideoCall);
+router.post("/approveVideoCall/:id",protect, approveVideoCall);
 router.put("/submitreply/:id",submitReply);
 router.post("/changepassword",DoctorChangePassword);
 router.post('/generate-prescription/:id',protect,generatePrescription)
@@ -61,6 +64,9 @@ router.post("/sendChat/:roomId/:sender/:type/:Id/:senderName",sendChat);
 router.put("/mark-room-message-read/:id",MarkMessageAsRead);
 router.post("/getDoctorNotifications",protect,getNotification);
 router.post("/clearDoctorNotification",protect,clearNotification);
+router.get("/userlist", protect, getUsers);
+router.get("/doctordata", protect, getDoctors);
+router.get("/getBooking", protect, getBooking);
 
 
 

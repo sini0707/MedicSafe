@@ -16,16 +16,9 @@ const DoctorCard = ({ doctor }) => {
   const location = useLocation();
 
   const handleDetails = () => {
-   
- 
-    if (location.pathname.includes("/doctors")) {
-      navigate(`/doctors/doctorDetails/${doctor._id}`);
-    } else {
-      navigate(`/users/doctorDetails/${doctor._id}`);
-    }
-  
+    navigate(`/users/doctorDetails/${doctor._id}`);
   };
-
+  
   const {
     name,
     imagePath,

@@ -1,4 +1,104 @@
+
+import apiInstance from "../../axiosApi/axiosInstance";
+import { baseURL } from "../../../../backend/config/db";
+import { token } from "../../../config";
+import { useEffect,useState } from "react";
+import { data } from "autoprefixer";
+
+
 const SuccessPayment = () => {
+  const [loading, setLoading] = useState(true);
+ 
+  const queryString = window.location.search;
+  console.log(queryString);
+  const urlParams = new URLSearchParams(queryString);
+  console.log(urlParams, "urlParams");
+  const sessionId = urlParams.get("session_id");
+
+  console.log(sessionId, "sessionId");
+
+  useEffect(()=>{
+    const queryString = window.location.search;
+    console.log(queryString);
+    const urlParams = new URLSearchParams(queryString);
+    console.log(urlParams, "urlParams");
+    const sessionId = urlParams.get("session_id");
+
+    console.log(sessionId, "sessionId");
+
+
+    const sendPaymentData =async ()=>{
+
+      try {
+        const response = await apiInstance.post(
+          `${baseURL}/users/session-status?session_id=${sessionId}`,
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+       
+         console.log(response,"payment result")
+
+        if (response.status!==200) {
+          throw new Error(response.
+            statusText);
+        }
+
+        const bookingData = await JSON.parse(
+          localStorage.getItem("bookingData")
+        );
+        
+        console.log(bookingData,"bookingData")
+
+        const dataToSave = {
+          doctor: bookingData.doctor,
+          patient: bookingData.user,
+          ticketPrice: bookingData.doctor.fees,
+          paymentStatus: response.status,
+          appointmentDate: bookingData.date,
+          slot: bookingData.slot,
+          paymentId:response.data.paymentId,
+        };
+
+
+        const bookingRes = await apiInstance.post(`${baseURL}/users/saveBookingData`,dataToSave);
+
+        console.log(bookingRes,"booking res")
+        
+        
+        setLoading(true);
+
+
+        
+      } catch (error) {
+        console.error('Error :', error);
+        
+      }
+    }
+    sendPaymentData();
+
+  },[])
+
+
+  // const saveBooking=async()=>{
+    
+  //   try {
+  //     const bookingRes = await apiInstance.post(`${baseURL}/users/saveBookingData`,dataToSave);
+    
+  //     console.log(bookingRes,"booking res")
+      
+  //   } catch (error) {
+  //     console.log(error)
+  //   }
+  // }
+ 
+ 
+  
+
   return (
     <div className="bg-gray-100 h-screen">
       <div className="bg-white p-6 md:mx-auto">
@@ -13,21 +113,23 @@ const SuccessPayment = () => {
         </svg>
         <div className="text-center">
           <h3 className="md:text-2xl text-base text-gray-900 font-semibold text-center">
-            Payemnt Done!
+            Payment Done!
           </h3>
           <p className="text-gray-600 my-2">
-            Thank you for Completing your secure online payment.
+            Thank you for completing your secure online payment.
           </p>
-          <p>Have a great day!</p>
+          <p> Have a great day!</p>
           <div className="py-10 text-center">
             <a
               href="/home"
-              className="text-gray-900 bg-gradient-to-r from-teal-200 to-lime-200 hover:bg-gradient-to-l hover:from-teal-200 hover:to-lime-200 focus:ring-4 focus:outline-none focus:ring-lime-200 dark:focus:ring-teal-700 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
+              className="px-12 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-3"
             >
               GO BACK
             </a>
           </div>
         </div>
+
+       
       </div>
     </div>
   );

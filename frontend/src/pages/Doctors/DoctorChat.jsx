@@ -13,20 +13,20 @@ var socket, selectedChatCompare;
 
 const DoctorChat = () => {
   const [socketConnected, setSocketConnected] = useState(false);
-
   const [rooms, setRooms] = useState("");
   const [error, setError] = useState("");
   const [chats, setChats] = useState([]);
   const [messageSent, setMessageSent] = useState(false);
   const [chatId, setChatId] = useState("");
-
   const [patient, setPatient] = useState(null);
   const [doctor, setDoctor] = useState(null);
   const [content, setContent] = useState("");
   const [readStatus, setReadStatus] = useState({});
   const [isTyping, setIsTyping] = useState(false);
+  const [activeChat, setActiveChat] = useState(null);
   const typingTimeoutRef = useRef(null);
   const chatContainerRef = useRef(null);
+ 
 
   const doctorInfo = useSelector((state) => state.docAuth.doctorInfo);
 
@@ -53,19 +53,13 @@ const DoctorChat = () => {
         if (!res.ok) {
           throw new Error(result.message);
         }
+       const sortedRooms = result
+       const test = result.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
 
-        console.log(result,'sort rslt')
-
-
-
-        const sortedRooms = result
-       
-        const test = result.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
-
-        console.log('test',test);
+      
         
-        setRooms(test);
-        console.log(sortedRooms);
+setRooms(test);
+      
         
       } catch (error) {
         setError(error);
@@ -239,6 +233,18 @@ const DoctorChat = () => {
       console.log(error);
     }
   };
+  const handleChatSelection = (selectedRoom) => {
+    setChatId(selectedRoom._id);
+    setPatient(selectedRoom.user);
+    setActiveChat(selectedRoom._id); // Set the active chat ID
+ 
+    markMessageAsRead(selectedRoom._id);
+
+    // Move the selected room to the top of the list
+    const updatedRooms = rooms.filter(room => room._id !== selectedRoom._id);
+    updatedRooms.unshift(selectedRoom);
+    setRooms(updatedRooms);
+  };
 
   return (
     <div className=" font-semibold">
@@ -254,15 +260,13 @@ const DoctorChat = () => {
           <div className="overflow-y-auto h-screen p-3 mb-9 pb-20">
             {rooms.length > 0 ? (
               rooms.map((chat, index) => (
+          
                 <div
-                  key={index}
-                  className="flex flex-col space-y-1 mt-4 -mx-2 overflow-y-auto"
-                  onClick={() => {
-                    setChatId((prevChatId) => chat._id);
-                    setPatient((prevPatient) => chat.user);
-                    markMessageAsRead(chat._id);
-                  }}
-                >
+                key={index}
+                className={`flex flex-col space-y-1 mt-4 -mx-2 overflow-y-auto ${activeChat === chat._id ? 'bg-green-200' : ''}`}
+                onClick={() => handleChatSelection(chat)}
+              >
+
                   <button className="flex flex-row items-center hover:bg-gray-100 rounded-xl p-2">
                     <div className="flex items-center justify-center h-8 w-8 bg-gray-200 rounded-full">
                       Q
@@ -271,10 +275,11 @@ const DoctorChat = () => {
                       {chat.user.name}
                     </div>
 
-                    {chat.lastMessage && (
+                    {chat&& (
                       <div className="ml-auto text-xs text-gray-500">
-                        <div> {chat.lastMessage.content}</div>
-                        <div> {formatChatTime(chat.lastMessage.createdAt)}</div>
+                        {/* <div>{chat.messages.length-1}</div> */}
+                        <div> {formatChatTime(chat.updatedAt)}</div>
+                       
                       </div>
                     )}
                   </button>
@@ -303,7 +308,9 @@ const DoctorChat = () => {
               {chatId ? (
                 chats && chats.length > 0 ? (
                   chats.map((chat, index) => (
+                    
                     <div key={index} className="flex flex-col h-full">
+                   
                       <div className="grid grid-cols-12 gap-y-2">
                         {chat.senderType === "User" ? (
                           <div className="col-start-1 col-end-8 p-3 rounded-lg">
@@ -317,6 +324,7 @@ const DoctorChat = () => {
                                   readStatus[chat._id] ? "bg-blue-100" : ""
                                 }`}
                               >
+                              
                                 <div> {chat.content}</div>
                                 <div className="text-xs text-gray-500 mt-1">
                                   {formatChatTime(chat.createdAt)}
@@ -406,3 +414,6 @@ const DoctorChat = () => {
 };
 
 export default DoctorChat;
+
+
+

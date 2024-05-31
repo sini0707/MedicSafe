@@ -17,10 +17,7 @@ const navLinks = [
     path:'/doctors/home',
     display:'Home'
   },
-  {
-    path:'/doctors/finddoctors',
-    display:'FindDoctor'
-  },
+ 
   {
     path:'/doctors/appointments',
     display:'Appointments'
@@ -32,10 +29,6 @@ const navLinks = [
   {
     path:'/doctors/chat',
     display:'Chats'
-  },
-  {
-    path:'/doctors/dashboard',
-    display:'Dashboard'
   },
   
 

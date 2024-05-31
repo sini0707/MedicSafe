@@ -1,5 +1,10 @@
 import mongoose from "mongoose";
 
+const prescriptionSchema = new mongoose.Schema({
+  medicine: { type: String, required: true },
+  dosage: { type: String, required: true },
+  duration: { type: String, required: true },
+});
 
 const bookingSchema = new mongoose.Schema(
   {
@@ -21,37 +26,26 @@ const bookingSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    slotDate:{
-      type:String,
-      required:true
-    },
-    slotTime:{
-      type:String,
-      required:true
-    },
-    status: {
+    slotDate: {
       type: String,
-      enum: ["pending", "approved", "cancelled"],
-      default: "pending",
+      required: true,
     },
+    slotTime: {
+      type: String,
+      required: true,
+    },
+    status: { type: String, enum: ['pending', 'confirmed', 'cancelled'], required: true },
     isPaid: {
       type: Boolean,
       default: true,
     },
-    isCancelled:{
-      type:Boolean,
-      default:false,
+    isCancelled: {
+      type: Boolean,
+      default: false,
     },
-    prescription: { 
-      type: String, 
-    }
-
+    prescription: [prescriptionSchema], 
   },
-  { timestamps: true }  
+  { timestamps: true }
 );
 
-
-
-
-   
 export default mongoose.model("Booking", bookingSchema);

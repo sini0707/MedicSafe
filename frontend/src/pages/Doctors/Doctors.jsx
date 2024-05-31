@@ -43,10 +43,6 @@ const Doctorss = () => {
     setSearch(event.target.value);
   };
 
-  const handleDoctorsClick = () => {
-    navigate("/doctors");
-  };
-
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
@@ -104,7 +100,7 @@ const Doctorss = () => {
           setFilter={setFilter}
           setMinRating={setMinRating}
         />
-        <div className="doctors-section" onClick={handleDoctorsClick}>
+        <div className="doctors-section">
           <DoctorList doctors={currentDoctors} />
         </div>
         <Pagination

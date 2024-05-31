@@ -432,7 +432,7 @@ export const logoutDoctor = (req, res) => {
 };
 
 export const approveVideoCall = async (req, res) => {
-  console.log("reached here.....")
+ 
   const userId = req.params.id;
 
   const status = req.query.status;
@@ -498,3 +498,51 @@ export const generatePrescription = asyncHandler(async (req, res) => {
     res.status(500).json({ success: false, message: "Internal server error" });
   }
 });
+ export const getUsers = asyncHandler(async (req, res) => {
+  const users = await User.find({}, { password: 0 });
+
+  if (users) {
+    res.status(200).json({ userData: users });
+  } else {
+    res.status(400).json("Error in fetching");
+  }
+});
+export const getDoctors = asyncHandler(async (req, res) => {
+  try {
+    const doctors = await Doctor.find({}, { password: 0 });
+
+    if (doctors) {
+      res.status(200).json({ doctorsData: doctors });
+    } else {
+      res.status(400).json("Error in Fetching");
+    }
+  } catch (error) {
+    console.error("Error fetching doctors:", error.message);
+    res.status(500).json({ error: "Server Error" });
+  }
+});
+export const getBooking = async (req, res) => {
+  try {
+    const bookings = await Booking.find({})
+      .populate("user", "name")
+      .populate("doctor", "name")
+      .select(
+        "user doctor paymentStatus IndianDate slotDate slotTime ticketPrice status isPaid isCancelled createdAt updatedAt"
+      );
+
+    if (bookings.length === 0) {
+      throw new Error("Not have any Bookings");
+    }
+
+    res
+      .status(200)
+      .json({ status: true, message: "getting the users", data: bookings });
+  } catch (error) {
+    console.log(error);
+    res
+      .status(404)
+      .json({ status: false, message: "Unable to retrieve doctors" });
+  }
+};
+
+
