@@ -25,6 +25,7 @@ export const makepayment = async (req, res) => {
 
   const indianDate = req.body.date;
   const indianTime = req.body.time;
+  console.log(indianDate,'checkout date');
 
   try {
     const doctor = await Doctor.findById(doctorId);
@@ -82,42 +83,47 @@ export const sessionStatus = async (req, res) => {
 
 
   export const saveBookingData = async (req, res) => {
-    try {
-      const paymentId = req.body.paymentId;
-      const bookingExisit = await Booking.findOne({ paymentId: paymentId });
-      
-      if (bookingExisit) {
-        return res.status(200).json({ data: bookingExisit });
-      }
-  
-      const {
-        doctor,
-        patient,
-        ticketPrice,
-        appointmentDate,
-        slot,
-        paymentStatus = "pending",
-      } = req.body;
-  
-      const slotDate = moment(appointmentDate, "YYYY-MM-DD").toDate();
-      console.log(req.body, 'booking details');
-  
-      const newBooking = new Booking({
-        doctor,
-        user: patient,
-        ticketPrice,
-        slotDate: slotDate,
-        slotTime: slot,
-        status: "confirmed",
-        paymentStatus,
-        paymentId,
-      });
-  
-      const saveBooking = await newBooking.save();
-  
-      res.status(200).json({ message: "Booking saved Successfully", data: saveBooking });
-    } catch (error) {
-      console.log(error);
-      res.status(500).json({ error: "Internal Server error" });
+    const date =req.body.appointmentDate
+    const paymentId = req.body.paymentId;
+    const bookingExisit = await Booking.findOne({ paymentId: paymentId });
+    
+  try {
+    if (bookingExisit) {
+      res.status(200).json({ data: bookingExisit });
+      return;
     }
-  };
+
+    const {
+      doctor,
+      patient,
+      ticketPrice,
+      appointmentDate,
+      slot,
+      paymentStatus = "pending",
+      paymentId,
+    } = req.body;
+
+    const newBooking = new Booking({
+      doctor,
+      user:patient,
+      ticketPrice,
+      IndianDate: appointmentDate,
+      slotDate: appointmentDate,
+      slotTime:slot,
+      status:"confirmed",
+      paymentStatus,
+      paymentId,
+    });
+
+    const saveBooking = await newBooking.save();
+
+    res
+      .status(200)
+      .json({ message: "Booking saved Successfully", data: saveBooking });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal Server error" });
+  }
+
+
+  }

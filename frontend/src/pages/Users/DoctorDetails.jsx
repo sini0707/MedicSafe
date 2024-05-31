@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import starIcon from "../../../src/assets/images/Star.png";
 import moment from "moment-timezone";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import apiInstance from "../../axiosApi/axiosInstance";
 import { baseURL } from "../../../../backend/config/db";
 import { toast } from "react-toastify";
@@ -17,15 +17,12 @@ import { FaCommentDots } from "react-icons/fa6";
 const DoctorDetails = () => {
   const [tab, setTab] = useState("about");
   const [details, setDetails] = useState({});
-
   const [available, setAvailable] = useState([]);
-
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [availableTime, setAvailableTime] = useState([]);
   const [slotBooked, setSlotBooked] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
-
   const [bookedSlots, setBookedSlots] = useState([]);
 
   let { id } = useParams();
@@ -34,7 +31,7 @@ const DoctorDetails = () => {
   const userInfo = useSelector((state) => state.auth.userInfo);
   const userId = userInfo._id;
 
-  const navigate = useNavigate();
+ 
 
   const fetchDoctor = async () => {
     try {
@@ -87,21 +84,21 @@ const DoctorDetails = () => {
       return;
     }
     
-    
-      const bookingData = {
-        user: user,
-        doctor: details,
-        date: date,
-        slot: time,
-      };
-
-
-
     const indianDate = moment(date).tz("Asia/Kolkata").format("DD/MM/YYYY");
     const indianTime = moment
       .tz(time, "HH:mm", "Asia/Kolkata")
       .format("hh:mm A");
 
+      const bookingData = {
+        user: user,
+        doctor: details,
+        date: indianDate,
+        slot: indianTime,
+      };
+
+console.log(bookingData,'date problem');
+
+    
     try {
       const isAlreadyBooked = bookedSlots.some(
         (slot) => slot.date === indianDate && slot.time === indianTime
@@ -144,12 +141,12 @@ const DoctorDetails = () => {
     }
 
    
-    function formatDateToIndian(dateString) {
-      const date = new Date(dateString);
-      const options = { day: "2-digit", month: "2-digit", year: "numeric" };
-      const indianDate = date.toLocaleDateString("en-IN", options);
-      return indianDate;
-    }
+    // function formatDateToIndian(dateString) {
+    //   const date = new Date(dateString);
+    //   const options = { day: "2-digit", month: "2-digit", year: "numeric" };
+    //   const indianDate = date.toLocaleDateString("en-IN", options);
+    //   return indianDate;
+    // }
     
 
     let selectedDate = e.target.value;
