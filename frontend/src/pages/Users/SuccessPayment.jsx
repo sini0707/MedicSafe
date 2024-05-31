@@ -15,7 +15,6 @@ const SuccessPayment = () => {
   console.log(urlParams, "urlParams");
   const sessionId = urlParams.get("session_id");
 
-  console.log(sessionId, "sessionId");
 
   useEffect(()=>{
     const queryString = window.location.search;
@@ -84,19 +83,7 @@ const SuccessPayment = () => {
   },[])
 
 
-  // const saveBooking=async()=>{
-    
-  //   try {
-  //     const bookingRes = await apiInstance.post(`${baseURL}/users/saveBookingData`,dataToSave);
-    
-  //     console.log(bookingRes,"booking res")
-      
-  //   } catch (error) {
-  //     console.log(error)
-  //   }
-  // }
- 
- 
+  
   
 
   return (

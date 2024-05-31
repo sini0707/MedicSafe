@@ -51,7 +51,7 @@ const parentDir=path.dirname(currentWorkingDir);
 app.use(
   cors({
         //  origin: "http://localhost:5173",
-        origin: "https://www.medicsafe.online, https://medicsafe.online",
+        origin:[ "https://www.medicsafe.online, https://medicsafe.online","http://localhost:5173"],
     credentials: true,
     methods: ["GET", "POST"],
   })
