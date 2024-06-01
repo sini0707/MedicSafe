@@ -43,6 +43,10 @@ const bookingSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    paymentId: {
+      required: true,
+      type: String,
+    },
     prescription: [prescriptionSchema], 
   },
   { timestamps: true }

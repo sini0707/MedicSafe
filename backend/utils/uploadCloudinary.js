@@ -13,6 +13,7 @@ const uploadImageCloudinary = async (file) => {
     });
 
     const data = await res.json();
+
     return data;
   } catch (error) {
     console.error("Error uploading image to Cloudinary:", error);

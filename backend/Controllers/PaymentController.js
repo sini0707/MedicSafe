@@ -25,7 +25,7 @@ export const makepayment = async (req, res) => {
 
   const indianDate = req.body.date;
   const indianTime = req.body.time;
-  console.log(indianDate,'checkout date');
+
 
   try {
     const doctor = await Doctor.findById(doctorId);
@@ -116,6 +116,7 @@ export const sessionStatus = async (req, res) => {
     });
 
     const saveBooking = await newBooking.save();
+    console.log(saveBooking,'bookinng detailssss');
 
     res
       .status(200)
