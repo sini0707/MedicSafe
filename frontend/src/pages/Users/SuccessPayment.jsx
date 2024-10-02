@@ -10,20 +10,19 @@ const SuccessPayment = () => {
   const [loading, setLoading] = useState(true);
  
   const queryString = window.location.search;
-  console.log(queryString);
+
   const urlParams = new URLSearchParams(queryString);
-  console.log(urlParams, "urlParams");
+
   const sessionId = urlParams.get("session_id");
 
 
   useEffect(()=>{
     const queryString = window.location.search;
-    console.log(queryString);
+   
     const urlParams = new URLSearchParams(queryString);
-    console.log(urlParams, "urlParams");
+  
     const sessionId = urlParams.get("session_id");
 
-    console.log(sessionId, "sessionId");
 
 
     const sendPaymentData =async ()=>{
@@ -39,8 +38,7 @@ const SuccessPayment = () => {
           }
         );
 
-       
-         console.log(response,"payment result")
+      
 
         if (response.status!==200) {
           throw new Error(response.
@@ -51,7 +49,7 @@ const SuccessPayment = () => {
           localStorage.getItem("bookingData")
         );
         
-        console.log(bookingData,"bookingData")
+      
 
         const dataToSave = {
           doctor: bookingData.doctor,
