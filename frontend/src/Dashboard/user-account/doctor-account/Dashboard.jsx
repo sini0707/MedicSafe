@@ -24,6 +24,7 @@ const Dashboard = () => {
     }
   }, [error, loading, doctorData]);
 
+
   return (
     <section>
       <div className="max-w-[1170px] px-5 mx-auto">

@@ -19,7 +19,9 @@ import {
 const DoctorProfile = (doctor) => {
   const docId = doctor.doctor._id;
 
+
   const [selectedFile, setSelectedFile] = useState(null);
+ 
   const [selectedCertificate, setSelectedCertificate] = useState(null);
 
   const [loading, setLoading] = useState(false);
@@ -27,13 +29,16 @@ const DoctorProfile = (doctor) => {
     name: "",
     email: "",
     mobile: "",
-    photo: "null",
+    photo: "",
     experience: "",
     education: "",
     certificate: "",
     fees: "",
     address: "",
+    specialization: "",
   });
+
+ 
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -44,8 +49,10 @@ const DoctorProfile = (doctor) => {
     const file = event.target.files[0];
 
     const data = await uploadImageCloudinary(file);
+   
 
     setSelectedFile(data.url);
+    
     setFormData({ ...formData, photo: data.url });
   };
   const handleCertificateInputChange = async (event) => {
@@ -61,12 +68,13 @@ const DoctorProfile = (doctor) => {
         name: doctor.doctor.name,
         email: doctor.doctor.email,
         mobile: doctor.doctor.mobile,
-        photo: doctor.doctor.photo || "",
+        photo: doctor.doctor.imagePath || "",
         experience: doctor.doctor.experience || "",
         education: doctor.doctor.education || "",
         certificate: doctor.doctor.certificate || "",
         fees: doctor.doctor.fees || "",
         address: doctor.doctor.address || "",
+        specialization: doctor.doctor.specialization || "",
         role: doctor.role || "doctor",
       });
     }
